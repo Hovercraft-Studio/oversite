@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>HC Socket Server</title>
+    <link rel="stylesheet" href="css/pico.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <app-state-distributed debug></app-state-distributed>
+    <custom-app>
+      <main class="container">
+        <section>
+          <h1>AppStoreDistributed Demo</h1>
+          <p>A nice way to communicate between apps</p>
+          <h4>Buttons</h4>
+          <nav>
+            <app-store-button key="BTN_KEY" value="BTN-VALUE-1"
+              >Button 1</app-store-button
+            >
+            <app-store-button key="BTN_KEY" value="BTN-VALUE-2"
+              >Button 2</app-store-button
+            >
+            <app-store-button key="BTN_KEY" value="BTN-VALUE-3"
+              >Button 3</app-store-button
+            >
+          </nav>
+          <h4>Inputs</h4>
+          <p>
+            <app-store-textfield
+              key="TEXT_INPUT"
+              value=""
+            ></app-store-textfield>
+          </p>
+          <p>
+            <app-store-slider
+              key="SLIDER_1"
+              value="0.2"
+              max="1"
+            ></app-store-slider>
+          </p>
+        </section>
+        <event-log-view></event-log-view>
+      </main>
+      <footer class="container">
+        <small>Built by us 👋</small>
+      </footer>
+    </custom-app>
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
