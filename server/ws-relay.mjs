@@ -1,6 +1,5 @@
 // install:
 // - npm install ws --save-dev
-// - npm install express --save-dev
 // run:
 // - node ws-relay.mjs [--debug]
 
@@ -11,7 +10,6 @@ process.title = "node-ws";
 // Imports
 /////////////////////
 
-import express from "express";
 import WebSocket, { WebSocketServer } from "ws";
 
 import path from "node:path";
@@ -28,7 +26,6 @@ const __dirname = path.dirname(__filename);
 
 const args = process.argv.slice(2);
 const wssPort = 3001;
-const httpPort = process.env.httpPort || 3000;
 const debug = args.indexOf("--debug") != -1;
 
 function eventLog(...args) {
@@ -38,16 +35,6 @@ function eventLog(...args) {
   }
   console.log("===================================");
 }
-
-/////////////////////
-// BUILD HTTP server
-/////////////////////
-
-const server = express()
-  .use((req, res) => res.sendFile("./index.html", { root: __dirname }))
-  .listen(httpPort, () =>
-    eventLog(`Running Express web server at port: ${httpPort}`)
-  );
 
 /////////////////////
 // BUILD WS SERVER

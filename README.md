@@ -2,6 +2,10 @@
 
 **hc-socket-server** is a simple websocket server that will relay messages between clients. It also contains a small Vite frontend for testing and visibility, which uses App Store Distributed to process messages.
 
+- http://localhost:3001 - websocket server
+- http://localhost:3002 - frontend
+  - also served at http://`<local-ip-address>`:3002
+
 ## Install
 
 ```bash
