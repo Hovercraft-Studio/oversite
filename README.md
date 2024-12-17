@@ -27,3 +27,9 @@ To start only the websocket server:
 ```bash
 npm run ws
 ```
+
+To see all the incoming websocket messages in the terminal, add the `--debug` flag in the package.json `ws` script:
+
+```json
+  "ws": "node ./server/ws-relay.mjs --debug",
+```
