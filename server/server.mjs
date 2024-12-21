@@ -1,4 +1,5 @@
 import http from "http";
+import ipAddr from "./util.mjs";
 
 // import websocket server and event log
 import { wsServer, eventLog } from "./ws-relay.mjs";
@@ -61,7 +62,9 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const port = 3000;
-server.listen(port, () => {
-  eventLog(`Web server is running on http://localhost:${port}`);
+const args = process.argv.slice(2);
+const portArgIndex = args.indexOf("--portHttp");
+const httpPort = portArgIndex != -1 ? parseInt(args[portArgIndex + 1]) : 3003;
+server.listen(httpPort, () => {
+  eventLog(`Web server is running on http://${ipAddr}:${httpPort}`);
 });

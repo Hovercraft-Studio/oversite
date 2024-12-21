@@ -20,9 +20,8 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 ## TODO:
 
 - Shared .env between all apps (and TD) for IP addresses and otherwise
+- Show a list of all connected clients in the UI
 - Add a web component that would selectively hydrate the app state from the new api routes
-- Make IP addresses configurable in the server apps
-- Make IP addresses configurable in the node demo app
 - Fix IP address in querystring in client demo app
 - Bring in changes from haxademic-td web components and continue here
 - Bring in changes from Bounty to make developing client web apps nicer w/multiple app paths

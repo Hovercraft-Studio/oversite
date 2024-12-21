@@ -11,15 +11,15 @@ process.title = "node-ws";
 /////////////////////
 
 import WebSocket, { WebSocketServer } from "ws";
-
-// const wss = new WebSocketServer({ port: 8080 });
+import ipAddr from "./util.mjs";
 
 /////////////////////
-// Config
+// Config/args
 /////////////////////
 
 const args = process.argv.slice(2);
-const wssPort = 3001;
+const portArgIndex = args.indexOf("--port");
+const wssPort = portArgIndex != -1 ? parseInt(args[portArgIndex + 1]) : 3001;
 const debug = args.indexOf("--debug") != -1;
 
 function eventLog(...args) {
@@ -42,7 +42,8 @@ const wsServer = new WebSocketServer({
 }); // For Heroku launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
 eventLog(
   `Running WebSocket server at port: ${wssPort}`,
-  `Be sure to connect at ws://localhost:3001/ws`
+  `Connect at ws://localhost:${wssPort}/ws`,
+  `or ws://${ipAddr}:${wssPort}/ws`
 );
 
 // listen for new connections

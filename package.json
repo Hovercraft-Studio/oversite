@@ -6,10 +6,10 @@
     "dev": "vite --host --port 3002",
     "build": "vite build",
     "preview": "vite preview",
-    "ws": "node ./server/ws-relay.mjs",
-    "server": "nodemon --ext mjs node ./server/server.mjs",
-    "node-app-demo": "nodemon --ext mjs node ./node-app-demo/index.mjs",
-    "start": "concurrently \"npm run dev\" \"npm run ws\""
+    "ws": "node ./server/ws-relay.mjs --port 3001",
+    "server": "nodemon --ext mjs node ./server/server.mjs --port 3001 --portHttp 3003",
+    "start": "concurrently \"npm run dev\" \"npm run server\"",
+    "node-app-demo": "nodemon --ext mjs node ./node-app-demo/index.mjs --server 127.0.0.1:3001/ws"
   },
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^1.1.0",
