@@ -59,14 +59,18 @@ async function saveStateToFile(filePath) {
 
 async function loadStateFromFile(filePath) {
   try {
-    // check if file exists (boolean)
+    // try to load file and load state from it
     const data = await fs.readFile(filePath, "utf-8");
     Object.assign(state, JSON.parse(data));
     let numKeys = Object.keys(state).length;
     console.log(`✅ State loaded from file with (${numKeys}) keys`);
   } catch (error) {
-    console.error("⚠️ Error loading state from file:", error);
-    console.warn("- This was probably the first run");
+    console.error("🚨 Error loading state from file:", error);
+    console.warn("❔ This was probably the first run");
+    // create empty dir & file if it doesn't exist: ./data/state.json
+    await fs.mkdir(join(__dirname, "data"), { recursive: true });
+    await fs.writeFile(filePath, "{}");
+    console.log("✅ Created empty state file. Let's go!");
   }
 }
 

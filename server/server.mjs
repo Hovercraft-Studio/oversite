@@ -28,9 +28,11 @@ const server = http.createServer((req, res) => {
   let isPOST = method === "POST";
 
   if (url === "/" && isGET) {
+    // handle root
     res.writeHead(200);
     res.end(JSON.stringify({ message: "Welcome to AppStore" }));
   } else if (url.includes("/state") && url.length > 6 && isGET) {
+    // return a single key
     const key = pathSplit[2];
     res.writeHead(200);
     if (state[key]) {
@@ -39,14 +41,17 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify(null));
     }
   } else if (url === "/state" && isGET) {
+    // return entire state
     res.writeHead(200);
     res.end(JSON.stringify(state));
   } else if (url.includes("/wipe") && url.length > 5 && isGET) {
+    // remove a single key
     const key = pathSplit[2];
     removeKey(key);
     res.writeHead(200);
     res.end(JSON.stringify(state));
   } else if (url === "/wipe" && isGET) {
+    // remove all keys
     removeAllKeys();
     res.writeHead(200);
     res.end(JSON.stringify(state));
