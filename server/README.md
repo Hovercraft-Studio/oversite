@@ -34,6 +34,9 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
     - /wipe/*
     - /info (server info w/uptime, list of connections, etc)
     - what else?
+  - How AppStore works
+    - Note the format of the messages
+    - Sender ID
 - Debug components for AppStore - health-check components
   - Heartbeat option
   - True/false or (0/1) option
@@ -41,9 +44,8 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
   - Show full state of the store in a table
   - Show a list of all connected clients in the UI
   - Add a button to wipe the store
+  - Add buttons/dropdowns to wipe all or individual properties in UI
 - [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
 - Add a web component that would selectively hydrate the app state from the new api routes
-- Add machine/app ID when setting up AppStoreDistributed to identify connected events and add to sender messages
-  - Add `sender` to TD table
-  - Add buttons/dropdowns to wipe all or individual properties in UI
+- Add `sender` to TD table
   - Add sender to TD baseComp as a param
