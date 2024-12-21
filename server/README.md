@@ -1,16 +1,16 @@
 # Server app
 
-There are two ways to run the server app:
+There are two ways to run the WebSocket server app:
 
 - Using `ws-relay.mjs` as a barebones websocket server
 - Using `server.mjs`, which uses ws-relay.mjs and:
   - Stores all incoming AppStore-formatted messages in a local dictionary
-  - Writes the dictionary to a file on disk and loads on startup
+  - Writes the AppStore dictionary to a file on disk and loads on startup
   - Adds a REST API to serve and manage the store state
 
-Running the more robust `server.mjs` allows clients to self-hydrate their specific state from the server on startup. It also adds a layer of persistence to the store, which is helpful as the server may be restarted. These features allow for a much more robust shared state system as components come online or are restarted.
+Running the more robust `server.mjs` allows clients to self-hydrate their specific state from the server on startup. It also adds a layer of persistence to the store, which is helpful as the server may be restarted. These features allow for a much more robust shared state system as components come online or are restarted. There's also a new monitoring UI that shows the current state of the store and allows for selective clearing of keys.
 
-## API routes
+## API routes for `server.mjs`
 
 - `GET /state` - Returns the current state of the store
 - `GET /state/*` - Returns the json for a specific key in the store
@@ -19,7 +19,7 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Shared .env between all apps (and TD) for IP addresses and otherwise
+- [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
 - Show a list of all connected clients in the UI
 - Add a web component that would selectively hydrate the app state from the new api routes
 - Fix IP address in querystring in client demo app
