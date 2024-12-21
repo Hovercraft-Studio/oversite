@@ -3,7 +3,7 @@ import AppStoreDistributed from "../js/haxademic.js/app-store-distributed.mjs";
 class AppStoreDemo {
   constructor() {
     this.config();
-    this.appStore = new AppStoreDistributed(`ws://${this.wsURL}`);
+    this.appStore = new AppStoreDistributed(`ws://${this.wsURL}`, "NODE_DEMO");
     this.addListeners();
     this.startHeartbeat();
   }

@@ -6,8 +6,9 @@ class AppStoreDistributed extends AppStore {
   static DISCONNECTED = "AppStoreDistributed_DISCONNECTED";
   static CUSTOM_JSON = "CUSTOM_JSON";
 
-  constructor(socketServerUrl, senderId) {
+  constructor(socketServerUrl, senderId = null) {
     super();
+    this.senderId = senderId; // || this.generateUUID();
     // track whether messages are from this instance
     this.messageFromSelf = false;
     // init websocket connection
@@ -28,19 +29,6 @@ class AppStoreDistributed extends AppStore {
     });
   }
 
-  initSenderID() {
-    this.uuid = this.generateUUID();
-    return this.uuid;
-  }
-
-  senderId() {
-    return this.uuid;
-  }
-
-  senderIsSelf() {
-    return this.messageFromSelf;
-  }
-
   onOpen() {
     console.log("AppStoreDistributed connected: " + this.socketServerUrl);
     this.set(AppStoreDistributed.CONNECTED, this.socketServerUrl);
@@ -55,7 +43,7 @@ class AppStoreDistributed extends AppStore {
     let data = JSON.parse(event.data);
 
     // note whether sender is self, so we can check before taking action on incoming data that was sent by us, with senderIsSelf()
-    this.messageFromSelf = data && data.sender && data.sender == this.uuid;
+    this.messageFromSelf = data && data.sender && data.sender == this.senderId;
 
     // set incoming data on AppStore
     if (data["store"] && data["type"]) {
@@ -78,7 +66,7 @@ class AppStoreDistributed extends AppStore {
         store: true,
         type: type,
       };
-      if (this.uuid) data.sender = this.uuid;
+      if (this.senderId) data.sender = this.senderId;
       this.solidSocket.sendMessage(JSON.stringify(data)); // local AppStore is updated when message is broadcast back to us
     } else {
       super.set(key, value);

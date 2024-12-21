@@ -14,6 +14,9 @@ class AppStateDistributed extends HTMLElement {
   }
 
   initSharedState() {
+    // get sender from web component attribute
+    let sender = this.getAttribute("sender");
+
     // get address from querystring or use default
     // and show in URL for easy sharing
     let wsServerFromQuery = URLUtil.getHashQueryParam("server");
@@ -23,7 +26,7 @@ class AppStateDistributed extends HTMLElement {
       document.location.hash += `&server=${this.webSocketHost}`;
 
     // connect to websocket server
-    this.appStore = new AppStoreDistributed(this.webSocketHost);
+    this.appStore = new AppStoreDistributed(this.webSocketHost, sender);
 
     // listen for data/events
     _store.addListener(this);
