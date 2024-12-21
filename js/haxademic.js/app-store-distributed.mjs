@@ -6,7 +6,7 @@ class AppStoreDistributed extends AppStore {
   static DISCONNECTED = "AppStoreDistributed_DISCONNECTED";
   static CUSTOM_JSON = "CUSTOM_JSON";
 
-  constructor(socketServerUrl) {
+  constructor(socketServerUrl, senderId) {
     super();
     // track whether messages are from this instance
     this.messageFromSelf = false;

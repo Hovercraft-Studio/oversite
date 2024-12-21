@@ -13,17 +13,17 @@ class AppStoreElement extends HTMLElement {
     _store?.removeListener(this);
   }
 
-  storeUpdated(key, value) {
-    if (key != this.storeKey) return;
-    if (value != this.valueFromStore) {
-      this.valueFromStore = value;
-      this.el ? (this.el.innerHTML = value) : this.render();
-    }
-  }
-
   initComponent() {
     this.storeKey = String(this.getAttribute("key")) || "key";
     this.storeValue = String(this.getAttribute("value")) || "value";
+
+    // handle special values to coerce datatypes
+    if (this.storeValue == "true") this.storeValue = true;
+    else if (this.storeValue == "false") this.storeValue = false;
+    else if (this.storeValue == "0") this.storeValue = 0;
+    else if (this.storeValue == "1") this.storeValue = 1;
+
+    // AppStore connection
     this.valueFromStore = null;
     ObjectUtil.callbackWhenPropertyExists(window, "_store", () => {
       this.initStoreListener();
@@ -33,6 +33,19 @@ class AppStoreElement extends HTMLElement {
   initStoreListener() {
     this.valueFromStore = _store.get(this.storeKey) || this.valueFromStore;
     _store.addListener(this);
+  }
+
+  storeUpdated(key, value) {
+    if (key != this.storeKey) return; // ignore other keys
+    if (value != this.valueFromStore) {
+      this.valueFromStore = value;
+      this.setStoreValue(value);
+    }
+  }
+
+  setStoreValue(value) {
+    console.log("setStoreValue", value);
+    this.el ? (this.el.innerHTML = value) : this.render();
   }
 
   css() {

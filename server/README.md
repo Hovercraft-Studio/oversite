@@ -19,16 +19,28 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Bring in changes from haxademic-td web components and continue here
-  - Fix IP address in querystring in client demo app
-  - Fix AppStore demo ui ip address
 - Bring in changes from Bounty to make developing client web apps nicer w/multiple app paths
 - Add Vite view for full current store data table for viewing in realtime
   - Add `sender` so we can see where messages are coming from
+- Add notes in README about:
+  - How to customize ip addresses/ports, and what the default are for:
+    - ws-relay
+    - vite demo UI (and how to change the port for the ws server in the hash query)
+    - server.mjs
+  - Routes in server.mjs
+    - /state
+    - /state/*
+    - /wipe
+    - /wipe/*
+    - /info (server info w/uptime, list of connections, etc)
+    - what else?
 - Debug components for AppStore - health-check components
   - Heartbeat option
   - True/false or (0/1) option
-- Show a list of all connected clients in the UI
+- Vite Dashboard
+  - Show full state of the store in a table
+  - Show a list of all connected clients in the UI
+  - Add a button to wipe the store
 - [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
 - Add a web component that would selectively hydrate the app state from the new api routes
 - Add machine/app ID when setting up AppStoreDistributed to identify connected events and add to sender messages
