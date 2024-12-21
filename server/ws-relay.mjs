@@ -12,12 +12,6 @@ process.title = "node-ws";
 
 import WebSocket, { WebSocketServer } from "ws";
 
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // const wss = new WebSocketServer({ port: 8080 });
 
 /////////////////////
@@ -72,3 +66,6 @@ wsServer.on("connection", (connection, request, client) => {
     eventLog("Client left - We have " + wsServer.clients.size + " users");
   });
 });
+
+export default wsServer;
+export { wsServer, eventLog };

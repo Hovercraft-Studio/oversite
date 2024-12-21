@@ -39,3 +39,6 @@ build/
 # Temporary files
 tmp/
 temp/
+
+# Server-generated files
+server/data/
