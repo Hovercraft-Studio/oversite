@@ -1,4 +1,4 @@
-import AppStoreDistributed from "../app-store-distributed.js";
+import AppStoreDistributed from "../app-store-distributed.mjs";
 
 // self-registering child components
 import "./websocket-indicator.js";

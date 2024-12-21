@@ -19,5 +19,3 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Serve a single property from the store
-- Add a web component that would hydrate the app state from the new api routes

@@ -1,5 +1,5 @@
-import AppStore from "./app-store-.js";
-import SolidSocket from "./solid-socket.js";
+import AppStore from "./app-store-.mjs";
+import SolidSocket from "./solid-socket.mjs";
 
 class AppStoreDistributed extends AppStore {
   static CONNECTED = "AppStoreDistributed_CONNECTED";

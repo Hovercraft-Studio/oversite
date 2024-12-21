@@ -1,4 +1,4 @@
-import MobileUtil from "../mobile-util.js";
+import MobileUtil from "../mobile-util.mjs";
 import AppStoreElement from "./app-store-element.js";
 
 class AppStoreButton extends AppStoreElement {

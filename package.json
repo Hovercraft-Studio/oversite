@@ -8,6 +8,7 @@
     "preview": "vite preview",
     "ws": "node ./server/ws-relay.mjs",
     "server": "nodemon --ext mjs node ./server/server.mjs",
+    "node-app-demo": "nodemon --ext mjs node ./node-app-demo/index.mjs",
     "start": "concurrently \"npm run dev\" \"npm run ws\""
   },
   "devDependencies": {

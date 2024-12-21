@@ -2,20 +2,45 @@ class SolidSocket {
   constructor(wsURL) {
     this.active = true;
     this.wsURL = wsURL;
-    this.setClassesDisconnected();
+    this.init();
+  }
+
+  async init() {
+    await this.initSocketClass();
+    if (typeof window !== "undefined") this.hasWindow = true;
     this.bindCallbacks();
-    this.buildSocketObject();
-    this.startMonitoringConnection();
+    let startDelay = this.hasWindow ? 0 : 500; // node needs a moment to init
+    setTimeout(() => {
+      this.buildSocketObject();
+      this.startMonitoringConnection();
+    }, startDelay);
+  }
+
+  async initSocketClass() {
+    this.WebSocketClient;
+    if (
+      typeof window !== "undefined" &&
+      typeof window.WebSocket !== "undefined"
+    ) {
+      // Running in the browser
+      this.WebSocketClient = window.WebSocket;
+    } else {
+      // Running in Node.js
+      const { WebSocket } = await import("ws");
+      this.WebSocketClient = WebSocket;
+    }
   }
 
   // State
 
   setClassesConnected() {
+    if (!this.hasWindow) return;
     document.body.classList.add("has-socket");
     document.body.classList.remove("no-socket");
   }
 
   setClassesDisconnected() {
+    if (!this.hasWindow) return;
     document.body.classList.add("no-socket");
     document.body.classList.remove("has-socket");
   }
@@ -28,11 +53,11 @@ class SolidSocket {
   }
 
   isConnected() {
-    return this.socket.readyState === WebSocket.OPEN;
+    return this.socket.readyState === this.WebSocketClient.OPEN;
   }
 
   isConnecting() {
-    return this.socket.readyState === WebSocket.CONNECTING;
+    return this.socket.readyState === this.WebSocketClient.CONNECTING;
   }
 
   // WebSocket LISTENERS
@@ -63,6 +88,7 @@ class SolidSocket {
   // CALLBACKS
 
   onOpen(e) {
+    console.log("SolidSocket connected: " + this.wsURL);
     this.setClassesConnected();
     if (this.openCallback) this.openCallback(e);
     if (this.connectionActiveCallback) this.connectionActiveCallback(true);
@@ -125,7 +151,7 @@ class SolidSocket {
 
   buildSocketObject() {
     this.removeSocketListeners();
-    this.socket = new WebSocket(this.wsURL);
+    this.socket = new this.WebSocketClient(this.wsURL);
     this.addSocketListeners();
   }
 
@@ -154,8 +180,13 @@ class SolidSocket {
       }
     }
     // keep checking connection until disposed
+    // use more dependable raf if in browser, or setTimeout if in Node
     if (this.active == true) {
-      requestAnimationFrame(() => this.checkConnection());
+      if (this.hasWindow) {
+        window.requestAnimationFrame(() => this.checkConnection());
+      } else {
+        setTimeout(() => this.checkConnection(), 1000);
+      }
     }
   }
 

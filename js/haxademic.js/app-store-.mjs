@@ -5,7 +5,7 @@ class AppStore {
     this.state = {};
     this.listeners = [];
     this.methods = {};
-    window._store = this;
+    if (typeof window !== "undefined") window._store = this;
   }
 
   addListener(obj, key) {
@@ -57,8 +57,8 @@ class AppStore {
   }
 
   log() {
-    for (let key in _store.state) {
-      console.log(key, _store.state[key]);
+    for (let key in this.state) {
+      console.log(key, this.state[key]);
     }
   }
 

@@ -1,4 +1,4 @@
-import ObjectUtil from "../object-util.js";
+import ObjectUtil from "../object-util.mjs";
 
 class AppStoreElement extends HTMLElement {
   connectedCallback() {

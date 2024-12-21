@@ -1,5 +1,5 @@
-import MobileUtil from "./haxademic.js/mobile-util.js";
-import ErrorUtil from "./haxademic.js/error-util.js";
+import MobileUtil from "./haxademic.js/mobile-util.mjs";
+import ErrorUtil from "./haxademic.js/error-util.mjs";
 
 // Import to trigger self-executing register() functions inside the component classes
 import "./haxademic.js/components/app-store-element.js";
