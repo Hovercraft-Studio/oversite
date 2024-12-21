@@ -19,3 +19,8 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
+- Add a web component that would selectively hydrate the app state from the new api routes
+- Make IP addresses configurable in the server apps
+- Fix IP address in querystring in client demo app
+- Bring in changes from haxademic-td web components and continue here
+- Bring in changes from Bounty to make developing client web apps nicer w/multiple app paths
