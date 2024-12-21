@@ -66,6 +66,7 @@ async function loadStateFromFile(filePath) {
     console.log(`✅ State loaded from file with (${numKeys}) keys`);
   } catch (error) {
     console.error("⚠️ Error loading state from file:", error);
+    console.warn("- This was probably the first run");
   }
 }
 

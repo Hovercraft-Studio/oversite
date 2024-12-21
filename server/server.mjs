@@ -21,34 +21,32 @@ wsServer.on("connection", (connection, request, client) => {
 const server = http.createServer((req, res) => {
   res.setHeader("Content-Type", "application/json");
 
-  if (req.url === "/" && req.method === "GET") {
+  let url = req.url;
+  let method = req.method;
+  let pathSplit = url.split("/");
+  let isGET = method === "GET";
+  let isPOST = method === "POST";
+
+  if (url === "/" && isGET) {
     res.writeHead(200);
     res.end(JSON.stringify({ message: "Welcome to AppStore" }));
-  } else if (
-    req.url.includes("/state") &&
-    req.url.length > 6 &&
-    req.method === "GET"
-  ) {
-    const key = req.url.split("/")[2];
+  } else if (url.includes("/state") && url.length > 6 && isGET) {
+    const key = pathSplit[2];
     res.writeHead(200);
     if (state[key]) {
       res.end(JSON.stringify(state[key]));
     } else {
       res.end(JSON.stringify(null));
     }
-  } else if (req.url === "/state" && req.method === "GET") {
+  } else if (url === "/state" && isGET) {
     res.writeHead(200);
     res.end(JSON.stringify(state));
-  } else if (
-    req.url.includes("/wipe") &&
-    req.url.length > 5 &&
-    req.method === "GET"
-  ) {
-    const key = req.url.split("/")[2];
+  } else if (url.includes("/wipe") && url.length > 5 && isGET) {
+    const key = pathSplit[2];
     removeKey(key);
     res.writeHead(200);
     res.end(JSON.stringify(state));
-  } else if (req.url === "/wipe" && req.method === "GET") {
+  } else if (url === "/wipe" && isGET) {
     removeAllKeys();
     res.writeHead(200);
     res.end(JSON.stringify(state));

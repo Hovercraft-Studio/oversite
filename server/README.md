@@ -19,8 +19,20 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
+- Shared .env between all apps (and TD) for IP addresses and otherwise
 - Add a web component that would selectively hydrate the app state from the new api routes
 - Make IP addresses configurable in the server apps
+- Make IP addresses configurable in the node demo app
 - Fix IP address in querystring in client demo app
 - Bring in changes from haxademic-td web components and continue here
 - Bring in changes from Bounty to make developing client web apps nicer w/multiple app paths
+- Add machine/app ID when setting up AppStoreDistributed to identify connected events and add to sender messages
+  - Add `sender` to TD table
+  - Add buttons/dropdowns to wipe all or individual properties in UI
+  - Add sender to TD baseComp as a param
+- Add Vite view for full current store data table for viewing in realtime
+  - Add `sender` so we can see where messages are coming from
+- Fix AppStore demo ui ip address
+- Debug components for AppStore - health-check components
+  - Heartbeat option
+  - True/false or (0/1) option
