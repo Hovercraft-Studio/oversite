@@ -22,6 +22,10 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 - Bring in changes from Bounty to make developing client web apps nicer w/multiple app paths
 - Add Vite view for full current store data table for viewing in realtime
   - Add `sender` so we can see where messages are coming from
+    - Add this in TD!
+    - Add `sender` to TD table
+      - Add sender to TD baseComp as a param
+    - Make TD ws:// port configurable
 - Add notes in README about:
   - How to customize ip addresses/ports, and what the default are for:
     - ws-relay
@@ -45,7 +49,6 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
   - Show a list of all connected clients in the UI
   - Add a button to wipe the store
   - Add buttons/dropdowns to wipe all or individual properties in UI
+- In `/state`, can we filter rather than just return entire or single key?
 - [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
 - Add a web component that would selectively hydrate the app state from the new api routes
-- Add `sender` to TD table
-  - Add sender to TD baseComp as a param

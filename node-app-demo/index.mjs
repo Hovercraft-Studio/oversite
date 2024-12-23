@@ -1,4 +1,4 @@
-import AppStoreDistributed from "../js/haxademic.js/app-store-distributed.mjs";
+import AppStoreDistributed from "../shared/js/haxademic.js/app-store-distributed.mjs";
 
 class AppStoreDemo {
   constructor() {
