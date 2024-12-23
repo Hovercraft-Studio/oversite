@@ -19,7 +19,6 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Bring in changes from Bounty to make developing client web apps nicer w/multiple app paths
 - Add Vite view for full current store data table for viewing in realtime
   - Add `sender` so we can see where messages are coming from
     - Add this in TD!
@@ -44,11 +43,19 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 - Debug components for AppStore - health-check components
   - Heartbeat option
   - True/false or (0/1) option
+  - Add automatic heartbeat component for:
+    - TD
+    - web UI
+    - Node
 - Vite Dashboard
   - Show full state of the store in a table
   - Show a list of all connected clients in the UI
   - Add a button to wipe the store
   - Add buttons/dropdowns to wipe all or individual properties in UI
+  - Can we send a message to remove a key on the clients?
+  - Can we match sender with client and heartbeat to have a more robust client list?
+  - Event log on the side
+  - Click to resend a key/value?
 - In `/state`, can we filter rather than just return entire or single key?
 - [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
 - Add a web component that would selectively hydrate the app state from the new api routes

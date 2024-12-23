@@ -16,6 +16,7 @@ class AppStateDistributed extends HTMLElement {
   initSharedState() {
     // get sender from web component attribute
     let sender = this.getAttribute("sender");
+    let initKeys = this.getAttribute("init-keys");
 
     // get address from querystring or use default
     // and show in URL for easy sharing
@@ -27,6 +28,14 @@ class AppStateDistributed extends HTMLElement {
 
     // connect to websocket server
     this.appStore = new AppStoreDistributed(this.webSocketHost, sender);
+
+    // hydrate with specified keys
+    if (initKeys) {
+      initKeys = initKeys.split(" ");
+      console.log("initKeys", initKeys);
+      // need to fetch from server:3003/state/KEY
+      // and set on _store without broadcasting
+    }
 
     // listen for data/events
     _store.addListener(this);
