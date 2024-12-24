@@ -12,6 +12,15 @@ class EventLogTable extends HTMLElement {
     this.events.unshift({ key, value, time: Date.now() });
     if (this.events.length > this.maxLength) this.events.pop();
     this.render();
+    this.flashFirstRow();
+  }
+
+  flashFirstRow() {
+    let row = this.querySelector("tbody tr");
+    row.classList.add("flash");
+    setTimeout(() => {
+      row.classList.remove("flash");
+    }, 1000);
   }
 
   html() {
@@ -45,10 +54,7 @@ class EventLogTable extends HTMLElement {
   css() {
     return /*css*/ `
       :host {
-        box-shadow: 0 0 20px 0 rgba(0,0,0,0.5);
-        background: rgba(0,0,0,0.5);
-        display: block;
-        padding: 0.5rem 2rem;
+
       }
     `;
   }

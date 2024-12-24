@@ -18,6 +18,8 @@ class AppStoreTable extends HTMLElement {
 
   addRow(key, value) {
     // TODO: switch to list of objects so this works properly
+    // TODO: check to see if row exists before adding
+    // - or update existing row
     if (!this.querySelector(`tr[data-key="${key}"]`)) {
       // this.markup += `<tr data-key="${key}">
       //   <td data-key>${key}</td>
@@ -32,10 +34,24 @@ class AppStoreTable extends HTMLElement {
   flashRow(key) {
     let row = this.querySelector(`tr[data-key="${key}"]`);
     if (row) {
-      row.classList.add("flash");
+      row.classList.remove("flash");
+      setTimeout(() => {
+        row.classList.add("flash");
+      }, 10);
       setTimeout(() => {
         row.classList.remove("flash");
-      }, 1000);
+      }, 1010);
+      // row.animate(
+      //   [
+      //     { backgroundColor: "green" },
+      //     { backgroundColor: "var(--pico-background-color)" },
+      //   ],
+      //   {
+      //     duration: 1000,
+      //     iterations: 1,
+      //     fill: "both",
+      //   }
+      // );
     }
   }
 
@@ -67,7 +83,7 @@ class AppStoreTable extends HTMLElement {
       let obj = data[key];
       this.markup += `<tr data-key="${obj.key}">
           <td>${obj.key}</td>
-          <td class="truncate">${obj.value}</td>
+          <td>${obj.value}</td>
           <td>${obj.type}</td>
           <td>${obj.sender || ""}</td>
         </tr>`;
@@ -77,16 +93,6 @@ class AppStoreTable extends HTMLElement {
 
   css() {
     return /*css*/ `
-      table {
-        font-size: 0.6rem;
-        width: 100%;
-      }
-      td {
-        padding: calc(var(--pico-spacing) / 6) var(--pico-spacing);
-      }
-      .flash td {
-        background: rgba(255,255,255,0.25);
-      }
     `;
   }
 
