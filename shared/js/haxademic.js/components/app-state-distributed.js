@@ -4,7 +4,6 @@ import AppStoreDistributed from "../app-store-distributed.mjs";
 import "./websocket-indicator.js";
 import "./app-store-debug.js";
 import URLUtil from "../url-util.mjs";
-// import PointerPos from "../src/pointer-pos.js";
 
 class AppStateDistributed extends HTMLElement {
   connectedCallback() {

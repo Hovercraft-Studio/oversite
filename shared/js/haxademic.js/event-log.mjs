@@ -8,11 +8,13 @@ class EventLog {
     // add to the log
     if (message) {
       let styleAttr = color ? `style="background-color:${color}"` : "";
-      this.debugEl.innerHTML += `<div ${styleAttr}>${message.toString()}</div>`;
+      this.debugEl.innerHTML =
+        `<div ${styleAttr}>${message.toString()}</div>` +
+        this.debugEl.innerHTML;
     }
     // truncate log
     while (this.debugEl.childNodes.length > this.maxItems) {
-      var el = this.debugEl.childNodes[0];
+      var el = this.debugEl.childNodes[this.debugEl.childNodes.length - 1];
       el.parentNode.removeChild(el);
     }
   }

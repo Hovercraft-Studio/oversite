@@ -19,12 +19,48 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Add Vite view for full current store data table for viewing in realtime
-  - Add `sender` so we can see where messages are coming from
-    - Add this in TD!
-    - Add `sender` to TD table
-      - Add sender to TD baseComp as a param
-    - Make TD ws:// port configurable
+- Add sender to TD baseComp as a param
+- Add a route in server to show clients, w/sender id
+- Debug components for AppStore - health-check components
+  - Heartbeat option
+  - True/false or (0/1) option
+  - Add automatic heartbeat component for:
+    - TD (Added this in haxademic-td)
+    - web UI
+    - Node
+- Vite Dashboard
+  - [WIP] Use the server url in the address bar to figure out the http server url
+    - Better conversion of the ws server port (3001) to a specified port (defaulting to 3003 right now). This should be another query param for customization
+  - Store data in data objects for sorting & adding
+  - Update row data on incoming store update
+  - Better flash row when updated
+  - Show list of clients w/sender & heartbeat
+    - Need an API route that shows clients w/sender
+  - Show last updated time
+  - Sort data?
+  - Treat heartbeats as a special case w/timestamps and red row if out of date
+  - Add zoom buttons for table style/padding/font
+  - Show a list of all connected clients in the UI
+  - Add a button to wipe the store
+  - Add buttons/dropdowns to wipe all or individual properties in UI
+  - Can we send a message to remove a key on the clients?
+  - Can we match sender with client and heartbeat to have a more robust client list?
+  - Event log on the side
+  - Click to resend a key/value?
+- Selectively hydrate the app state from the new api routes
+  - WIP Started in AppStoreDistributed
+  - TD implementation in AppStore component w/keys par
+
+Nice-to-haves?
+
+- Maybe just keep these in the Monitor?
+  - Add `sender` to JS table
+  - Add `sender` to TD table
+- In `/state`, can we filter rather than just return entire or single key?
+- [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
+
+## TODO: Documentation
+
 - Add notes in README about:
   - How to customize ip addresses/ports, and what the default are for:
     - ws-relay
@@ -40,22 +76,3 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
   - How AppStore works
     - Note the format of the messages
     - Sender ID
-- Debug components for AppStore - health-check components
-  - Heartbeat option
-  - True/false or (0/1) option
-  - Add automatic heartbeat component for:
-    - TD
-    - web UI
-    - Node
-- Vite Dashboard
-  - Show full state of the store in a table
-  - Show a list of all connected clients in the UI
-  - Add a button to wipe the store
-  - Add buttons/dropdowns to wipe all or individual properties in UI
-  - Can we send a message to remove a key on the clients?
-  - Can we match sender with client and heartbeat to have a more robust client list?
-  - Event log on the side
-  - Click to resend a key/value?
-- In `/state`, can we filter rather than just return entire or single key?
-- [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
-- Add a web component that would selectively hydrate the app state from the new api routes

@@ -7,7 +7,11 @@ import "../../shared/js/haxademic.js/components/app-store-button.js";
 import "../../shared/js/haxademic.js/components/app-store-textfield.js";
 import "../../shared/js/haxademic.js/components/app-store-slider.js";
 import "../../shared/js/haxademic.js/components/app-state-distributed.js";
-import "../../shared/js/haxademic.js/components/event-log-view.js";
+import "../../shared/js/haxademic.js/components/event-log-table.js";
+import "../../shared/js/haxademic.js/components/app-store-table.js";
+
+// custom web components
+// anything here?
 
 class CustomApp extends HTMLElement {
   connectedCallback() {
@@ -22,15 +26,6 @@ class CustomApp extends HTMLElement {
   init() {
     ErrorUtil.initErrorCatching();
     MobileUtil.enablePseudoStyles();
-  }
-
-  // poll for /server/ updates
-  startTablePoll() {
-    setInterval(async () => {
-      let res = await fetch("/server/state");
-      let data = await res.json();
-      console.log(data);
-    }, 1000);
   }
 }
 

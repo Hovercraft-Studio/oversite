@@ -45,7 +45,7 @@ class AppStoreDistributed extends AppStore {
     // note whether sender is self, so we can check before taking action on incoming data that was sent by us, with senderIsSelf()
     this.messageFromSelf = data && data.sender && data.sender == this.senderId;
 
-    // set incoming data on AppStore
+    // set incoming data on AppStore without broadcasting
     if (data["store"] && data["type"]) {
       this.set(data["key"], data["value"]);
     } else {
