@@ -13,7 +13,8 @@ class AppStoreDistributed extends AppStore {
     this.messageFromSelf = false;
     // init websocket connection
     this.socketServerUrl = socketServerUrl;
-    this.solidSocket = new SolidSocket(socketServerUrl);
+    if (senderId) this.socketServerUrl += "?sender=" + this.senderId;
+    this.solidSocket = new SolidSocket(this.socketServerUrl);
     this.solidSocket.setOpenCallback((e) => this.onOpen(e));
     this.solidSocket.setCloseCallback((e) => this.onClose(e));
     this.solidSocket.setMessageCallback((e) => this.onMessage(e));

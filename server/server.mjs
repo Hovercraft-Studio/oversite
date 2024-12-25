@@ -62,6 +62,17 @@ const server = http.createServer((req, res) => {
     removeAllKeys();
     res.writeHead(200);
     res.end(JSON.stringify(state));
+  } else if (url === "/clients" && isGET) {
+    let clients = [];
+    wsServer.clients.forEach((client) => {
+      // clients.push(client);
+      clients.push({
+        sender: client.senderID,
+        connectedTime: Math.round((Date.now() - client.startTime) / 1000),
+      });
+    });
+    res.writeHead(200);
+    res.end(JSON.stringify(clients));
   } else {
     res.writeHead(404);
     res.end(JSON.stringify({ error: "Not Found" }));

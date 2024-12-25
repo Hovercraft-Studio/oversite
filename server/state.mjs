@@ -24,6 +24,9 @@ let lastSaveTime = Date.now();
 function setStateData(data) {
   if (!data.store) return;
 
+  // add time of message
+  data.time = Date.now();
+
   // store whole message to re-broadcast later
   state[data.key] = data;
   saveStateToFile(dataPath);
