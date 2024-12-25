@@ -19,8 +19,6 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Add sender to TD baseComp as a param
-- Add a route in server to show clients, w/sender id
 - Debug components for AppStore - health-check components
   - Heartbeat option
   - True/false or (0/1) option
@@ -35,16 +33,18 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
   - Update row data on incoming store update
   - Better flash row when updated
   - Show list of clients w/sender & heartbeat
+    - Can we match sender with client and heartbeat to have a more robust client list?
     - Need an API route that shows clients w/sender
   - Show last updated time
   - Sort data?
+    - By App
+    - Then alphabetically
   - Treat heartbeats as a special case w/timestamps and red row if out of date
   - Add zoom buttons for table style/padding/font
   - Show a list of all connected clients in the UI
   - Add a button to wipe the store
   - Add buttons/dropdowns to wipe all or individual properties in UI
   - Can we send a message to remove a key on the clients?
-  - Can we match sender with client and heartbeat to have a more robust client list?
   - Event log on the side
   - Click to resend a key/value?
 - Selectively hydrate the app state from the new api routes
