@@ -99,3 +99,6 @@ Nice-to-haves?
       - Should be in rounded seconds
       - This lets us see uptime across clients and takes advantage of special formatting and indicators for keys with "heartbeat" in the name
       - If "sender" is "ba_ui", then the heartbeat should be "ba_ui_heartbeat", and then we have more indication in the client list, and the heartbeat is matched with the sender ID
+    - Monitor app:
+      - URL scheme & customizable ports w/defaults:
+        - http://localhost:3002/app-store-monitor/index.html#&server=ws://192.168.1.205:3001/ws&httpPort=3003

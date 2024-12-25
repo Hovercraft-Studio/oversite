@@ -3,14 +3,27 @@ import DateUtil from "../date-util.mjs";
 class AppStoreTable extends HTMLElement {
   async connectedCallback() {
     this.markup = this.innerHTML;
-    this.serverURL = _store.socketServerUrl
-      .replace("ws:", "http:")
-      .replace("3001", "3003")
-      .replace("/ws", "");
-    console.log(this.serverURL);
+    this.initServerURL();
     await this.getDataFromServer();
     this.render();
     _store.addListener(this);
+  }
+
+  initServerURL() {
+    // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
+    // we just need to check for a custom http port in the URL and otherwise use the ws:// address
+    let socketURL = new URL(_store.socketServerUrl);
+    socketURL.protocol = "http:";
+    socketURL.search = "";
+    socketURL.pathname = "";
+    if (document.location.hash.includes("httpPort")) {
+      let urlSearch = new URLSearchParams(document.location.hash);
+      socketURL.port = urlSearch.get("httpPort"); // use port from the URL if exists
+    } else {
+      socketURL.port = 3003; // use default server port and write to hash
+      document.location.hash += `&httpPort=${socketURL.port}`;
+    }
+    this.serverURL = socketURL.href;
   }
 
   storeUpdated(key, value) {
@@ -65,9 +78,18 @@ class AppStoreTable extends HTMLElement {
   }
 
   async getDataFromServer() {
-    let res = await fetch(`${this.serverURL}/state`);
-    let data = await res.json();
+    try {
+      let res = await fetch(`${this.serverURL}state`);
+      let data = await res.json();
+      this.buildTable(data);
+      console.log(data);
+    } catch (error) {
+      console.log("getDataFromServer() Failed to fetch data:", error);
+      // Handle the error, e.g., show an error message to the user
+    }
+  }
 
+  buildTable(data) {
     // build table
     this.markup = "<table>";
     this.markup += `
