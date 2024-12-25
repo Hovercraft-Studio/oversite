@@ -65,10 +65,9 @@ const server = http.createServer((req, res) => {
   } else if (url === "/clients" && isGET) {
     let clients = [];
     wsServer.clients.forEach((client) => {
-      // clients.push(client);
       clients.push({
         sender: client.senderID,
-        connectedTime: Math.round((Date.now() - client.startTime) / 1000),
+        connectedTime: Date.now() - client.startTime,
       });
     });
     res.writeHead(200);

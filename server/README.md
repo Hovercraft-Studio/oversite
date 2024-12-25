@@ -80,6 +80,7 @@ Nice-to-haves?
   - Routes in server.mjs
     - /state
     - /state/*
+    - /clients
     - /wipe
     - /wipe/*
     - /info (server info w/uptime, list of connections, etc)
@@ -88,15 +89,20 @@ Nice-to-haves?
     - `ws//` connection specs:
       - port is configurable
       - `/ws?sender=ba_ui`
+      - `Client joined from ws://localhost:3001/ws?sender=BA_UI - We have 3 users`
         - sender is attached to the client for identification on the server
       - sender is optional but should be attached to outgoing messages in other clients
     - Note the format of the messages w/all optional params
+    - keys should all be lowercase, with underscores instead of spaces/dashes
+      - Example: `node_app`
+      - Example: `tablet_app`
+      - Example: `tablet_heartbeat`
     - Sender ID
       - Use `ws//` queryparam `sender` to set the sender ID on initial connection
       - Need to add this to the TD/Java/Node clients. AppStoreDsitributed already has this
       - Automatically gets attached to all messages sent from that client
     - Heartbeats
-      - Should be in rounded seconds
+      - Should be in milliseconds
       - This lets us see uptime across clients and takes advantage of special formatting and indicators for keys with "heartbeat" in the name
       - If "sender" is "ba_ui", then the heartbeat should be "ba_ui_heartbeat", and then we have more indication in the client list, and the heartbeat is matched with the sender ID
     - Monitor app:

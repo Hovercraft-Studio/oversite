@@ -10,6 +10,7 @@ import "../../shared/js/haxademic.js/components/app-store-slider.js";
 import "../../shared/js/haxademic.js/components/app-state-distributed.js";
 import "../../shared/js/haxademic.js/components/event-log-table.js";
 import "../../shared/js/haxademic.js/components/app-store-table.js";
+import "../../shared/js/haxademic.js/components/app-store-clients.js";
 
 // custom web components
 // anything here?
