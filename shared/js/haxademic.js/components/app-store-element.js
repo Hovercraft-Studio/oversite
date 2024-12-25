@@ -2,7 +2,6 @@ import ObjectUtil from "../object-util.mjs";
 
 class AppStoreElement extends HTMLElement {
   connectedCallback() {
-    this.initialHTML = this.innerHTML;
     // this.shadow = this.attachShadow({ mode: "open" }); // "open" allows querying and probably lots more
     this.el = this.shadow ? this.shadow : this;
     this.initComponent();
@@ -14,6 +13,7 @@ class AppStoreElement extends HTMLElement {
   }
 
   initComponent() {
+    this.initialHTML = this.innerHTML;
     this.storeKey = String(this.getAttribute("key")) || "key";
     this.storeValue = String(this.getAttribute("value")) || "value";
 

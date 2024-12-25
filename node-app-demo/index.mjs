@@ -33,8 +33,10 @@ class AppStoreDemo {
   }
 
   startHeartbeat() {
+    this.startTime = Date.now();
     setInterval(() => {
-      this.appStore.set("NODE_APP_HEARTBEAT", new Date().getTime(), true);
+      const uptimeSeconds = Math.round((Date.now() - this.startTime) / 1000);
+      this.appStore.set("NODE_APP_HEARTBEAT", uptimeSeconds, true);
     }, 5000);
   }
 }

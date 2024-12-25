@@ -1,0 +1,48 @@
+import AppStoreElement from "./app-store-element.js";
+import DateUtil from "../date-util.mjs";
+
+class AppStoreHeartbeat extends AppStoreElement {
+  initStoreListener() {
+    super.initStoreListener();
+    this.displays = this.getAttribute("show") == "true";
+    this.startInterval();
+  }
+
+  startInterval() {
+    // get interval from web component attribute
+    let interval = this.getAttribute("interval");
+    interval ??= 5000;
+    interval = parseInt(interval);
+    // start count
+    this.startTime = Date.now();
+    // set interval
+    setInterval(() => {
+      let uptime = Math.round((Date.now() - this.startTime) / 1000);
+      _store.set(this.storeKey, uptime, true);
+    }, interval);
+  }
+
+  setStoreValue(value) {
+    this.render();
+  }
+
+  css() {
+    return /*css*/ ``;
+  }
+
+  html() {
+    return /*html*/ this.displays
+      ? `<div>Heartbeat uptime: ${DateUtil.formattedTime(
+          this.valueFromStore
+        )}</div>`
+      : "";
+  }
+
+  static register() {
+    customElements.define("app-store-heartbeat", AppStoreHeartbeat);
+  }
+}
+
+AppStoreHeartbeat.register();
+
+export default AppStoreHeartbeat;

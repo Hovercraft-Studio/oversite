@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon-precomposed" href="../shared/images/icon.png" />
     <link rel="apple-touch-startup-image" href="../shared/images/icon.png" />
     <link rel="shortcut icon" type="image/x-icon" href="../shared/images/icon.png" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="Monitor" />
     <meta name="format-detection" content="telephone=no" />
@@ -25,7 +25,18 @@
         <label>AppStore Monitor</label>
       </header>
       <div id="hud">
-        <app-store-table></app-store-table>
+        <div>
+          <app-store-table></app-store-table>
+          <details open>
+            <p>
+              <app-store-button key="BTN_PULSE" value="1" momentary>Momentary / Pulse</app-store-button>
+              <app-store-button key="BTN_TOGGLE" value="0" toggle>Toggle</app-store-button>
+            </p>
+            <p>
+              <app-store-slider key="SLIDER_1" value="0" max="1"></app-store-slider>
+            </p>
+          </details>
+        </div>
         <event-log-table max-length="20"></event-log-table>
       </div>
       <footer>

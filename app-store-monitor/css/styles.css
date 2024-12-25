@@ -32,10 +32,13 @@ custom-app {
 /* monitor table properties */
 
 @keyframes flash-anim {
-  from {
+  0% {
     background-color: rgba(0, 255, 0, 0.5);
   }
-  to {
+  30% {
+    background-color: rgba(0, 255, 0, 0.5);
+  }
+  100% {
     background-color: transparent;
   }
 }
@@ -55,6 +58,6 @@ custom-app {
     color: inherit;
   }
   .flash {
-    animation: flash-anim 1s infinite;
+    animation: flash-anim 1.5s 1;
   }
 }

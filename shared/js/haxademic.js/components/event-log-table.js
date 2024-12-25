@@ -1,3 +1,5 @@
+import DateUtil from "../date-util.mjs";
+
 class EventLogTable extends HTMLElement {
   connectedCallback() {
     this.el = this.shadow ? this.shadow : this;
@@ -8,7 +10,6 @@ class EventLogTable extends HTMLElement {
   }
 
   storeUpdated(key, value) {
-    // TODO: add timestamp and show how long ago it was
     this.events.unshift({ key, value, time: Date.now() });
     if (this.events.length > this.maxLength) this.events.pop();
     this.render();
@@ -31,17 +32,23 @@ class EventLogTable extends HTMLElement {
           <tr>
             <td>Key</td>
             <td>Value</td>
-            <td>Time</td>
+            <td>Time Ago</td>
           </tr>
         </thead>
         <tbody>`;
     // show table data
     this.events.forEach((el) => {
       let obj = this.events[el];
+      let secondsAgo = Math.round((Date.now() - el.time) / 1000);
+      let val = el.value;
+      if (el.key.toLowerCase().includes("heartbeat")) {
+        val = DateUtil.formattedTime(val);
+      }
+
       this.markup += `<tr data-key="${el.key}">
           <td>${el.key}</td>
-          <td class="truncate">${el.value}</td>
-          <td>${Math.round((Date.now() - el.time) / 1000)}s</td>
+          <td>${val}</td>
+          <td>${secondsAgo}s</td>
         </tr>`;
     });
     this.markup += "</tbody></table>";

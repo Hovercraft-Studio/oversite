@@ -20,25 +20,26 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 ## TODO:
 
 - Debug components for AppStore - health-check components
-  - Heartbeat option
   - True/false or (0/1) option
   - Add automatic heartbeat component for:
-    - TD (Added this in haxademic-td)
-    - web UI
-    - Node
+    - TD (Added this in haxademic-td) - needs to send seconds!
+    - Node - needs to send seconds!
 - Vite Dashboard
   - [WIP] Use the server url in the address bar to figure out the http server url
     - Better conversion of the ws server port (3001) to a specified port (defaulting to 3003 right now). This should be another query param for customization
   - Store data in data objects for sorting & adding
   - Update row data on incoming store update
   - Better flash row when updated
+    - Keep HTML elements instead of re-rendering each update, so we keep animations running
   - Show list of clients w/sender & heartbeat
     - Can we match sender with client and heartbeat to have a more robust client list?
     - Need an API route that shows clients w/sender
-  - Show last updated time
+  - [WIP] Show last updated time
   - Sort data?
     - By App
     - Then alphabetically
+  - Filter data
+    - Toggle to show/hide heartbeats
   - Treat heartbeats as a special case w/timestamps and red row if out of date
   - Add zoom buttons for table style/padding/font
   - Show a list of all connected clients in the UI
@@ -48,7 +49,7 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
   - Event log on the side
   - Click to resend a key/value?
 - Selectively hydrate the app state from the new api routes
-  - WIP Started in AppStoreDistributed
+  - WIP Started in AppStoreDistributed - `init-keys`
   - TD implementation in AppStore component w/keys par
 
 Nice-to-haves?
@@ -76,3 +77,7 @@ Nice-to-haves?
   - How AppStore works
     - Note the format of the messages
     - Sender ID
+    - Heartbeats
+      - Should be in rounded seconds
+      - This lets us see uptime across clients and takes advantage of special formatting and indicators for keys with "heartbeat" in the name
+      - If "sender" is "ba_ui", then the heartbeat should be "ba_ui_heartbeat", and then we have more indication in the client list, and the heartbeat is matched with the sender ID

@@ -1,3 +1,5 @@
+import DateUtil from "../date-util.mjs";
+
 class AppStoreTable extends HTMLElement {
   async connectedCallback() {
     this.markup = this.innerHTML;
@@ -75,17 +77,26 @@ class AppStoreTable extends HTMLElement {
             <td>Value</td>
             <td>Type</td>
             <td>Sender</td>
+            <td>Time Ago</td>
           </tr>
         </thead>
         <tbody>`;
     // show table data
     Object.keys(data).forEach((key) => {
       let obj = data[key];
+      let secondsAgo = obj.time
+        ? Math.round((Date.now() - obj.time) / 1000)
+        : 0;
+      let val = obj.value;
+      if (obj.key.toLowerCase().includes("heartbeat")) {
+        val = DateUtil.formattedTime(val);
+      }
       this.markup += `<tr data-key="${obj.key}">
           <td>${obj.key}</td>
-          <td>${obj.value}</td>
+          <td>${val}</td>
           <td>${obj.type}</td>
           <td>${obj.sender || ""}</td>
+          <td>${DateUtil.formattedTime(secondsAgo)}</td>
         </tr>`;
     });
     this.markup += "</tbody></table>";
