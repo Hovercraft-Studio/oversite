@@ -3,7 +3,7 @@ import AppStoreDistributed from "../shared/js/haxademic.js/app-store-distributed
 class AppStoreDemo {
   constructor() {
     this.config();
-    this.appStore = new AppStoreDistributed(`ws://${this.wsURL}`, "NODE_DEMO");
+    this.appStore = new AppStoreDistributed(`ws://${this.wsURL}`, "node_app");
     this.addListeners();
     this.startHeartbeat();
   }
@@ -35,7 +35,7 @@ class AppStoreDemo {
   startHeartbeat() {
     this.startTime = Date.now();
     setInterval(() => {
-      const uptimeSeconds = Math.round((Date.now() - this.startTime) / 1000);
+      const uptimeSeconds = Date.now() - this.startTime;
       this.appStore.set("NODE_APP_HEARTBEAT", uptimeSeconds, true);
     }, 5000);
   }

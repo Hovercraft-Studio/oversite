@@ -25,16 +25,10 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
     - TD (Added this in haxademic-td) - needs to send ms!
     - Node - needs to send ms!
 - Vite Dashboard
-  - Switch all time to milliseconds from seconds and convert on display
-    - heartbeat send:
-      - node app
-      - web component
-      - TD app
-    - heartbeat display:
-      - web component
-      - monitor table
-      - monitor event table
-    - DateUtil function
+  - heartbeat send:
+    - node app
+    - web component
+    - TD app
   - Store data in data objects for sorting & adding
     - Update row data on incoming store update (right now it just flashes the row)
     - Keep HTML elements instead of re-rendering each update, so we keep animations running

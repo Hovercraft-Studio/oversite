@@ -99,7 +99,7 @@ class AppStoreTable extends HTMLElement {
             <td>Value</td>
             <td>Type</td>
             <td>Sender</td>
-            <td>Time Ago</td>
+            <td>Time</td>
           </tr>
         </thead>
         <tbody>`;

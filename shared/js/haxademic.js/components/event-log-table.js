@@ -32,7 +32,7 @@ class EventLogTable extends HTMLElement {
           <tr>
             <td>Key</td>
             <td>Value</td>
-            <td>Time Ago</td>
+            <td>Time</td>
           </tr>
         </thead>
         <tbody>`;
