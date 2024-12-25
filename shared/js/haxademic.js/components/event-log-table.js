@@ -39,7 +39,7 @@ class EventLogTable extends HTMLElement {
     // show table data
     this.events.forEach((el) => {
       let obj = this.events[el];
-      let secondsAgo = Math.round((Date.now() - el.time) / 1000);
+      let timeAgoMs = Date.now() - el.time;
       let val = el.value;
       if (el.key.toLowerCase().includes("heartbeat")) {
         val = DateUtil.formattedTime(val);
@@ -48,7 +48,7 @@ class EventLogTable extends HTMLElement {
       this.markup += `<tr data-key="${el.key}">
           <td>${el.key}</td>
           <td>${val}</td>
-          <td>${secondsAgo}s</td>
+          <td>${Math.round(timeAgoMs / 1000)}s</td>
         </tr>`;
     });
     this.markup += "</tbody></table>";

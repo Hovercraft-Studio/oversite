@@ -35,8 +35,6 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
       - monitor table
       - monitor event table
     - DateUtil function
-  - [WIP] Use the server url in the address bar to figure out the http server url
-    - Better conversion of the ws server port (3001) to a specified port (defaulting to 3003 right now). This should be another query param for customization
   - Store data in data objects for sorting & adding
     - Update row data on incoming store update (right now it just flashes the row)
     - Keep HTML elements instead of re-rendering each update, so we keep animations running

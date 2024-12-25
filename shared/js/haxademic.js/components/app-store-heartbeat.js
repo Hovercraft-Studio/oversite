@@ -17,7 +17,7 @@ class AppStoreHeartbeat extends AppStoreElement {
     this.startTime = Date.now();
     // set interval
     setInterval(() => {
-      let uptime = Math.round((Date.now() - this.startTime) / 1000);
+      let uptime = Date.now() - this.startTime;
       _store.set(this.storeKey, uptime, true);
     }, interval);
   }

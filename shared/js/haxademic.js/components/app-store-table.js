@@ -106,9 +106,7 @@ class AppStoreTable extends HTMLElement {
     // show table data
     Object.keys(data).forEach((key) => {
       let obj = data[key];
-      let secondsAgo = obj.time
-        ? Math.round((Date.now() - obj.time) / 1000)
-        : 0;
+      let timeAgoMs = obj.time ? Math.round(Date.now() - obj.time) : 0;
       let val = obj.value;
       if (obj.key.toLowerCase().includes("heartbeat")) {
         val = DateUtil.formattedTime(val);
@@ -118,7 +116,7 @@ class AppStoreTable extends HTMLElement {
           <td>${val}</td>
           <td>${obj.type}</td>
           <td>${obj.sender || ""}</td>
-          <td>${DateUtil.formattedTime(secondsAgo)}</td>
+          <td>${DateUtil.formattedTime(timeAgoMs)}</td>
         </tr>`;
     });
     this.markup += "</tbody></table>";

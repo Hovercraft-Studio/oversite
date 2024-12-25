@@ -48,7 +48,7 @@ class AppStoreClients extends AppStoreTable {
         obj.connectedTime
       }">
           <td>${obj.sender}</td>
-          <td>${DateUtil.formattedTime(obj.connectedTime / 1000)}</td>
+          <td>${DateUtil.formattedTime(obj.connectedTime)}</td>
         </tr>`;
     });
     this.markup += "</tbody></table>";

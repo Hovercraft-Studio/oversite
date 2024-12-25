@@ -33,7 +33,8 @@ class DateUtil {
     return date1.getTime() == date2.getTime();
   }
 
-  static formattedTime(seconds, showHours = true) {
+  static formattedTime(milliseconds, showHours = true) {
+    const seconds = milliseconds / 1000;
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
