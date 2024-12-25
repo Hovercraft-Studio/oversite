@@ -19,23 +19,16 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Debug components for AppStore - health-check components
+- Debug components for AppStore - health-check components for camera feeds, etc
   - True/false or (0/1) option
-  - Add automatic heartbeat component for:
-    - TD (Added this in haxademic-td) - needs to send ms!
-    - Node - needs to send ms!
+- Add heartbeat component in TD (Added this in haxademic-td, but needs to send uptime ms)!
 - Vite Dashboard
-  - heartbeat send:
-    - node app
-    - web component
-    - TD app
   - Store data in data objects for sorting & adding
     - Update row data on incoming store update (right now it just flashes the row)
     - Keep HTML elements instead of re-rendering each update, so we keep animations running
     - Better flash on row when updated
     - [WIP] Show last updated time
   - Show list of clients w/sender & heartbeat
-    - Show a list of all connected clients in the UI - need new web component
     - Can we match sender with client and heartbeat to have a more robust client list?
     - Last message sent time
   - Sort data?
@@ -52,10 +45,15 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
     - Can we send a message to remove a key on the clients?
 - Selectively hydrate the app state from the new api routes
   - WIP Started in AppStoreDistributed - `init-keys`
-  - TD implementation in AppStore component w/keys par
+  - TD implementation in AppStore component w/keys par & json load
+    - Need a server port config in the TD app component
 
 Nice-to-haves?
 
+- Java/Haxademic updates 
+  - Add heartbeat to Java client
+  - Add sender to Java client
+  - Add ws?sender= queryparam to Java client
 - Maybe just keep these in the Monitor?
   - Add `sender` to JS table
   - Add `sender` to TD table
