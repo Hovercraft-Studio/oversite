@@ -4,12 +4,27 @@ class EventLogTable extends HTMLElement {
   connectedCallback() {
     this.el = this.shadow ? this.shadow : this;
     this.events = [];
+    this.showHeartbeats = true;
     this.render();
+    this.listenForCheckbox();
     _store.addListener(this);
     this.maxLength = parseInt(this.getAttribute("max-length")) || 10;
   }
 
+  listenForCheckbox() {
+    this.addEventListener("change", (e) => {
+      if (e.target.id === "log-heartbeats") {
+        this.showHeartbeats = e.target.checked;
+      }
+    });
+  }
+
   storeUpdated(key, value) {
+    // filter out heartbeats if checkbox is unchecked
+    let isHeartbeat = key.toLowerCase().includes("heartbeat");
+    if (isHeartbeat && !this.querySelector("#log-heartbeats").checked) return;
+
+    // add to front of array
     this.events.unshift({ key, value, time: Date.now() });
     if (this.events.length > this.maxLength) this.events.pop();
     this.render();
@@ -25,17 +40,24 @@ class EventLogTable extends HTMLElement {
   }
 
   html() {
+    let checked = this.showHeartbeats ? "checked" : "";
     // build table
-    this.markup = "<table>";
+    this.markup = `
+      <div>
+        <input type="checkbox" id="log-heartbeats" ${checked} /> Log Heartbeats
+      </div>
+
+      <table>`;
     this.markup += `
-        <thead>
-          <tr>
-            <td>Key</td>
-            <td>Value</td>
-            <td>Time</td>
-          </tr>
-        </thead>
-        <tbody>`;
+      <thead>
+        <tr>
+          <td>Key</td>
+          <td>Value</td>
+          <td>Time</td>
+        </tr>
+      </thead>
+      <tbody>
+    `;
     // show table data
     this.events.forEach((el) => {
       let obj = this.events[el];

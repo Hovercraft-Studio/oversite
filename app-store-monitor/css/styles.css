@@ -43,6 +43,18 @@ custom-app {
   }
 }
 
+@keyframes heartbeat-anim {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 #hud {
   table {
     max-width: 100%;
@@ -51,13 +63,19 @@ custom-app {
   th,
   td {
     padding: calc(var(--pico-spacing) / 4) calc(var(--pico-spacing) / 6);
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
     background-color: transparent;
     color: inherit;
+
+    white-space: nowrap;
+    /* line-break: anywhere;
+    white-space: break-spaces; */
   }
   .flash {
     animation: flash-anim 1.5s 1;
+  }
+  .heartbeat td.heartbeat {
+    transform-origin: 0 center;
+    animation: heartbeat-anim 1.5s 1;
   }
 }

@@ -36,7 +36,7 @@ class AppStoreDemo {
     this.startTime = Date.now();
     setInterval(() => {
       const uptimeSeconds = Date.now() - this.startTime;
-      this.appStore.set("NODE_APP_HEARTBEAT", uptimeSeconds, true);
+      this.appStore.set("node_app_heartbeat", uptimeSeconds, true);
     }, 5000);
   }
 }

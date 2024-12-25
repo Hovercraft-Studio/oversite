@@ -8,9 +8,9 @@ class AppStoreClients extends AppStoreTable {
   }
 
   storeUpdated(key, value) {
-    // TODO: flash row when sender matches client
-    // TODO: add heartbeat indicator when matched heartbeat comes in
-    // this.flashRow(key);
+    // flash heartbeat indicator when matched heartbeat comes in
+    let isHeartbeat = key.toLowerCase().includes("heartbeat");
+    if (isHeartbeat) this.flashHeartbeats(key);
   }
 
   startTablePoll() {
@@ -38,17 +38,19 @@ class AppStoreClients extends AppStoreTable {
           <tr>
             <td>Client</td>
             <td>Connected Time</td>
+            <td>Heartbeat</td>
           </tr>
         </thead>
         <tbody>`;
     // show table data
     Object.keys(data).forEach((key) => {
       let obj = data[key];
-      this.markup += `<tr data-key="${obj.key}" data-time="${
+      this.markup += `<tr data-key="${obj.sender}" data-time="${
         obj.connectedTime
       }">
           <td>${obj.sender}</td>
           <td>${DateUtil.formattedTime(obj.connectedTime)}</td>
+          <td class="heartbeat">❤️</td>
         </tr>`;
     });
     this.markup += "</tbody></table>";
@@ -56,7 +58,25 @@ class AppStoreClients extends AppStoreTable {
 
   render() {
     super.render();
+    this.flashNewConnections();
     // flash any connections that are new (lower connectedTime than the interval)
+  }
+
+  flashHeartbeats(heartbeatKey) {
+    let rows = this.querySelectorAll("tbody tr");
+    rows.forEach((row) => {
+      let key = row.getAttribute("data-key");
+      console.log(key, heartbeatKey);
+      if (heartbeatKey.includes(key.toLowerCase())) {
+        row.classList.add("heartbeat");
+        setTimeout(() => {
+          row.classList.remove("heartbeat");
+        }, 1000);
+      }
+    });
+  }
+
+  flashNewConnections() {
     let rows = this.querySelectorAll("tbody tr");
     rows.forEach((row) => {
       let time = parseInt(row.getAttribute("data-time"));
