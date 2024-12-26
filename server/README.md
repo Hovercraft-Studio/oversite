@@ -23,6 +23,11 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
   - True/false or (0/1) option
 - Add heartbeat component in TD (Added this in haxademic-td, but needs to send uptime ms)!
 - Vite Dashboard
+  - Design
+    - Header w/title
+    - Footer w/links
+    - QR code somewhere to launch BA app (or any link for a client app)
+    - Heartbeat flashes should be lower priority than non-heartbeat flashes. maybe just gray?
   - Store data in data objects for sorting & adding
     - Update row data on incoming store update (right now it just flashes the row)
     - Keep HTML elements instead of re-rendering each update, so we keep animations running
@@ -98,3 +103,5 @@ Nice-to-haves?
     - Monitor app:
       - URL scheme & customizable ports w/defaults:
         - http://localhost:3002/app-store-monitor/index.html#&server=ws://192.168.1.205:3001/ws&httpPort=3003
+  - Notable web components for free UI functionality
+    - Note options for each (ex: app-store-debug `debug side-debug`)

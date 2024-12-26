@@ -21,15 +21,15 @@ class AppStoreDemo {
     // listen to all updates
     this.appStore.addListener(this); // calls storeUpdated() for all updates
     // listen to a specific key
-    this.appStore.addListener(this, "SLIDER_1");
+    this.appStore.addListener(this, "slider_1");
   }
 
   storeUpdated(key, value) {
     console.log("AppStore updated:", key, value);
   }
 
-  SLIDER_1(value) {
-    console.log("SLIDER_1 updated:", value);
+  slider_1(value) {
+    console.log("slider_1 updated:", value);
   }
 
   startHeartbeat() {

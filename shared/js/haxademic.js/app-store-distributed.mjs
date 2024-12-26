@@ -2,9 +2,9 @@ import AppStore from "./app-store-.mjs";
 import SolidSocket from "./solid-socket.mjs";
 
 class AppStoreDistributed extends AppStore {
-  static CONNECTED = "AppStoreDistributed_CONNECTED";
-  static DISCONNECTED = "AppStoreDistributed_DISCONNECTED";
-  static CUSTOM_JSON = "CUSTOM_JSON";
+  static CONNECTED = "appstore_connected";
+  static DISCONNECTED = "appstore_disconnected";
+  static CUSTOM_JSON = "custom_json";
 
   constructor(socketServerUrl, senderId = null) {
     super();

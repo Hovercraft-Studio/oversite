@@ -13,9 +13,15 @@ class AppStoreClients extends AppStoreTable {
     if (isHeartbeat) this.flashHeartbeats(key);
   }
 
-  startTablePoll() {
+  async startTablePoll() {
+    // give a moment for websocket to connect for initial list
+    setTimeout(async () => {
+      await this.getDataFromServer();
+      this.render();
+    }, 500);
+    // then start polling
     setInterval(async () => {
-      this.getDataFromServer();
+      await this.getDataFromServer();
       this.render();
     }, 5000);
   }
@@ -66,7 +72,6 @@ class AppStoreClients extends AppStoreTable {
     let rows = this.querySelectorAll("tbody tr");
     rows.forEach((row) => {
       let key = row.getAttribute("data-key");
-      console.log(key, heartbeatKey);
       if (heartbeatKey.includes(key.toLowerCase())) {
         row.classList.add("heartbeat");
         setTimeout(() => {

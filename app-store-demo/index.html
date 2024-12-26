@@ -18,29 +18,29 @@
     <link rel="stylesheet" href="../shared/css/styles.css" />
   </head>
   <body>
-    <app-state-distributed sender="tablet" init-keys="APP_STATE BTN_TOGGLE SLIDER_1" debug side-debug></app-state-distributed>
+    <app-state-distributed sender="tablet" init-keys="app_state btn_toggle slider_1" debug side-debug></app-state-distributed>
     <custom-app>
       <main class="container">
         <section>
           <h1>AppStore Demo</h1>
           <p>A nice way to communicate between apps</p>
-          <h4>Buttons with shared key: APP_STATE</h4>
+          <h4>Buttons with shared key: app_state</h4>
           <nav>
-            <app-store-button key="APP_STATE" value="ATTRACT">ATTRACT</app-store-button>
-            <app-store-button key="APP_STATE" value="GAMEPLAY">GAMEPLAY</app-store-button>
-            <app-store-button key="APP_STATE" value="GAME_OVER">GAME_OVER</app-store-button>
+            <app-store-button key="app_state" value="attract">Attract</app-store-button>
+            <app-store-button key="app_state" value="gameplay">Gameplay</app-store-button>
+            <app-store-button key="app_state" value="game_over">Game Over</app-store-button>
           </nav>
           <h4>Special Buttons</h4>
           <nav>
-            <app-store-button key="BTN_PULSE" value="1" momentary>Momentary / Pulse</app-store-button>
-            <app-store-button key="BTN_TOGGLE" value="0" toggle>Toggle</app-store-button>
+            <app-store-button key="btn_pulse" value="1" momentary>Momentary / Pulse</app-store-button>
+            <app-store-button key="btn_toggle" value="0" toggle>Toggle</app-store-button>
           </nav>
           <h4>Input Fields</h4>
           <p>
-            <app-store-textfield key="TEXT_INPUT" value=""></app-store-textfield>
+            <app-store-textfield key="text_input" value=""></app-store-textfield>
           </p>
           <p>
-            <app-store-slider key="SLIDER_1" value="0" max="1"></app-store-slider>
+            <app-store-slider key="slider_1" value="0" max="1"></app-store-slider>
           </p>
           <p>
             <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="2000" show="true"></app-store-heartbeat>

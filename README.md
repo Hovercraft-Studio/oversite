@@ -1,6 +1,6 @@
 # hc-socket-server
 
-**hc-socket-server** is a simple websocket server that will relay messages between clients. It also contains a small Vite frontend for testing and visibility, which uses App Store Distributed to process messages.
+**hc-socket-server** is a simple websocket server that will relay messages between clients. It also contains a small Vite frontend for testing and visibility, which uses AppStoreDistributed to process messages.
 
 - ws://localhost:3001/ws - websocket server
 - http://localhost:3002 - frontend
@@ -33,3 +33,4 @@ To see all the incoming websocket messages in the terminal, add the `--debug` fl
 ```json
   "ws": "node ./server/ws-relay.mjs --debug",
 ```
+
