@@ -21,26 +21,27 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 - Debug components for AppStore - health-check components for camera feeds, etc
   - True/false or (0/1) option
-- Add heartbeat component in TD (Added this in haxademic-td, but needs to send uptime ms)!
 - Vite Dashboard
   - Design
     - Header w/title
     - Footer w/links
+      - Move log heartbeat checkbox here
+      - clear store w/confirmation modal
     - QR code somewhere to launch BA app (or any link for a client app)
+    - update picocss theme: https://picocss.com/docs/version-picker
+    - update picocss to 2.0.6
     - Heartbeat flashes should be lower priority than non-heartbeat flashes. maybe just gray?
   - Store data in data objects for sorting & adding
     - Update row data on incoming store update (right now it just flashes the row)
     - Keep HTML elements instead of re-rendering each update, so we keep animations running
     - Better flash on row when updated
     - [WIP] Show last updated time
-  - Show list of clients w/sender & heartbeat
-    - Can we match sender with client and heartbeat to have a more robust client list?
-    - Last message sent time
+  - Move /wipe to state/wipe
+    - Move /wipe/* to state/wipe/*
+    - move responses to functions 
   - Sort data?
     - By App
     - Then alphabetically
-  - Filter data
-    - Toggle to show/hide heartbeats since they take up so much space in the log
   - Treat heartbeats as a special case w/timestamps and red row if out of date
   - Add zoom buttons for table style/padding/font
   - Nice-to-haves
@@ -59,6 +60,8 @@ Nice-to-haves?
   - Add heartbeat to Java client
   - Add sender to Java client
   - Add ws?sender= queryparam to Java client
+- Client list last message sent time?
+- Filter event table by client?
 - Maybe just keep these in the Monitor?
   - Add `sender` to JS table
   - Add `sender` to TD table
@@ -105,3 +108,4 @@ Nice-to-haves?
         - http://localhost:3002/app-store-monitor/index.html#&server=ws://192.168.1.205:3001/ws&httpPort=3003
   - Notable web components for free UI functionality
     - Note options for each (ex: app-store-debug `debug side-debug`)
+  - Note picocss theming: https://picocss.com/docs/version-picker
