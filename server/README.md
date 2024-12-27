@@ -23,30 +23,17 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
   - True/false or (0/1) option
 - Vite Dashboard
   - Design
-    - Header w/title
     - Footer w/links
       - Move log heartbeat checkbox here
       - clear store w/confirmation modal
-    - QR code somewhere to launch BA app (or any link for a client app)
-    - Heartbeat flashes should be lower priority than non-heartbeat flashes. maybe just gray?
-  - Store data in data objects for sorting & adding
-    - Update row data on incoming store update (right now it just flashes the row)
-    - Keep HTML elements instead of re-rendering each update, so we keep animations running
-    - Better flash on row when updated
-    - [WIP] Show last updated time
+    - icons should be svg with colors based on pico theme
+  - Clean up app-store-table
+    - Refactor subclasses (clients/events) to follow the same pattern
   - Move /wipe to state/wipe
     - Move /wipe/* to state/wipe/*
     - move responses to functions 
-  - Sort data?
-    - By App
-    - Then alphabetically
   - Treat heartbeats as a special case w/timestamps and red row if out of date
   - Add zoom buttons for table style/padding/font
-  - Nice-to-haves
-    - Click to resend a key/value?
-    - Add a button to wipe the store (it will repopulate as messages come in)
-    - Add buttons/dropdowns to wipe all or individual properties in UI
-    - Can we send a message to remove a key on the clients?
 - Selectively hydrate the app state from the new api routes
   - WIP Started in AppStoreDistributed - `init-keys`
   - TD implementation in AppStore component w/keys par & json load
@@ -58,11 +45,18 @@ Nice-to-haves?
   - Add heartbeat to Java client
   - Add sender to Java client
   - Add ws?sender= queryparam to Java client
-- Client list last message sent time?
-- Filter event table by client?
-- Maybe just keep these in the Monitor?
-  - Add `sender` to JS table
-  - Add `sender` to TD table
+- Monitor
+  - QR code somewhere to launch BA app (or any link for a client app)
+  - Client list last message sent time?
+  - Filter event table by client?
+  - Maybe just keep these in the Monitor?
+    - Add `sender` to JS table
+    - Add `sender` to TD table
+  - Nice-to-haves
+    - Click to resend a key/value?
+    - Add a button to wipe the store (it will repopulate as messages come in)
+    - Add buttons/dropdowns to wipe all or individual properties in UI
+    - Can we send a message to remove a key on the clients?
 - In `/state`, can we filter rather than just return entire or single key?
 - [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
 
