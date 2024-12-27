@@ -9,6 +9,7 @@ class AppStoreDistributed extends AppStore {
   constructor(socketServerUrl, senderId = null) {
     super();
     this.senderId = senderId; // || this.generateUUID();
+    this.stateData = {};
     // track whether messages are from this instance
     this.messageFromSelf = false;
     // init websocket connection
@@ -48,6 +49,8 @@ class AppStoreDistributed extends AppStore {
 
     // set incoming data on AppStore without broadcasting
     if (data["store"] && data["type"]) {
+      data.time = Date.now(); // match stored data
+      this.stateData[data["key"]] = data; // store whole message for sender data
       this.set(data["key"], data["value"]);
     } else {
       this.set(AppStoreDistributed.CUSTOM_JSON, data);
@@ -72,6 +75,10 @@ class AppStoreDistributed extends AppStore {
     } else {
       super.set(key, value);
     }
+  }
+
+  getData(key) {
+    return this.stateData[key];
   }
 
   broadcastCustomJson(obj) {

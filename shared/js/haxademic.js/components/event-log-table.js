@@ -40,6 +40,7 @@ class EventLogTable extends HTMLElement {
   }
 
   html() {
+    this.rows = []; // dummy until we update this extended class
     let checked = this.showHeartbeats ? "checked" : "";
     // build table
     this.markup = `
@@ -47,7 +48,7 @@ class EventLogTable extends HTMLElement {
         <input type="checkbox" id="log-heartbeats" ${checked} /> Log Heartbeats
       </div>
 
-      <table>`;
+      <table class="striped">`;
     this.markup += `
       <thead>
         <tr>

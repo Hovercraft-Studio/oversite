@@ -23,6 +23,15 @@ class CustomApp extends HTMLElement {
 
   storeUpdated(key, value) {
     // console.log(key, value);
+    if (key == "server_url") {
+      console.log(key, "=", value);
+      document
+        .querySelector("a[data-state-url]")
+        .setAttribute("href", `${value}state`);
+      document
+        .querySelector("a[data-clients-url]")
+        .setAttribute("href", `${value}clients`);
+    }
   }
 
   init() {

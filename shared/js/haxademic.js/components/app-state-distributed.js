@@ -38,7 +38,7 @@ class AppStateDistributed extends HTMLElement {
 
     // listen for data/events
     _store.addListener(this);
-    _store.addListener(this, "AppStoreDistributed_CONNECTED"); // emitted by AppStoreDistributed when connected
+    _store.addListener(this, "appstore_connected"); // emitted by AppStoreDistributed when connected
   }
 
   isDebug() {
@@ -59,7 +59,7 @@ class AppStateDistributed extends HTMLElement {
 
   // AppStore listeners
 
-  AppStoreDistributed_CONNECTED(val) {
+  appstore_connected(val) {
     _store.set("client_connected", Date.now(), true); // let desktop app know that we're here
   }
 

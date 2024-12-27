@@ -4,6 +4,13 @@ custom-app {
   box-sizing: border-box;
 }
 
+header {
+  background: var(--pico-card-background-color);
+  padding: 0vw 2vw;
+  border-radius: 6px;
+  margin-bottom: 2vw;
+}
+
 /* monitor columns */
 
 #hud {
@@ -29,6 +36,10 @@ custom-app {
   flex: 0.4;
 }
 
+app-store-table-row {
+  display: table-row;
+}
+
 /* monitor table properties */
 
 @keyframes flash-anim {
@@ -37,6 +48,18 @@ custom-app {
   }
   30% {
     background-color: rgba(0, 255, 0, 0.5);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes flash-anim-heartbeat {
+  0% {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  30% {
+    background-color: rgba(255, 255, 255, 0.1);
   }
   100% {
     background-color: transparent;
@@ -71,11 +94,21 @@ custom-app {
     /* line-break: anywhere;
     white-space: break-spaces; */
   }
-  .flash {
-    animation: flash-anim 1.5s 1;
+  .row-actions {
+    /* text-align: center; */
+    span {
+      cursor: pointer;
+    }
   }
-  .heartbeat td.heartbeat {
-    transform-origin: 0 center;
+  .flash {
+    animation: flash-anim 2s 1;
+  }
+  [data-row-type="heartbeat"].flash {
+    animation: flash-anim-heartbeat 1.5s 1;
+  }
+  .heartbeat td.heartbeat span {
+    display: inline-block;
+    transform-origin: center center;
     animation: heartbeat-anim 1.5s 1;
   }
 }

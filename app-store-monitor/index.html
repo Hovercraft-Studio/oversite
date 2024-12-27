@@ -22,13 +22,22 @@
     <app-state-distributed sender="monitor" debug side-debug></app-state-distributed>
     <custom-app>
       <header>
-        <label>AppStore Monitor</label>
+        <nav>
+          <ul>
+            <li><strong>AppStore Monitor</strong></li>
+          </ul>
+          <ul>
+            <li><a data-state-url href="" target="_blank">/state</a></li>
+            <li><a data-clients-url href="#" target="_blank">/clients</a></li>
+          </ul>
+        </nav>
       </header>
       <div id="hud">
         <div>
           <app-store-clients></app-store-clients>
           <app-store-table></app-store-table>
           <details open>
+            <summary>Demo controls</summary>
             <p>
               <app-store-button key="btn_pulse" value="1" momentary>Momentary / Pulse</app-store-button>
               <app-store-button key="btn_toggle" value="0" toggle>Toggle</app-store-button>
@@ -41,9 +50,8 @@
         <event-log-table max-length="20"></event-log-table>
       </div>
       <footer>
-        <small>Built by us 👋 </small>
         <p>
-          <app-store-heartbeat key="monitor_heartbeat" value="n/a" interval="2000" show="true"></app-store-heartbeat>
+          <app-store-heartbeat key="monitor_heartbeat" value="n/a" interval="10000" show="true"></app-store-heartbeat>
         </p>
       </footer>
     </custom-app>

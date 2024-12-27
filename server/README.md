@@ -28,8 +28,6 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
       - Move log heartbeat checkbox here
       - clear store w/confirmation modal
     - QR code somewhere to launch BA app (or any link for a client app)
-    - update picocss theme: https://picocss.com/docs/version-picker
-    - update picocss to 2.0.6
     - Heartbeat flashes should be lower priority than non-heartbeat flashes. maybe just gray?
   - Store data in data objects for sorting & adding
     - Update row data on incoming store update (right now it just flashes the row)

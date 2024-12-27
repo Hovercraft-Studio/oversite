@@ -37,6 +37,8 @@ class AppStoreClients extends AppStoreTable {
   }
 
   buildTable(data) {
+    this.rows = [];
+
     // build table
     this.markup = "<table>";
     this.markup += `
@@ -56,7 +58,7 @@ class AppStoreClients extends AppStoreTable {
       }">
           <td>${obj.sender}</td>
           <td>${DateUtil.formattedTime(obj.connectedTime)}</td>
-          <td class="heartbeat">❤️</td>
+          <td class="heartbeat"><span>❤️</span></td>
         </tr>`;
     });
     this.markup += "</tbody></table>";

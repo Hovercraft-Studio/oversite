@@ -7,6 +7,7 @@ class AppStoreTable extends HTMLElement {
     await this.getDataFromServer();
     this.render();
     _store.addListener(this);
+    this.startTimeUpdates();
   }
 
   initServerURL() {
@@ -24,6 +25,9 @@ class AppStoreTable extends HTMLElement {
       document.location.hash += `&httpPort=${socketURL.port}`;
     }
     this.serverURL = socketURL.href;
+    setTimeout(() => {
+      _store.set("server_url", this.serverURL);
+    }, 500);
   }
 
   storeUpdated(key, value) {
@@ -35,26 +39,55 @@ class AppStoreTable extends HTMLElement {
     // TODO: switch to list of objects so this works properly
     // TODO: check to see if row exists before adding
     // - or update existing row
-    if (!this.querySelector(`tr[data-key="${key}"]`)) {
-      // this.markup += `<tr data-key="${key}">
-      //   <td data-key>${key}</td>
-      //   <td data-value>${value}</td>
-      //   <td data-type>${value.type}</td>
-      //   <td data-sender>${value.sender || ""}</td>
-      // </tr>`;
-      this.render();
+    if (!this.tableBuilt) return;
+    let row = this.getRowObj(key);
+    if (!row) {
+      // add new row
+      let obj = _store.getData(key); // get full data from AppStoreDistributed
+      if (!!obj) {
+        let tbody = this.querySelector("tbody");
+        obj.el = this.buildRowEl(obj);
+        tbody.appendChild(obj.el);
+        this.rows.push(obj);
+        this.sortRows();
+      }
+    } else {
+      // update existing row
+      let updatedRow = this.getRowObj(key);
+      if (updatedRow) this.updateRow(updatedRow, key, value);
+      this.sortRows();
     }
   }
 
+  updateRow(updatedRow, key, newValue) {
+    let obj = _store.getData(key); // get full data from AppStoreDistributed
+    Object.assign(updatedRow, obj);
+    let { value, sender, type, time } = updatedRow;
+    let timeAgoMs = updatedRow.time
+      ? Math.round(Date.now() - updatedRow.time)
+      : 0;
+    updatedRow.el.querySelector("td[data-value]").innerHTML = value;
+    updatedRow.el.querySelector("td[data-sender]").innerHTML = sender;
+    updatedRow.el.querySelector("td[data-type]").innerHTML = type;
+    updatedRow.el.querySelector("td[data-time]").innerHTML =
+      DateUtil.formattedTime(timeAgoMs);
+  }
+
+  getRowObj(key) {
+    return this.rows.find((row) => row.key === key);
+  }
+
   flashRow(key) {
-    let row = this.querySelector(`tr[data-key="${key}"]`);
-    if (row) {
-      row.classList.remove("flash");
-      setTimeout(() => {
-        row.classList.add("flash");
+    let row = this.getRowObj(key);
+    if (row && row.el) {
+      window.clearTimeout(row.timeout);
+      window.clearTimeout(row.timeout2);
+      row.el.classList.remove("flash");
+      row.timeout = setTimeout(() => {
+        row.el.classList.add("flash");
       }, 10);
-      setTimeout(() => {
-        row.classList.remove("flash");
+      row.timeout2 = setTimeout(() => {
+        row.el.classList.remove("flash");
       }, 1010);
       // row.animate(
       //   [
@@ -77,22 +110,46 @@ class AppStoreTable extends HTMLElement {
     }, 5000);
   }
 
+  startTimeUpdates() {
+    setInterval(() => {
+      this.updateTimeAgo();
+    }, 1000);
+  }
+
+  updateTimeAgo() {
+    this.rows.forEach((row) => {
+      let timeAgoMs = row.time ? Math.round(Date.now() - row.time) : 0;
+      row.el.querySelector("td[data-time]").innerHTML =
+        DateUtil.formattedTime(timeAgoMs);
+    });
+  }
+
   async getDataFromServer() {
     try {
       let res = await fetch(`${this.serverURL}state`);
       let data = await res.json();
       this.buildTable(data);
-      console.log(data);
     } catch (error) {
       console.log("getDataFromServer() Failed to fetch data:", error);
-      // Handle the error, e.g., show an error message to the user
     }
   }
 
+  stringToElement(str) {
+    let doc = new DOMParser().parseFromString(str, "text/html");
+    return doc.body.firstElementChild;
+  }
+
+  stringToTrElement(str) {
+    let table = document.createElement("table");
+    table.innerHTML = str;
+    return table.querySelector("tbody").firstChild;
+  }
+
   buildTable(data) {
+    this.buildRows(data);
     // build table
-    this.markup = "<table>";
-    this.markup += `
+    this.markup = /*html*/ `
+      <table class="striped">
         <thead>
           <tr>
             <td>Key</td>
@@ -100,26 +157,74 @@ class AppStoreTable extends HTMLElement {
             <td>Type</td>
             <td>Sender</td>
             <td>Time</td>
+            <td>Actions</td>
           </tr>
         </thead>
-        <tbody>`;
-    // show table data
+        <tbody></tbody>
+      </table>`;
+  }
+
+  buildRows(data) {
+    this.rows = [];
     Object.keys(data).forEach((key) => {
       let obj = data[key];
-      let timeAgoMs = obj.time ? Math.round(Date.now() - obj.time) : 0;
-      let val = obj.value;
-      if (obj.key.toLowerCase().includes("heartbeat")) {
-        val = DateUtil.formattedTime(val);
-      }
-      this.markup += `<tr data-key="${obj.key}">
-          <td>${obj.key}</td>
-          <td>${val}</td>
-          <td>${obj.type}</td>
-          <td>${obj.sender || ""}</td>
-          <td>${DateUtil.formattedTime(timeAgoMs)}</td>
-        </tr>`;
+      obj.el = this.buildRowEl(obj); // add html element to state data object
+      this.rows.push(obj);
     });
-    this.markup += "</tbody></table>";
+    this.sortRows();
+  }
+
+  sortRows() {
+    // sort by sender then key
+    this.rows.sort((a, b) => {
+      if (a.sender === b.sender) {
+        return a.key.localeCompare(b.key);
+      }
+      return a.sender.localeCompare(b.sender);
+    });
+    // then re-add to dom
+    let tbody = this.querySelector("tbody");
+    if (tbody)
+      this.rows.forEach((row) => {
+        tbody.appendChild(row.el);
+      });
+  }
+
+  buildRowEl(obj) {
+    let timeAgoMs = obj.time ? Math.round(Date.now() - obj.time) : 0;
+    let rowType = "";
+    let val = obj.value;
+
+    if (obj.key.toLowerCase().includes("heartbeat")) {
+      val = DateUtil.formattedTime(val);
+      rowType = "heartbeat";
+    }
+    let markup = /*html*/ `<tr data-key="${obj.key}" data-row-type="${rowType}">
+                            <td>${obj.key}</td>
+                            <td data-value>${val}</td>
+                            <td data-type>${obj.type}</td>
+                            <td data-sender>${obj.sender || ""}</td>
+                            <td data-time>${DateUtil.formattedTime(
+                              timeAgoMs
+                            )}</td>
+                            <td class="row-actions">
+                              <span title="Delete" class="delete" data-key="${
+                                obj.key
+                              }">❌</span>
+                            </td>
+                          </tr>`;
+    return this.stringToTrElement(markup);
+  }
+
+  insertTableRows() {
+    let tbody = this.querySelector("tbody");
+    this.rows.forEach((row) => {
+      tbody.appendChild(row.el);
+    });
+  }
+
+  getRowEl(key) {
+    return this.querySelector(`tr[data-key="${key}"]`);
   }
 
   css() {
@@ -127,19 +232,15 @@ class AppStoreTable extends HTMLElement {
     `;
   }
 
-  html() {
-    return /*html*/ `
-      ${this.markup}
-    `;
-  }
-
   render() {
     this.innerHTML = /*html*/ `
-      ${this.html()}
+      ${this.markup}
       <style>
         ${this.css()}
       </style>
     `;
+    this.insertTableRows();
+    this.tableBuilt = true;
   }
 
   static register() {

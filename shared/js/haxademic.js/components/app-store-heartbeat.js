@@ -15,6 +15,7 @@ class AppStoreHeartbeat extends AppStoreElement {
     interval = parseInt(interval);
     // start count
     this.startTime = Date.now();
+    _store.set(this.storeKey, 0, true);
     // set interval
     setInterval(() => {
       let uptime = Date.now() - this.startTime;
