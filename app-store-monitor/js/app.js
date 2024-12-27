@@ -25,12 +25,20 @@ class CustomApp extends HTMLElement {
     // console.log(key, value);
     if (key == "server_url") {
       console.log(key, "=", value);
+      // set server url right header links
       document
         .querySelector("a[data-state-url]")
         .setAttribute("href", `${value}state`);
       document
         .querySelector("a[data-clients-url]")
         .setAttribute("href", `${value}clients`);
+      // server url in header
+      let headerServerUrl = document.querySelector(
+        "a[data-server-address-display]"
+      );
+      headerServerUrl.innerHTML = document.location.hostname;
+      headerServerUrl.removeAttribute("aria-busy");
+      headerServerUrl.setAttribute("href", value);
     }
   }
 

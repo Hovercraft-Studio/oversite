@@ -21,7 +21,11 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 - Debug components for AppStore - health-check components for camera feeds, etc
   - True/false or (0/1) option
+- Figure out simple SSL websockets setup
+  - Nodejs cert creation?
 - Vite Dashboard
+  - Improve access & sharing of the server URLs calculated from the URL & system defaults
+    - Right now it's all being done inside the table, which seems weird
   - Design
     - Footer w/links
       - Move log heartbeat checkbox here
@@ -52,13 +56,13 @@ Nice-to-haves?
   - Maybe just keep these in the Monitor?
     - Add `sender` to JS table
     - Add `sender` to TD table
-  - Nice-to-haves
-    - Click to resend a key/value?
-    - Add a button to wipe the store (it will repopulate as messages come in)
-    - Add buttons/dropdowns to wipe all or individual properties in UI
-    - Can we send a message to remove a key on the clients?
+  - Click to resend a key/value?
+  - Add a button to wipe the store (it will repopulate as messages come in)
+  - Add buttons/dropdowns to wipe all or individual properties in UI
+  - Can we send a message to remove a key on the clients?
+- ws-relay
+  - chatroom option to separate channels?
 - In `/state`, can we filter rather than just return entire or single key?
-- [MOVED TO package.json] Shared .env between all apps (and TD) for IP addresses and otherwise
 
 ## TODO: Documentation
 

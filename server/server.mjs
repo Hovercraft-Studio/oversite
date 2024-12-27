@@ -38,7 +38,7 @@ const server = http.createServer((req, res) => {
     // handle root
     res.writeHead(200);
     res.end(JSON.stringify({ message: "Welcome to AppStore" }));
-  } else if (url.includes("/state") && url.length > 6 && isGET) {
+  } else if (url.startsWith("/state") && url.length > 6 && isGET) {
     // return a single key
     const key = pathSplit[2];
     res.writeHead(200);
@@ -51,7 +51,7 @@ const server = http.createServer((req, res) => {
     // return entire state
     res.writeHead(200);
     res.end(JSON.stringify(state));
-  } else if (url.includes("/wipe") && url.length > 5 && isGET) {
+  } else if (url.startsWith("/wipe") && url.length > 5 && isGET) {
     // remove a single key
     const key = pathSplit[2];
     removeKey(key);
