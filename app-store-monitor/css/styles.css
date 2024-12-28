@@ -4,11 +4,16 @@ custom-app {
   box-sizing: border-box;
 }
 
-header {
+header,
+h4 {
   background: var(--pico-card-background-color);
   padding: 0vw 2vw;
   border-radius: 6px;
   margin-bottom: 2vw;
+}
+h4 {
+  padding: 1rem;
+  font-size: 1.5vw;
 }
 
 /* monitor columns */
@@ -120,4 +125,20 @@ footer {
   padding: 0 2rem;
   background: var(--pico-card-background-color);
   width: 100%;
+}
+
+@media screen and (max-width: 959px) {
+  #hud {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  h4 {
+    font-size: 2vw;
+  }
+
+  #hud table {
+    max-width: 100%;
+    font-size: 2vw;
+  }
 }
