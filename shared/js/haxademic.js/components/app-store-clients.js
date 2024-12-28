@@ -1,9 +1,14 @@
 import DateUtil from "../date-util.mjs";
 import AppStoreTable from "./app-store-table.js";
 
-class AppStoreClients extends AppStoreTable {
-  connectedCallback() {
-    super.connectedCallback();
+class AppStoreClients extends HTMLElement {
+  async connectedCallback() {
+    this.markup = this.innerHTML;
+    this.serverURL = _store.get("server_url");
+    await this.getDataFromServer();
+    this.render();
+    _store.addListener(this);
+    // this.startTimeUpdates();
     this.startTablePoll();
   }
 
@@ -37,11 +42,8 @@ class AppStoreClients extends AppStoreTable {
   }
 
   buildTable(data) {
-    this.rows = [];
-
     // build table
-    this.markup = "<table>";
-    this.markup += `
+    this.markup = /*html*/ `<table>
         <thead>
           <tr>
             <td>Client</td>
@@ -94,6 +96,10 @@ class AppStoreClients extends AppStoreTable {
         }, 1000);
       }
     });
+  }
+
+  render() {
+    this.innerHTML = this.markup;
   }
 
   static register() {

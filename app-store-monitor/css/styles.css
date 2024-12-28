@@ -112,3 +112,12 @@ app-store-table-row {
     animation: heartbeat-anim 1.5s 1;
   }
 }
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 0 2rem;
+  background: var(--pico-card-background-color);
+  width: 100%;
+}

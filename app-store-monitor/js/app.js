@@ -18,8 +18,18 @@ import "../../shared/js/haxademic.js/components/app-store-clients.js";
 class CustomApp extends HTMLElement {
   connectedCallback() {
     this.init();
+    this.initFooter();
     _store.addListener(this);
     _store.addListener(this, "appstore_connected"); // listen for appStore to connect
+  }
+
+  initFooter() {
+    _store.set("log_heartbeats", true);
+    this.addEventListener("change", (e) => {
+      if (e.target.id === "log-heartbeats") {
+        _store.set("log_heartbeats", e.target.checked);
+      }
+    });
   }
 
   appstore_connected(value) {

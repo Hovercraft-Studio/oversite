@@ -22,19 +22,15 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 - Debug components for AppStore - health-check components for camera feeds, etc
   - True/false or (0/1) option
 - Vite Dashboard
-  - Improve access & sharing of the server URLs calculated from the URL & system defaults
-    - Right now it's all being done inside the table, which seems weird
   - Design
-    - Footer w/links
-      - Move log heartbeat checkbox here
-      - clear store w/confirmation modal
+    - Add button to clear store w/confirmation modal
     - icons should be svg with colors based on pico theme
   - Clean up app-store-table
-    - Refactor subclasses (clients/events) to follow the same pattern
+    - event time > 24 hours should say "> 1 day" and be red
+    - Treat heartbeats as a special case w/timestamps and red row if out of date
   - Move /wipe to state/wipe
     - Move /wipe/* to state/wipe/*
     - move responses to functions 
-  - Treat heartbeats as a special case w/timestamps and red row if out of date
   - Add zoom buttons for table style/padding/font
 - Selectively hydrate the app state from the new api routes
   - WIP Started in AppStoreDistributed - `init-keys`
@@ -48,6 +44,7 @@ Nice-to-haves?
   - Add sender to Java client
   - Add ws?sender= queryparam to Java client
 - Monitor
+  - add "expected_clients" list to app-store-clients, and show a red row if a client is missing
   - QR code somewhere to launch BA app (or any link for a client app)
   - Client list last message sent time?
   - Filter event table by client?

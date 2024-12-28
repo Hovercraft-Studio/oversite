@@ -4,31 +4,58 @@ class EventLogTable extends HTMLElement {
   connectedCallback() {
     this.el = this.shadow ? this.shadow : this;
     this.events = [];
-    this.showHeartbeats = true;
     this.render();
-    this.listenForCheckbox();
     _store.addListener(this);
     this.maxLength = parseInt(this.getAttribute("max-length")) || 10;
-  }
-
-  listenForCheckbox() {
-    this.addEventListener("change", (e) => {
-      if (e.target.id === "log-heartbeats") {
-        this.showHeartbeats = e.target.checked;
-      }
-    });
+    this.startTimeUpdates();
   }
 
   storeUpdated(key, value) {
     // filter out heartbeats if checkbox is unchecked
     let isHeartbeat = key.toLowerCase().includes("heartbeat");
-    if (isHeartbeat && !this.querySelector("#log-heartbeats").checked) return;
+    if (isHeartbeat && !_store.get("log_heartbeats")) return;
 
     // add to front of array
-    this.events.unshift({ key, value, time: Date.now() });
-    if (this.events.length > this.maxLength) this.events.pop();
-    this.render();
+    let rowObj = { key, value, time: Date.now() };
+    this.events.unshift(rowObj);
+    let tbody = this.querySelector("tbody");
+    rowObj.el = this.buildRowEl(rowObj);
+    tbody.insertBefore(rowObj.el, tbody.firstChild);
+
+    // remove from end of array/table
+    if (this.events.length > this.maxLength) {
+      this.events.pop();
+      tbody.removeChild(tbody.lastChild);
+    }
+    // this.render();
     this.flashFirstRow();
+  }
+
+  buildRowEl(rowObj) {
+    let rowType = "";
+    let val = rowObj.value;
+    let timeAgoMs = Date.now() - rowObj.time;
+
+    if (rowObj.key.toLowerCase().includes("heartbeat")) {
+      val = DateUtil.formattedTime(val);
+      rowType = "heartbeat";
+    }
+
+    let markup =
+      /*html*/
+      `<tr data-key="${rowObj.key}" data-row-type="${rowType}">
+          <td>${rowObj.key}</td>
+          <td>${val}</td>
+          <td data-time>${Math.round(timeAgoMs / 1000)}s</td>
+        </tr>`;
+
+    return this.stringToTrElement(markup);
+  }
+
+  stringToTrElement(str) {
+    let table = document.createElement("table");
+    table.innerHTML = str;
+    return table.querySelector("tbody").firstChild;
   }
 
   flashFirstRow() {
@@ -39,17 +66,25 @@ class EventLogTable extends HTMLElement {
     }, 1000);
   }
 
+  startTimeUpdates() {
+    setInterval(() => {
+      this.updateTimeAgo();
+    }, 1000);
+  }
+
+  updateTimeAgo() {
+    this.events.forEach((row) => {
+      let timeAgoMs = row.time ? Math.round(Date.now() - row.time) : 0;
+      row.el.querySelector("td[data-time]").innerHTML = `${Math.round(
+        timeAgoMs / 1000
+      )}s`;
+    });
+  }
+
   html() {
-    this.rows = []; // dummy until we update this extended class
     let checked = this.showHeartbeats ? "checked" : "";
     // build table
-    this.markup = `
-      <div>
-        <input type="checkbox" id="log-heartbeats" ${checked} /> Log Heartbeats
-      </div>
-
-      <table class="striped">`;
-    this.markup += `
+    this.markup = /*html*/ `<table>
       <thead>
         <tr>
           <td>Key</td>
@@ -57,24 +92,8 @@ class EventLogTable extends HTMLElement {
           <td>Time</td>
         </tr>
       </thead>
-      <tbody>
-    `;
-    // show table data
-    this.events.forEach((el) => {
-      let obj = this.events[el];
-      let timeAgoMs = Date.now() - el.time;
-      let val = el.value;
-      if (el.key.toLowerCase().includes("heartbeat")) {
-        val = DateUtil.formattedTime(val);
-      }
-
-      this.markup += `<tr data-key="${el.key}">
-          <td>${el.key}</td>
-          <td>${val}</td>
-          <td>${Math.round(timeAgoMs / 1000)}s</td>
-        </tr>`;
-    });
-    this.markup += "</tbody></table>";
+      <tbody></tbody>
+    </table>`;
 
     return /*html*/ `
       ${this.markup}

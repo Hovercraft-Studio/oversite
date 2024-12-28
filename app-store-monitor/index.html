@@ -36,7 +36,7 @@
         <div>
           <app-store-clients></app-store-clients>
           <app-store-table></app-store-table>
-          <details open>
+          <!-- <details open>
             <summary>Demo controls</summary>
             <p>
               <app-store-button key="btn_pulse" value="1" momentary>Momentary / Pulse</app-store-button>
@@ -45,14 +45,19 @@
             <p>
               <app-store-slider key="slider_1" value="0" max="1"></app-store-slider>
             </p>
-          </details>
+          </details> -->
         </div>
         <event-log-table max-length="20"></event-log-table>
       </div>
       <footer>
-        <p>
-          <app-store-heartbeat key="monitor_heartbeat" value="n/a" interval="10000" show="true"></app-store-heartbeat>
-        </p>
+        <nav>
+          <ul>
+            <li><app-store-heartbeat key="monitor_heartbeat" value="n/a" interval="10000" show="true"></app-store-heartbeat></li>
+          </ul>
+          <ul>
+            <li><input type="checkbox" id="log-heartbeats" checked /> Log Heartbeats</li>
+          </ul>
+        </nav>
       </footer>
     </custom-app>
     <script type="module" src="./js/app.js"></script>
