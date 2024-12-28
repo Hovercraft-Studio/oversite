@@ -8,7 +8,7 @@ class AppStoreDistributed extends AppStore {
 
   constructor(socketServerUrl, senderId = null) {
     super();
-    this.senderId = senderId; // || this.generateUUID();
+    this.senderId = senderId || "unknown_" + Math.round(Math.random() * 9999);
     this.stateData = {};
     // track whether messages are from this instance
     this.messageFromSelf = false;
@@ -19,16 +19,6 @@ class AppStoreDistributed extends AppStore {
     this.solidSocket.setOpenCallback((e) => this.onOpen(e));
     this.solidSocket.setCloseCallback((e) => this.onClose(e));
     this.solidSocket.setMessageCallback((e) => this.onMessage(e));
-  }
-
-  generateUUID() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      var d = new Date().getTime();
-      d += performance.now(); // use high-precision timer if available
-      var r = (d + Math.random() * 16) % 16 | 0;
-      d = Math.floor(d / 16);
-      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
-    });
   }
 
   onOpen() {

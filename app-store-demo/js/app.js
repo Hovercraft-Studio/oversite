@@ -7,7 +7,7 @@ import "../../shared/js/haxademic.js/components/app-store-button.js";
 import "../../shared/js/haxademic.js/components/app-store-heartbeat.js";
 import "../../shared/js/haxademic.js/components/app-store-textfield.js";
 import "../../shared/js/haxademic.js/components/app-store-slider.js";
-import "../../shared/js/haxademic.js/components/app-state-distributed.js";
+import "../../shared/js/haxademic.js/components/app-store-init.js";
 import "../../shared/js/haxademic.js/components/event-log-view.js";
 
 class CustomApp extends HTMLElement {

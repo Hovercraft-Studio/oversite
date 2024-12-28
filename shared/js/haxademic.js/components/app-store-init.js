@@ -1,0 +1,101 @@
+import AppStoreDistributed from "../app-store-distributed.mjs";
+
+// self-registering child components
+import "./websocket-indicator.js";
+import "./app-store-debug.js";
+
+class AppStoreInit extends HTMLElement {
+  connectedCallback() {
+    this.shadow = this.attachShadow({ mode: "open" });
+    this.initServerURL();
+    this.initSharedState();
+    this.addChildren();
+  }
+
+  initServerURL() {
+    // get any config from URL hash
+    // we'll write to the hash to make it easy to share
+    let hashParams = new URLSearchParams(document.location.hash);
+
+    // get address from querystring or use default
+    // and show in URL for easy sharing
+    let wsServerFromQuery = hashParams.get("wsURL");
+    this.webSocketURL = wsServerFromQuery;
+    this.webSocketURL ??= "ws://" + document.location.hostname + ":3001/ws"; // use webpage address to calculate default websocket address
+    if (!wsServerFromQuery) {
+      // write server to hash if not already there
+      document.location.hash += `&wsURL=${this.webSocketURL}`;
+    }
+
+    // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
+    // we just need to check for a custom http port in the URL and otherwise use the ws:// address
+    let socketURL = new URL(this.webSocketURL);
+    socketURL.protocol = "http:";
+    socketURL.search = "";
+    socketURL.pathname = "";
+    if (document.location.hash.includes("httpPort")) {
+      socketURL.port = hashParams.get("httpPort"); // use port from the URL if exists
+    } else {
+      socketURL.port = 3003; // use default server port and write to hash
+      document.location.hash += `&httpPort=${socketURL.port}`;
+    }
+    this.serverURL = socketURL.href;
+  }
+
+  initSharedState() {
+    // get sender from web component attribute
+    let sender = this.getAttribute("sender");
+    let initKeys = this.getAttribute("init-keys");
+
+    // connect to websocket server
+    this.appStore = new AppStoreDistributed(this.webSocketURL, sender);
+
+    // hydrate with specified keys
+    if (initKeys) {
+      initKeys = initKeys.split(" ");
+      console.log("initKeys", initKeys);
+      // need to fetch from server:3003/state/KEY
+      // and set on _store without broadcasting
+    }
+
+    // listen for data/events
+    _store.addListener(this);
+    _store.addListener(this, "appstore_connected"); // emitted by AppStoreDistributed when connected
+
+    // send out any local config
+    _store.set("ws_url", this.webSocketURL);
+    _store.set("server_url", this.serverURL);
+  }
+
+  isDebug() {
+    return this.hasAttribute("debug");
+  }
+
+  addChildren() {
+    let sideDebug = this.hasAttribute("side-debug") ? "side-debug" : "";
+    this.shadow.innerHTML = this.isDebug()
+      ? /*html*/ `
+        <websocket-indicator></websocket-indicator>
+        <app-store-debug ${sideDebug}></app-store-debug>
+      `
+      : /*html*/ `
+        <app-store-debug></app-store-debug>
+      `;
+  }
+
+  // AppStore listeners
+
+  appstore_connected(val) {
+    _store.set("client_connected", Date.now(), true); // let desktop app know that we're here
+  }
+
+  storeUpdated(key, val) {}
+
+  static register() {
+    customElements.define("app-store-init", AppStoreInit);
+  }
+}
+
+AppStoreInit.register();
+
+export default AppStoreInit;

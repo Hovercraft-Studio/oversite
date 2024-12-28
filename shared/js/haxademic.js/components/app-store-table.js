@@ -3,31 +3,11 @@ import DateUtil from "../date-util.mjs";
 class AppStoreTable extends HTMLElement {
   async connectedCallback() {
     this.markup = this.innerHTML;
-    this.initServerURL();
+    this.serverURL = _store.get("server_url");
     await this.getDataFromServer();
     this.render();
     _store.addListener(this);
     this.startTimeUpdates();
-  }
-
-  initServerURL() {
-    // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
-    // we just need to check for a custom http port in the URL and otherwise use the ws:// address
-    let socketURL = new URL(_store.socketServerUrl);
-    socketURL.protocol = "http:";
-    socketURL.search = "";
-    socketURL.pathname = "";
-    if (document.location.hash.includes("httpPort")) {
-      let urlSearch = new URLSearchParams(document.location.hash);
-      socketURL.port = urlSearch.get("httpPort"); // use port from the URL if exists
-    } else {
-      socketURL.port = 3003; // use default server port and write to hash
-      document.location.hash += `&httpPort=${socketURL.port}`;
-    }
-    this.serverURL = socketURL.href;
-    setTimeout(() => {
-      _store.set("server_url", this.serverURL);
-    }, 500);
   }
 
   storeUpdated(key, value) {
@@ -36,14 +16,12 @@ class AppStoreTable extends HTMLElement {
   }
 
   addRow(key, value) {
-    // TODO: switch to list of objects so this works properly
-    // TODO: check to see if row exists before adding
-    // - or update existing row
     if (!this.tableBuilt) return;
+    // check if row exists and add or update row
     let row = this.getRowObj(key);
     if (!row) {
       // add new row
-      let obj = _store.getData(key); // get full data from AppStoreDistributed
+      let obj = _store.getData(key); // get full data from AppStoreDistributed to we can populate metadata columns besides key/value
       if (!!obj) {
         let tbody = this.querySelector("tbody");
         obj.el = this.buildRowEl(obj);
@@ -63,9 +41,7 @@ class AppStoreTable extends HTMLElement {
     let obj = _store.getData(key); // get full data from AppStoreDistributed
     Object.assign(updatedRow, obj);
     let { value, sender, type, time } = updatedRow;
-    let timeAgoMs = updatedRow.time
-      ? Math.round(Date.now() - updatedRow.time)
-      : 0;
+    let timeAgoMs = time ? Math.round(Date.now() - updatedRow.time) : 0;
     updatedRow.el.querySelector("td[data-value]").innerHTML = value;
     updatedRow.el.querySelector("td[data-sender]").innerHTML = sender;
     updatedRow.el.querySelector("td[data-type]").innerHTML = type;
@@ -89,17 +65,6 @@ class AppStoreTable extends HTMLElement {
       row.timeout2 = setTimeout(() => {
         row.el.classList.remove("flash");
       }, 1010);
-      // row.animate(
-      //   [
-      //     { backgroundColor: "green" },
-      //     { backgroundColor: "var(--pico-background-color)" },
-      //   ],
-      //   {
-      //     duration: 1000,
-      //     iterations: 1,
-      //     fill: "both",
-      //   }
-      // );
     }
   }
 

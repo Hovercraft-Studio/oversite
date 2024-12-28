@@ -7,7 +7,7 @@ import "../../shared/js/haxademic.js/components/app-store-button.js";
 import "../../shared/js/haxademic.js/components/app-store-heartbeat.js";
 import "../../shared/js/haxademic.js/components/app-store-textfield.js";
 import "../../shared/js/haxademic.js/components/app-store-slider.js";
-import "../../shared/js/haxademic.js/components/app-state-distributed.js";
+import "../../shared/js/haxademic.js/components/app-store-init.js";
 import "../../shared/js/haxademic.js/components/event-log-table.js";
 import "../../shared/js/haxademic.js/components/app-store-table.js";
 import "../../shared/js/haxademic.js/components/app-store-clients.js";
@@ -19,6 +19,34 @@ class CustomApp extends HTMLElement {
   connectedCallback() {
     this.init();
     _store.addListener(this);
+    _store.addListener(this, "appstore_connected"); // listen for appStore to connect
+  }
+
+  appstore_connected(value) {
+    console.log("appstore_connected", value);
+    this.populateHeaderLinks();
+  }
+
+  populateHeaderLinks() {
+    // set server url right header links
+    let wsURL = _store.get("ws_url");
+    let serverURL = _store.get("server_url");
+
+    // populate header links with server URL
+    document
+      .querySelector("a[data-state-url]")
+      .setAttribute("href", `${serverURL}state`);
+    document
+      .querySelector("a[data-clients-url]")
+      .setAttribute("href", `${serverURL}clients`);
+
+    // server url in header
+    let headerServerUrl = document.querySelector(
+      "a[data-server-address-display]"
+    );
+    headerServerUrl.innerHTML = serverURL; // `${document.location.hostname}:${document.location.port}`;
+    headerServerUrl.removeAttribute("aria-busy");
+    headerServerUrl.setAttribute("href", serverURL);
   }
 
   storeUpdated(key, value) {
@@ -26,19 +54,6 @@ class CustomApp extends HTMLElement {
     if (key == "server_url") {
       console.log(key, "=", value);
       // set server url right header links
-      document
-        .querySelector("a[data-state-url]")
-        .setAttribute("href", `${value}state`);
-      document
-        .querySelector("a[data-clients-url]")
-        .setAttribute("href", `${value}clients`);
-      // server url in header
-      let headerServerUrl = document.querySelector(
-        "a[data-server-address-display]"
-      );
-      headerServerUrl.innerHTML = document.location.hostname;
-      headerServerUrl.removeAttribute("aria-busy");
-      headerServerUrl.setAttribute("href", value);
     }
   }
 
