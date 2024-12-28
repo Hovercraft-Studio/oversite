@@ -48,8 +48,7 @@ eventLog(
 
 // listen for new connections
 wsServer.on("connection", (connection, request, client) => {
-  // get sender from searchParams and add metadata to connection object
-  // format is: /ws?sender=MONITOR_DEMO
+  // get sender from searchParams and add metadata to connection object. format is: /ws?sender=MONITOR_DEMO
   let fullReqURL = `ws://localhost:${wssPort}${request.url}`;
   const searchParams = new URL(fullReqURL).searchParams;
   const sender = searchParams.get("sender");

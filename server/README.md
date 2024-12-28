@@ -21,8 +21,6 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 - Debug components for AppStore - health-check components for camera feeds, etc
   - True/false or (0/1) option
-- Figure out simple SSL websockets setup
-  - Nodejs cert creation?
 - Vite Dashboard
   - Improve access & sharing of the server URLs calculated from the URL & system defaults
     - Right now it's all being done inside the table, which seems weird
@@ -71,6 +69,8 @@ Nice-to-haves?
     - ws-relay
     - vite demo UI (and how to change the port for the ws server in the hash query)
     - server.mjs
+  - We're running without SSL, to make things easy for local connections
+    - If you need to access SSL-enabled cloud servers, you'll want to use `node-http-proxy` or similar, Or do this on the Node side
   - Routes in server.mjs
     - /state
     - /state/*
