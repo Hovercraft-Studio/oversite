@@ -61,7 +61,7 @@ class AppStoreTable extends HTMLElement {
       row.el.classList.remove("flash");
       row.timeout = setTimeout(() => {
         row.el.classList.add("flash");
-      }, 10);
+      }, 50);
       row.timeout2 = setTimeout(() => {
         row.el.classList.remove("flash");
       }, 1010);
@@ -164,20 +164,18 @@ class AppStoreTable extends HTMLElement {
       val = DateUtil.formattedTime(val);
       rowType = "heartbeat";
     }
-    let markup = /*html*/ `<tr data-key="${obj.key}" data-row-type="${rowType}">
-                            <td>${obj.key}</td>
-                            <td data-value>${val}</td>
-                            <td data-type>${obj.type}</td>
-                            <td data-sender>${obj.sender || ""}</td>
-                            <td data-time>${DateUtil.formattedTime(
-                              timeAgoMs
-                            )}</td>
-                            <td class="row-actions">
-                              <span title="Delete" class="delete" data-key="${
-                                obj.key
-                              }">❌</span>
-                            </td>
-                          </tr>`;
+    let markup =
+      /*html*/
+      `<tr data-key="${obj.key}" data-row-type="${rowType}">
+        <td>${obj.key}</td>
+        <td data-value>${val}</td>
+        <td data-type>${obj.type}</td>
+        <td data-sender>${obj.sender || ""}</td>
+        <td data-time>${DateUtil.formattedTime(timeAgoMs)}</td>
+        <td class="row-actions">
+          <span title="Delete" class="delete" data-key="${obj.key}">❌</span>
+        </td>
+      </tr>`;
     return this.stringToTrElement(markup);
   }
 

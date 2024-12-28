@@ -22,6 +22,8 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 - Debug components for AppStore - health-check components for camera feeds, etc
   - True/false or (0/1) option
 - Vite Dashboard
+  - Filter fast moving eventd with a search term
+    - Replace heartbeat filter with search term - could still have a toggle to add/remove from filter list
   - Design
     - Add button to clear store w/confirmation modal
     - icons should be svg with colors based on pico theme
