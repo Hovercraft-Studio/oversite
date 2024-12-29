@@ -8,12 +8,82 @@ class EventLogTable extends HTMLElement {
     _store.addListener(this);
     this.maxLength = parseInt(this.getAttribute("max-length")) || 10;
     this.startTimeUpdates();
+    this.initFilters();
+  }
+
+  initFilters() {
+    this.excludeKeys = [];
+    this.showOnlyKeys = [];
+
+    // handle text inputs
+    this.excludeFilterInput = this.querySelector("#exclude_keys");
+    this.excludeDisplay = this.querySelector(`[for="exclude_keys"] > span`);
+    this.showOnlyFilterInput = this.querySelector("#show_only_keys");
+    this.showOnlyDisplay = this.querySelector(`[for="show_only_keys"] > span`);
+    this.excludeFilterInput.addEventListener("input", (e) => {
+      this.excludeKeys = this.buildFilterList(
+        this.excludeFilterInput.value,
+        this.excludeDisplay
+      );
+      localStorage.setItem("excludeKeys", this.excludeFilterInput.value);
+    });
+    this.showOnlyFilterInput.addEventListener("input", (e) => {
+      this.showOnlyKeys = this.buildFilterList(
+        this.showOnlyFilterInput.value,
+        this.showOnlyDisplay
+      );
+      localStorage.setItem("showOnlyKeys", this.showOnlyFilterInput.value);
+    });
+
+    // init from local storage
+    this.excludeFilterInput.value = localStorage.getItem("excludeKeys") || "";
+    if (this.excludeFilterInput.value.length > 0)
+      this.excludeFilterInput.dispatchEvent(new Event("input"));
+    this.showOnlyFilterInput.value = localStorage.getItem("showOnlyKeys") || "";
+    if (this.showOnlyFilterInput.value.length > 0)
+      this.showOnlyFilterInput.dispatchEvent(new Event("input"));
+  }
+
+  buildFilterList(inputStr, displayEl) {
+    // build filter array
+    let keysList = [];
+    if (inputStr.length > 0) {
+      keysList = inputStr.trim().split(" ");
+    } else {
+      keysList = [];
+    }
+    // ensure valid filters - no empty strings
+    keysList = keysList.map((el) => el.trim()).filter((el) => el.length > 0);
+    // show filters list as tags
+    displayEl.innerHTML = keysList
+      .map((el) => {
+        return `<kbd>${el}</kbd>`;
+      })
+      .join(" ");
+    return keysList;
+  }
+
+  filterFailed(key) {
+    // filter out keys if they're in the exclude list
+    let excludeMatched = this.excludeKeys.find((excludeKey) =>
+      key.toLowerCase().includes(excludeKey)
+    );
+    if (excludeMatched) return true;
+
+    // filter out keys if they're not in the show-only list
+    if (this.showOnlyKeys.length > 0) {
+      let showOnlyMatch = this.showOnlyKeys.find((showOnlyKey) =>
+        key.toLowerCase().includes(showOnlyKey)
+      );
+      if (!showOnlyMatch) return true;
+    }
+
+    return false;
   }
 
   storeUpdated(key, value) {
     // filter out heartbeats if checkbox is unchecked
-    let isHeartbeat = key.toLowerCase().includes("heartbeat");
-    if (isHeartbeat && !_store.get("log_heartbeats")) return;
+    if (this.filterFailed(key)) return;
 
     // add to front of array
     let rowObj = { key, value, time: Date.now() };
@@ -84,16 +154,26 @@ class EventLogTable extends HTMLElement {
   html() {
     let checked = this.showHeartbeats ? "checked" : "";
     // build table
-    this.markup = /*html*/ `<table>
-      <thead>
-        <tr>
-          <td>Key</td>
-          <td>Value</td>
-          <td>Time</td>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>`;
+    this.markup =
+      /*html*/
+      `<nav class="grid filters">
+        <label for="exclude_keys">Exclude Filters: <span class="small">(space-separated)</span>
+          <input type="text" id="exclude_keys" name="exclude_keys" placeholder="Exclude keys" aria-invalid="true">
+        </label>
+        <label for="show_only_keys">Show only filters: <span class="small">(space-separated)</span>
+          <input type="text" id="show_only_keys" name="show_only_keys" placeholder="Show only keys" aria-invalid="false">
+        </label>
+      </nav>
+      <table>
+        <thead>
+          <tr>
+            <td>Key</td>
+            <td>Value</td>
+            <td>Time</td>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>`;
 
     return /*html*/ `
       ${this.markup}

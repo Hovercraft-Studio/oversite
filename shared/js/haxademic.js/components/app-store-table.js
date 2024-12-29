@@ -121,7 +121,7 @@ class AppStoreTable extends HTMLElement {
             <td>Value</td>
             <td>Type</td>
             <td>Sender</td>
-            <td>Time</td>
+            <td>Time Ago</td>
             <td>Actions</td>
           </tr>
         </thead>
@@ -147,7 +147,8 @@ class AppStoreTable extends HTMLElement {
       }
       return a.sender.localeCompare(b.sender);
     });
-    // then re-add to dom
+
+    // then re-add to dom in sorted order
     let tbody = this.querySelector("tbody");
     if (tbody)
       this.rows.forEach((row) => {

@@ -34,10 +34,14 @@
       </header>
       <div id="hud">
         <div>
-          <h4>Clients</h4>
-          <app-store-clients></app-store-clients>
-          <h4>AppStore</h4>
-          <app-store-table></app-store-table>
+          <article>
+            <label>Clients</label>
+            <app-store-clients></app-store-clients>
+          </article>
+          <article>
+            <label>AppStore</label>
+            <app-store-table></app-store-table>
+          </article>
           <!-- <details open>
             <summary>Demo controls</summary>
             <p>
@@ -50,17 +54,16 @@
           </details> -->
         </div>
         <div>
-          <h4>Event Log</h4>
-          <event-log-table max-length="20"></event-log-table>
+          <article>
+            <label>Event Log</label>
+            <event-log-table max-length="20"></event-log-table>
+          </article>
         </div>
       </div>
       <footer>
         <nav>
           <ul>
             <li><app-store-heartbeat key="monitor_heartbeat" value="n/a" interval="10000" show="true"></app-store-heartbeat></li>
-          </ul>
-          <ul>
-            <li><input type="checkbox" id="log-heartbeats" checked /> Log Heartbeats</li>
           </ul>
         </nav>
       </footer>

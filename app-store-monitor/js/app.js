@@ -18,27 +18,17 @@ import "../../shared/js/haxademic.js/components/app-store-clients.js";
 class CustomApp extends HTMLElement {
   connectedCallback() {
     this.init();
-    this.initFooter();
     _store.addListener(this);
     _store.addListener(this, "appstore_connected"); // listen for appStore to connect
   }
 
-  initFooter() {
-    _store.set("log_heartbeats", true);
-    this.addEventListener("change", (e) => {
-      if (e.target.id === "log-heartbeats") {
-        _store.set("log_heartbeats", e.target.checked);
-      }
-    });
-  }
-
   appstore_connected(value) {
-    console.log("appstore_connected", value);
     this.populateHeaderLinks();
   }
 
   populateHeaderLinks() {
     // set server url right header links
+    // these values are populated in AppStoreInit
     let wsURL = _store.get("ws_url");
     let serverURL = _store.get("server_url");
 
