@@ -39,6 +39,9 @@ class CustomApp extends HTMLElement {
     document
       .querySelector("a[data-clients-url]")
       .setAttribute("href", `${serverURL}clients`);
+    document
+      .querySelector("a[data-wipe-url]")
+      .setAttribute("href", `${serverURL}wipe`);
 
     // server url in header
     let headerServerUrl = document.querySelector(

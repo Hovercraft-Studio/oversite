@@ -8,7 +8,7 @@ There are two ways to run the WebSocket server app:
   - Writes the AppStore dictionary to a file on disk and loads on startup
   - Adds a REST API to serve and manage the store state
 
-Running the more robust `server.mjs` allows clients to self-hydrate their specific state from the server on startup. It also adds a layer of persistence to the store, which is helpful as the server may be restarted. These features allow for a much more robust shared state system as components come online or are restarted. There's also a new monitoring UI that shows the current state of the store and allows for selective clearing of keys.
+Running the more robust `server.mjs` allows clients to self-hydrate their specific state from the server on startup. It also adds a layer of persistence to the store (`state.mjs`), which is helpful when the server is restarted. There's also a new monitoring UI (`app-store-monitor`) that shows the current state of the store and allows for selective clearing and filtering of keys.
 
 ## API routes for `server.mjs`
 
@@ -21,21 +21,16 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 - Debug components for AppStore - health-check components for camera feeds, etc
   - True/false or (0/1) option
-- Vite Dashboard
+- Monitor UI
   - Design
     - Add button to clear store w/confirmation modal
     - icons should be svg with colors based on pico theme
+    - Add zoom buttons for table style/padding/font
   - Clean up app-store-table
     - event time > 24 hours should say "> 1 day" and be red
     - Treat heartbeats as a special case w/timestamps and red row if out of date
-  - Move /wipe to state/wipe
-    - Move /wipe/* to state/wipe/*
-    - move server responses to functions 
-  - Add zoom buttons for table style/padding/font
-- Selectively hydrate the app state from the new api routes
-  - WIP Started in AppStoreDistributed - `init-keys`
-  - TD implementation in AppStore component w/keys par & json load
-    - Need a server port config in the TD app component
+- Move server responses to functions 
+- TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
 
 Nice-to-haves?
 

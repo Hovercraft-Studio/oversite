@@ -42,8 +42,8 @@ class AppStoreInit extends HTMLElement {
     this.serverURL = socketURL.href;
   }
 
-  initSharedState() {
-    // get sender from web component attribute
+  async initSharedState() {
+    // get config from web component attributes
     let sender = this.getAttribute("sender");
     let initKeys = this.getAttribute("init-keys");
 
@@ -51,12 +51,7 @@ class AppStoreInit extends HTMLElement {
     this.appStore = new AppStoreDistributed(this.webSocketURL, sender);
 
     // hydrate with specified keys
-    if (initKeys) {
-      initKeys = initKeys.split(" ");
-      console.log("initKeys", initKeys);
-      // need to fetch from server:3003/state/KEY
-      // and set on _store without broadcasting
-    }
+    this.hydrateOnInit(initKeys);
 
     // listen for data/events
     _store.addListener(this);
@@ -65,6 +60,24 @@ class AppStoreInit extends HTMLElement {
     // send out any local config
     _store.set("ws_url", this.webSocketURL);
     _store.set("server_url", this.serverURL);
+  }
+
+  async hydrateOnInit(initKeys) {
+    // hydrate with specified keys, and if found in the server state
+    // set on local _store without broadcasting
+    if (initKeys) {
+      initKeys = initKeys.split(" ");
+      if (initKeys.length > 0) {
+        await fetch(`${this.serverURL}state`)
+          .then((res) => res.json())
+          .then((data) => {
+            initKeys.forEach((key) => {
+              if (!data[key]) return;
+              _store.set(key, data[key].value, false);
+            });
+          });
+      }
+    }
   }
 
   isDebug() {

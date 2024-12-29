@@ -23,7 +23,7 @@ class AppStoreElement extends HTMLElement {
     else if (this.storeValue == "0") this.storeValue = 0;
     else if (this.storeValue == "1") this.storeValue = 1;
 
-    // AppStore connection
+    // AppStore connection when _store is available
     this.valueFromStore = null;
     ObjectUtil.callbackWhenPropertyExists(window, "_store", () => {
       this.initStoreListener();
@@ -33,6 +33,15 @@ class AppStoreElement extends HTMLElement {
   initStoreListener() {
     this.valueFromStore = _store.get(this.storeKey) || this.valueFromStore;
     _store.addListener(this);
+    this.hydrateOnInit();
+  }
+
+  hydrateOnInit() {
+    // if the store has a value, set it. if the web component existed as the page loaded,
+    // this most likely is a result of app-store-init checking the server for hyrdation keys
+    if (_store.get(this.storeKey) != null) {
+      this.setStoreValue(_store.get(this.storeKey));
+    }
   }
 
   storeUpdated(key, value) {
@@ -44,7 +53,6 @@ class AppStoreElement extends HTMLElement {
   }
 
   setStoreValue(value) {
-    console.log("setStoreValue", value);
     this.el ? (this.el.innerHTML = value) : this.render();
   }
 
