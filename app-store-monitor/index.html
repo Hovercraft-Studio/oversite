@@ -20,6 +20,7 @@
   </head>
   <body>
     <app-store-init sender="monitor" debug side-debug></app-store-init>
+    <app-store-heartbeat key="monitor_heartbeat" value="n/a" interval="10000" show="false"></app-store-heartbeat>
     <custom-app>
       <header>
         <nav>
@@ -60,13 +61,6 @@
           </article>
         </div>
       </div>
-      <footer>
-        <nav>
-          <ul>
-            <li><app-store-heartbeat key="monitor_heartbeat" value="n/a" interval="10000" show="true"></app-store-heartbeat></li>
-          </ul>
-        </nav>
-      </footer>
     </custom-app>
     <script type="module" src="./js/app.js"></script>
   </body>
