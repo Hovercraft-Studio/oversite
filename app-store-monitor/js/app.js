@@ -24,6 +24,7 @@ class CustomApp extends HTMLElement {
 
   appstore_connected(value) {
     this.populateHeaderLinks();
+    this.buildZoomButtons();
   }
 
   populateHeaderLinks() {
@@ -50,6 +51,33 @@ class CustomApp extends HTMLElement {
     headerServerUrl.innerHTML = serverURL; // `${document.location.hostname}:${document.location.port}`;
     headerServerUrl.removeAttribute("aria-busy");
     headerServerUrl.setAttribute("href", serverURL);
+  }
+
+  buildZoomButtons() {
+    this.root = document.documentElement;
+    this.zoomInButton = document.querySelector("[data-zoom-in]");
+    this.zoomOutButton = document.querySelector("[data-zoom-out]");
+    this.addEventListener("click", (e) => {
+      if (e.target.hasAttribute("data-zoom-in")) {
+        e.preventDefault();
+        const currentSize = this.getFontSize();
+        this.setFontSize(currentSize + 0.05);
+      }
+      if (e.target.hasAttribute("data-zoom-out")) {
+        const currentSize = this.getFontSize();
+        this.setFontSize(currentSize - 0.05);
+      }
+    });
+  }
+
+  getFontSize() {
+    return parseFloat(
+      getComputedStyle(this.root).getPropertyValue("--table-font-size")
+    );
+  }
+
+  setFontSize(size) {
+    this.root.style.setProperty("--table-font-size", `${size}vw`);
   }
 
   storeUpdated(key, value) {

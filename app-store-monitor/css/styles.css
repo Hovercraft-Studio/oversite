@@ -1,3 +1,7 @@
+:root {
+  --table-font-size: 1.2vw;
+}
+
 custom-app {
   display: block;
   padding: 2rem;
@@ -91,7 +95,7 @@ app-store-table-row {
 #hud {
   table {
     max-width: 100%;
-    font-size: 1.2vw;
+    font-size: var(--table-font-size);
   }
   th,
   td {
@@ -104,8 +108,21 @@ app-store-table-row {
     /* line-break: anywhere;
     white-space: break-spaces; */
   }
+  .heartbeat span svg path {
+    fill: var(--pico-primary-background);
+  }
+  .heartbeat span svg,
+  .row-actions .delete svg {
+    pointer-events: none;
+    width: calc(1.5 * var(--table-font-size));
+    height: calc(1.5 * var(--table-font-size));
+    display: inline-block;
+  }
+  .row-actions .delete path {
+    fill: var(--pico-primary-background);
+  }
   .row-actions {
-    /* text-align: center; */
+    text-align: center;
     span {
       cursor: pointer;
     }
@@ -146,7 +163,7 @@ footer {
 
   #hud table {
     max-width: 100%;
-    font-size: 2vw;
+    font-size: calc(1.7 * var(--table-font-size));
   }
 }
 

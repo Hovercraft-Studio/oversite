@@ -7,7 +7,23 @@ class AppStoreTable extends HTMLElement {
     await this.getDataFromServer();
     this.render();
     _store.addListener(this);
+    this.addClickListeners();
     this.startTimeUpdates();
+  }
+
+  addClickListeners() {
+    this.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("delete")) {
+        let key = e.target.getAttribute("data-key");
+        try {
+          let res = await fetch(`${this.serverURL}wipe/${key}`);
+          let data = await res.json();
+          this.getDataFromServer();
+        } catch (error) {
+          console.log("Failed to wipe key:", error);
+        }
+      }
+    });
   }
 
   storeUpdated(key, value) {
@@ -111,6 +127,7 @@ class AppStoreTable extends HTMLElement {
   }
 
   buildTable(data) {
+    this.removeRowsFromTable();
     this.buildRows(data);
     // build table
     this.markup = /*html*/ `
@@ -127,6 +144,15 @@ class AppStoreTable extends HTMLElement {
         </thead>
         <tbody></tbody>
       </table>`;
+  }
+
+  removeRowsFromTable() {
+    let tbody = this.querySelector("tbody");
+    if (tbody) {
+      while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+      }
+    }
   }
 
   buildRows(data) {
@@ -156,6 +182,14 @@ class AppStoreTable extends HTMLElement {
       });
   }
 
+  getCrossIcon() {
+    return /*html*/ `
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+        <path d="m18.8 16 5.5-5.5c.8-.8.8-2 0-2.8-.3-.4-.8-.7-1.3-.7s-1 .2-1.4.6L16 13.2l-5.5-5.5c-.8-.8-2.1-.8-2.8 0-.4.3-.7.8-.7 1.4s.2 1 .6 1.4l5.5 5.5-5.5 5.5c-.3.4-.6.9-.6 1.5 0 .5.2 1 .6 1.4.4.4.9.6 1.4.6.5 0 1-.2 1.4-.6l5.5-5.5 5.5 5.5c.8.8 2.1.8 2.8 0 .8-.8.8-2.1 0-2.8L18.8 16z"/>
+      </svg>
+    `;
+  }
+
   buildRowEl(obj) {
     let timeAgoMs = obj.time ? Math.round(Date.now() - obj.time) : 0;
     let rowType = "";
@@ -174,7 +208,9 @@ class AppStoreTable extends HTMLElement {
         <td data-sender>${obj.sender || ""}</td>
         <td data-time>${DateUtil.formattedTime(timeAgoMs)}</td>
         <td class="row-actions">
-          <span title="Delete" class="delete" data-key="${obj.key}">❌</span>
+          <span title="Delete" class="delete" data-key="${
+            obj.key
+          }">${this.getCrossIcon()}</span>
         </td>
       </tr>`;
     return this.stringToTrElement(markup);

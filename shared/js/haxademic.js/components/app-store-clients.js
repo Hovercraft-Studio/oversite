@@ -12,6 +12,14 @@ class AppStoreClients extends HTMLElement {
     this.startTablePoll();
   }
 
+  getHeartIcon() {
+    return /*html*/ `
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path fill="#000" d="M12 5.881C12.981 4.729 14.484 4 16.05 4 18.822 4 21 6.178 21 8.95c0 3.3992-3.055 6.1695-7.6836 10.3667l-.0114.0103L12 20.515l-1.305-1.179-.0355-.0323C6.0444 15.1098 3 12.3433 3 8.95 3 6.178 5.178 4 7.95 4c1.566 0 3.069.729 4.05 1.881Z"/>
+      </svg>
+    `;
+  }
+
   storeUpdated(key, value) {
     // flash heartbeat indicator when matched heartbeat comes in
     let isHeartbeat = key.toLowerCase().includes("heartbeat");
@@ -60,7 +68,7 @@ class AppStoreClients extends HTMLElement {
       }">
           <td>${obj.sender}</td>
           <td>${DateUtil.formattedTime(obj.connectedTime)}</td>
-          <td class="heartbeat"><span>❤️</span></td>
+          <td class="heartbeat"><span>${this.getHeartIcon()}</span></td>
         </tr>`;
     });
     this.markup += "</tbody></table>";

@@ -19,16 +19,11 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 
 ## TODO:
 
-- Debug components for AppStore - health-check components for camera feeds, etc
+- health-check components for camera feeds, etc
   - True/false or (0/1) option
 - Monitor UI
-  - Design
-    - Add button to clear store w/confirmation modal
-    - icons should be svg with colors based on pico theme
-    - Add zoom buttons for table style/padding/font
-  - Clean up app-store-table
-    - event time > 24 hours should say "> 1 day" and be red
-    - Treat heartbeats as a special case w/timestamps and red row if out of date
+  - event time > 24 hours should say "> 1 day" and be red
+  - Treat heartbeats as a special case w/timestamps and red row if out of date
 - Move server responses to functions 
 - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
 
