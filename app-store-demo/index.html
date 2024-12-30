@@ -19,6 +19,7 @@
   </head>
   <body>
     <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input" debug side-debug></app-store-init>
+    <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="5000" show="false"></app-store-heartbeat>
     <custom-app>
       <main class="container">
         <section>
@@ -42,9 +43,6 @@
           <p>
             <app-store-slider key="slider_1" value="0" max="1"></app-store-slider>
           </p>
-          <p>
-            <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="2000" show="true"></app-store-heartbeat>
-          </p>
           <!-- <h4>Monitoring</h4>
           <p>
             <app-store-monitor key="KINECT_1_DEPTH_HEALTHY" value=""></app-store-monitor>
@@ -52,7 +50,7 @@
             <app-store-monitor key="KINECT_3_DEPTH_HEALTHY" value=""></app-store-monitor>
           </p> -->
         </section>
-        <details open>
+        <details>
           <summary>Event Log</summary>
           <event-log-view max-length="10"></event-log-view>
         </details>

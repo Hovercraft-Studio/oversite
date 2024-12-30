@@ -68,14 +68,21 @@ class AppStoreInit extends HTMLElement {
     if (initKeys) {
       initKeys = initKeys.split(" ");
       if (initKeys.length > 0) {
-        await fetch(`${this.serverURL}state`)
-          .then((res) => res.json())
-          .then((data) => {
-            initKeys.forEach((key) => {
-              if (!data[key]) return;
-              _store.set(key, data[key].value, false);
-            });
+        try {
+          const response = await fetch(`${this.serverURL}state`);
+          if (!response.ok) {
+            throw new Error(
+              `Server error: ${response.status} ${response.statusText}`
+            );
+          }
+          const data = await response.json();
+          initKeys.forEach((key) => {
+            if (!data[key]) return;
+            _store.set(key, data[key].value, false);
           });
+        } catch (error) {
+          console.error("Failed to fetch data:", error);
+        }
       }
     }
   }
