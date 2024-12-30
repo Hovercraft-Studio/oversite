@@ -3,7 +3,10 @@
 
 - health-check components for camera feeds, etc
   - True/false or (0/1) option
+  - update in AppStore table
+- Add optional receiver property for AppStore websocket targeting
 - Monitor UI
+  - Move table css into a shared file - css-in-js?
   - event time > 24 hours should say "> 1 day" and be red
   - Treat heartbeats as a special case w/timestamps and red row if out of date
 - Move server responses to functions 
@@ -18,6 +21,7 @@ Nice-to-haves?
 - Java/Haxademic updates 
   - Add heartbeat to Java client
   - Add sender to Java client
+  - Add receiver to Java client
   - Add ws?sender= queryparam to Java client
   - Store sender in AppStoreDistributed for incoming messages
 - Monitor/frontend

@@ -48,10 +48,6 @@ article > label {
   flex: 0.4;
 }
 
-app-store-table-row {
-  display: table-row;
-}
-
 /* table row animations */
 
 @keyframes flash-anim {

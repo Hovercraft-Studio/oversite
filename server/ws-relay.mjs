@@ -64,11 +64,23 @@ wsServer.on("connection", (connection, request, client) => {
   connection.on("message", (message, isBinary) => {
     if (debug) console.log(`[JSON IN]: ${message}`);
 
+    // check for 'receiver'
+    let receiver = null;
+    if (message.indexOf("receiver") > -1) {
+      // make sure we really have a specified receiver
+      let data = JSON.parse(message);
+      if (data.receiver) {
+        receiver = data.receiver;
+      }
+    }
+
     // relay incoming message to all clients
     wsServer.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         // relay message
-        client.send(message, { binary: isBinary });
+        if ((receiver && client.senderID === receiver) || !receiver) {
+          client.send(message, { binary: isBinary });
+        }
       }
     });
   });

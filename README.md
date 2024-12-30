@@ -97,24 +97,27 @@ AppStore is a key/value store and event-emitting system that is used to store & 
   "key": "some_data",
   "value": "Hello World",
   "store": true,
-  "type": "string", // data type (number|string|boolean)
+  "type": "number|string|boolean",
   "sender": "tablet_app", // optional - helps identify the sender
+  "receiver": "td_app", // optional - message only sent to receiver
 }
 ```
 
 - `key` (required) - the data key
 - `value` (required) - the value of the data
 - `store` (required) - lets clients know that it's an AppStore message
-- `type` (required) - helps parsing the data on the receiving end, especially for strongly-typed languages like Java
-- `sender` (optional) - helps identify the sender of the message, and is used in the Monitor UI. Please implement this in any new clients 
+- `type` (required) - helps parsing the data on the receiving end, especially for strongly-typed languages like Java. Besides setting this value for parsing, please make sure your client is setting the data type correctly on outgoing values
+- `sender` (optional) - helps identify the sender of the message, and is used in the Monitor UI. Please implement this in any new clients, both in the connection to the WebSocket server (`/ws?sender=tablet`) and in outgoing messages
+- `receiver` (optional) - if a client is streaming data or only wants to send to a specific client, this can be used to target a specific client 
 
 Notes:
 
 - JSON data can be sent as a string, but it's recommended to send single values to reduce JSON data parsing. AppStore prefers one value at a time, and it is common to send multiple message in sequence to update multiple keys
 - Keys should all be lowercase, with underscores instead of spaces/dashes
-- Client implementations should automatically set `store`, the data type, and sender ID when sending messages
-- Client implementations should have an optional `broadcast` argument, in case a key/value should be only local
-- A tablet UI or control surface should wait for the value to bounce  back from theWebSocket server before updating locally. This way, the UI can't show a state that hasn't been broacast. The `app-store-element` web components handle this automatically
+- Client implementations:
+  - Should automatically set `store: true`, the data `type`, and `sender` ID when sending messages
+  - Should have an optional `broadcast` argument, in case a key/value should be only local
+  - When broadcasting a key/value, *should wait for the value to bounce back from the WebSocket server before updating locally*. This way, the app won't get out of sync with shared state across apps/devices in case of a disconnected WebSocket connection. `AppStoreDistributed.set()` handles this automatically, as does the TouchDesigner implementation.
 
 ### AppStoreDistributed
 
@@ -134,7 +137,7 @@ http://localhost:3002/app-store-monitor/index.html#&wsURL=ws://localhost:3001/ws
 
 This is a "starter app" that demonstrates how to use AppStoreDistributed to connect to the websocket server and send messages. It's a good starting point for building a more complex app that uses AppStore and `hc-socket-server`.
 
-### Monitor UI
+### app-store-monitor
 
 The monitor UI is a simple web app that connects to the server app and displays the current state of the store. It also allows for selective clearing and filtering of keys. The monitor UI is a good tool for debugging and understanding the state of the store.
 
@@ -147,8 +150,6 @@ Some notes on the Monitor UI:
   - If "sender" is "tablet", then the heartbeat should be "tablet_heartbeat" - the heartbeat is matched with the sender ID and the monitor has extra visibility in the client list
 
 ### Web Components
-
-You can choose a differen picocss theme and replace the `shared/css/pico.css`: https://picocss.com/docs/version-picker
 
 Here's a list of web components used in the frontend apps. Each may have optional attributes to customize the behavior of the component.
 
@@ -172,5 +173,7 @@ Here's a list of web components used in the frontend apps. Each may have optiona
 <app-store-table></app-store-table>
 <event-log-table max-length="20"></event-log-table>
 ```
+
+You can also choose a different [pico.css theme](https://picocss.com/docs/version-picker) and replace `shared/css/pico.css`: 
 
 More to come!
