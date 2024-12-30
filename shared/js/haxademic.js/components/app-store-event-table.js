@@ -1,6 +1,7 @@
 import DateUtil from "../date-util.mjs";
+import css from "./app-store-table-css.js";
 
-class EventLogTable extends HTMLElement {
+class AppStoreEventTable extends HTMLElement {
   connectedCallback() {
     this.el = this.shadow ? this.shadow : this;
     this.events = [];
@@ -192,16 +193,17 @@ class EventLogTable extends HTMLElement {
     this.el.innerHTML = /*html*/ `
       ${this.html()}
       <style>
+        ${css}
         ${this.css()}
       </style>
     `;
   }
 
   static register() {
-    customElements.define("event-log-table", EventLogTable);
+    customElements.define("app-store-event-table", AppStoreEventTable);
   }
 }
 
-EventLogTable.register();
+AppStoreEventTable.register();
 
-export default EventLogTable;
+export default AppStoreEventTable;

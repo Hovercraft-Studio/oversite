@@ -1,4 +1,5 @@
 import DateUtil from "../date-util.mjs";
+import css from "./app-store-table-css.js";
 
 class AppStoreTable extends HTMLElement {
   async connectedCallback() {
@@ -236,6 +237,7 @@ class AppStoreTable extends HTMLElement {
     this.innerHTML = /*html*/ `
       ${this.markup}
       <style>
+        ${css}
         ${this.css()}
       </style>
     `;

@@ -171,7 +171,7 @@ Here's a list of web components used in the frontend apps. Each may have optiona
 <!-- app-store-monitor -->
 <app-store-clients></app-store-clients>
 <app-store-table></app-store-table>
-<event-log-table max-length="20"></event-log-table>
+<app-store-event-table max-length="20"></app-store-event-table>
 ```
 
 You can also choose a different [pico.css theme](https://picocss.com/docs/version-picker) and replace `shared/css/pico.css`: 
