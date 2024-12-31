@@ -64,7 +64,7 @@ class AppStoreEventTable extends HTMLElement {
     return keysList;
   }
 
-  filterFailed(key) {
+  filterEvent(key) {
     // filter out keys if they're in the exclude list
     let excludeMatched = this.excludeKeys.find((excludeKey) =>
       key.toLowerCase().includes(excludeKey)
@@ -84,7 +84,7 @@ class AppStoreEventTable extends HTMLElement {
 
   storeUpdated(key, value) {
     // filter out heartbeats if checkbox is unchecked
-    if (this.filterFailed(key)) return;
+    if (this.filterEvent(key)) return;
 
     // add to front of array
     let rowObj = { key, value, time: Date.now() };
@@ -95,10 +95,13 @@ class AppStoreEventTable extends HTMLElement {
 
     // remove from end of array/table
     if (this.events.length > this.maxLength) {
-      this.events.pop();
-      tbody.removeChild(tbody.lastChild);
+      let removedEvent = this.events.pop();
+      removedEvent.el.remove();
+      removedEvent.el = null;
+      removedEvent = null;
     }
-    // this.render();
+
+    // animate new event
     this.flashFirstRow();
   }
 

@@ -108,10 +108,10 @@ class AppStoreTable extends HTMLElement {
       window.clearTimeout(row.timeout2);
       row.el.classList.remove("flash");
       row.timeout = setTimeout(() => {
-        row.el.classList.add("flash");
+        row?.el?.classList.add("flash");
       }, 50);
       row.timeout2 = setTimeout(() => {
-        row.el.classList.remove("flash");
+        row?.el?.classList.remove("flash");
       }, 1010);
     }
   }
@@ -161,7 +161,6 @@ class AppStoreTable extends HTMLElement {
   }
 
   buildTable(data) {
-    this.removeRowsFromTable();
     this.buildRows(data);
     // build table
     this.markup = /*html*/ `
@@ -180,17 +179,20 @@ class AppStoreTable extends HTMLElement {
       </table>`;
   }
 
-  removeRowsFromTable() {
-    let tbody = this.getTBody();
-    if (tbody) {
-      while (tbody.firstChild) {
-        tbody.removeChild(tbody.firstChild);
-      }
+  cleanRows() {
+    if (this.rows) {
+      this.rows.forEach((row) => {
+        if (row.el) {
+          row.el.remove();
+          row.el = null;
+        }
+      });
     }
+    this.rows = [];
   }
 
   buildRows(data) {
-    this.rows = [];
+    this.cleanRows();
     Object.keys(data).forEach((key) => {
       let rowData = data[key];
       rowData.el = this.buildRowEl(rowData); // add html element to state data object
