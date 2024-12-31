@@ -18,6 +18,7 @@ class AppStoreHealth extends AppStoreElement {
           height: 1rem;
           border-radius: 50%;
           background: #ffff00;
+          vertical-align: bottom;
         }
         span.healthy {
             background: #00ff00;
@@ -26,7 +27,6 @@ class AppStoreHealth extends AppStoreElement {
         span.unhealthy {
             background: #ff0000;
           }
-
         }
       }
     `;

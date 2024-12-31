@@ -105,7 +105,7 @@ AppStore is a key/value store and event-emitting system that is used to store & 
 
 - `key` (required) - the data key
 - `value` (required) - the value of the data
-- `store` (required) - lets clients know that it's an AppStore message
+- `store` (required) - lets clients know that it's an AppStore message and should be parsed as such
 - `type` (required) - helps parsing the data on the receiving end, especially for strongly-typed languages like Java. Besides setting this value for parsing, please make sure your client is setting the data type correctly on outgoing values
 - `sender` (optional) - helps identify the sender of the message, and is used in the Monitor UI. Please implement this in any new clients, both in the connection to the WebSocket server (`/ws?sender=tablet`) and in outgoing messages
 - `receiver` (optional) - if a client is streaming data or only wants to send to a specific client, this can be used to target a specific client 
