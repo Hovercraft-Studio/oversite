@@ -74,12 +74,18 @@ wsServer.on("connection", (connection, request, client) => {
       }
     }
 
+    // check for sendonly
+    let sendOnly = message.indexOf("sendonly") > -1;
+
     // relay incoming message to all clients
     wsServer.clients.forEach((client) => {
+      let isSelf = client === connection;
       if (client.readyState === WebSocket.OPEN) {
         // relay message
         if ((receiver && client.senderID === receiver) || !receiver) {
-          client.send(message, { binary: isBinary });
+          if ((sendOnly && !isSelf) || !sendOnly) {
+            client.send(message, { binary: isBinary });
+          }
         }
       }
     });
