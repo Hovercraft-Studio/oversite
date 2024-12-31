@@ -59,7 +59,7 @@ There are two ways to run the WebSocket server app:
 
 Running the more robust `server.mjs` allows clients to self-hydrate their specific state from the server on startup (see `app-store-init`'s `init-keys`). It also adds a layer of file-backed persistence to the store (`state.mjs`) - when the server is restarted, the entire state is reloaded. There's also a new Monitor UI (`app-store-monitor`) that shows the complete current state of the store and allows for selective clearing and filtering of keys.
 
-When connecting to the WebSocket server, the URL looks like the following. The `sender` ID is optional, but helps identify the client on the server side.
+When connecting to the WebSocket server, the URL looks like the following. The `sender` ID is optional, but helps identify the client on the server side. You can also add `sendonly=true` to prevent the client from receiving *any* messages. This would probably only apply to low-power sensor input devices like an ESP32.
 
 ```
 ws://localhost:3001/ws?sender=tablet

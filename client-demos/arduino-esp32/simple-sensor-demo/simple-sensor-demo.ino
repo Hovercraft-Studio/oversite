@@ -56,10 +56,11 @@ const char* ssid = "TechHouse";
 const char* password = "birdmagnet";
 
 // - ws:// server 
+//   - Use `sendonly=true` if this device shouldn't receive any messages
 const char* websockets_server_host = "192.168.1.202";
 const uint16_t websockets_server_port = 3001;
 const char* sender = "esp32";
-String serverPath = String("/ws?sender=") + sender;
+String serverPath = String("/ws?sendonly=true&sender=") + sender;
 const char* websockets_server_path = serverPath.c_str();
 
 ////////////////////////////////////////////////////
@@ -70,7 +71,7 @@ WiFiMulti WiFiMulti;
 WebSocketsClient webSocket;
 bool wsConnected = false;
 long lastNetworkPollTime = 0;
-int networkPollTimeInterval = 20; // how fast to send ws messages
+int networkPollTimeInterval = 20; // how fast to send/receive ws messages
 long lastHeartbeatTime = 0;
 int heartbeatInterval = 5000;
 
@@ -82,7 +83,7 @@ int heartbeatInterval = 5000;
 void(* Reboot)(void) = 0;
 
 ////////////////////////////////////////////////////
-// swing detection
+// sensor ws:// output timing
 ////////////////////////////////////////////////////
 
 long lastSendTime = 0;
@@ -118,6 +119,7 @@ void loop() {
     updateSensors();
     sendReadings();
   }
+  drawReadings();
   networkLoop();
   sendHeartbeat();
   checkButtonClick();
@@ -136,6 +138,7 @@ void sendKeyValue(String key, float value) {
   doc["store"] = true;
   doc["type"] = "number";
   doc["sender"] = sender;
+  doc["sendonly"] = true; // don't receive bounce-back for these messages
   
   // Serialize the JSON document to a string & send the string via WebSocket
   String msg;
@@ -152,40 +155,15 @@ void drawReadings() {
   // only draw on a reasonable interval
   if(!updateAllowed(lastDrawTime, 50)) return;
 
-  // screen measurements
-  int centerX = M5.Lcd.width() / 2;
-
   // title
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.setCursor(10, 10);
   M5.Lcd.println("MPU6886 Accel/Gyro");
   
-  // sensors
-  // drawReading(30, "Gyro X", gyroX_.get(), 1, RED);
-  // drawReading(45, "Gyro Y", gyroY_.get(), 1, GREEN);
-  // drawReading(60, "Gyro Z", gyroZ_.get(), 1, YELLOW);
-
-  // drawReading(90, "Accel X", accX_.get(), 30, RED);
-  // drawReading(105, "Accel Y", accY_.get(), 30, GREEN);
-  // drawReading(120, "Accel Z", accZ_.get(), 30, YELLOW);
-
-  // drawReading(210, "Motion", (int) motionTotal, 0.01, GREEN, 10);  
-
-  // bat state
-  // M5.Lcd.setCursor(10, 150);
-  // M5.Lcd.print("Position");
-  // M5.Lcd.setCursor(80, 150);
-  // if(position == UP) M5.Lcd.print("UP  ");
-  // if(position == FLAT) M5.Lcd.print("FLAT");
-  // if(position == DOWN) M5.Lcd.print("DOWN");
-
   // network connectivity
-  drawConnectionStatus(10, 165, "Wifi ", (WiFi.status() == WL_CONNECTED));
-  drawConnectionStatus(10, 180, "ws://", wsConnected);
+  drawConnectionStatus(10, 30, "Wifi ", (WiFi.status() == WL_CONNECTED));
+  drawConnectionStatus(10, 45, "ws://", wsConnected);
   M5.Lcd.setTextColor(WHITE, BLACK);
-
-  // M5.Lcd.setCursor(10, 230);
-  // M5.Lcd.printf("Temperature : %.2f C", temp_.get());
 }
 
 void drawConnectionStatus(int x, int y, String connectionLabel, bool isConnected) {
@@ -200,9 +178,11 @@ void checkButtonClick() {
   M5.update();  // Read the press state of the key
   if (M5.BtnA.wasReleased()) {
     active = !active;
+    sendKeyValue("m5stick_button_pressed", active ? 1 : 0);
+
+    // check active flag for bg color
     int bgColor = (active) ? BLACK : RED;
     M5.Lcd.fillScreen(bgColor);
-    sendKeyValue("m5stick_button_pressed", 1);
   }
   if (M5.BtnB.wasReleased()) {
     Reboot();
@@ -253,10 +233,9 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 
 void networkLoop() {
   // only update on a reasonable interval
-  // but make it quick, because if messages get queued too much, the app will crash!
+  // but make it quick, because if the messages queue gets too big, the app will crash!
   if(!updateAllowed(lastNetworkPollTime, networkPollTimeInterval)) return;
-
-  // let the websockets client check for incoming messages
+  // tell the websockets client check for incoming messages
   webSocket.loop();
 }
 

@@ -54,7 +54,9 @@ wsServer.on("connection", (connection, request, client) => {
   const sender = searchParams.get("sender");
   connection.senderID = sender;
   connection.senderID ??= "unknown";
-  connection.startTime = Date.now();
+  const sendonly = searchParams.get("sendonly");
+  connection.sendonly = !!sendonly;
+  connection.startTime = Date.now(); // used by server.mjs for uptime
   // Log new connection
   eventLog(
     `Client joined from ${fullReqURL} - We have ${wsServer.clients.size} users`
@@ -82,10 +84,15 @@ wsServer.on("connection", (connection, request, client) => {
       let isSelf = client === connection;
       let isReceiver = receiver && client.senderID == receiver;
       if (client.readyState === WebSocket.OPEN) {
-        // relay message
-        if (!receiver || isReceiver || client.senderID == "monitor") {
-          if (!sendOnly || (sendOnly && !isSelf)) {
-            client.send(message, { binary: isBinary });
+        // relay message:
+        // - if client is not sendonly
+        // - if client is the receiver or if no receiver is specified or if sender is monitor
+        // - if message is not sendonly or if message is sendonly and client is not the sender
+        if (!client.sendonly) {
+          if (!receiver || isReceiver || client.senderID == "monitor") {
+            if (!sendOnly || (sendOnly && !isSelf)) {
+              client.send(message, { binary: isBinary });
+            }
           }
         }
       }

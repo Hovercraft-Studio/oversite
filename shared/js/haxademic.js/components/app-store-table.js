@@ -61,7 +61,6 @@ class AppStoreTable extends HTMLElement {
     // check for 20s heartbeat timeout
     if (key.includes("_heartbeat")) {
       if (Date.now() - row.time > 20000) {
-        console.log(key, value, row.time);
         rowEl.classList.add("error");
       } else {
         rowEl.classList.remove("error");
