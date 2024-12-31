@@ -36,34 +36,65 @@ class AppStoreTable extends HTMLElement {
     if (!this.tableBuilt) return;
     // check if row exists and add or update row
     let row = this.getRowObj(key);
-    if (!row) {
-      // add new row
-      let obj = _store.getData(key); // get full data from AppStoreDistributed to we can populate metadata columns besides key/value
-      if (!!obj) {
-        let tbody = this.querySelector("tbody");
-        obj.el = this.buildRowEl(obj);
-        tbody.appendChild(obj.el);
-        this.rows.push(obj);
+    if (row) {
+      // update existing row
+      this.updateRow(row, key, value);
+      this.sortRows();
+    } else {
+      // create new row
+      row = _store.getData(key); // get full data from AppStoreDistributed to we can populate metadata columns besides key/value
+      if (!!row) {
+        row.el = this.buildRowEl(row);
+        this.getTBody().appendChild(row.el);
+        this.rows.push(row);
         this.sortRows();
       }
-    } else {
-      // update existing row
-      let updatedRow = this.getRowObj(key);
-      if (updatedRow) this.updateRow(updatedRow, key, value);
-      this.sortRows();
+    }
+  }
+
+  highlightProblems(row) {
+    if (!row) return;
+    let rowEl = row.el;
+    let key = row.key.toLowerCase();
+    let value = row.value;
+
+    // check for 20s heartbeat timeout
+    if (key.includes("_heartbeat")) {
+      if (Date.now() - row.time > 20000) {
+        console.log(key, value, row.time);
+        rowEl.classList.add("error");
+      } else {
+        rowEl.classList.remove("error");
+      }
+    }
+
+    // check for _health being bad
+    if (key.includes("_health")) {
+      if (value == "false" || value == false || value == "0" || value == 0) {
+        rowEl.classList.add("error");
+      } else {
+        rowEl.classList.remove("error");
+      }
     }
   }
 
   updateRow(updatedRow, key, newValue) {
     let obj = _store.getData(key); // get full data from AppStoreDistributed
-    Object.assign(updatedRow, obj);
+    Object.assign(updatedRow, obj); // copy full object data to row object for sender/time/etc
     let { value, sender, type, time } = updatedRow;
     let timeAgoMs = time ? Math.round(Date.now() - updatedRow.time) : 0;
-    updatedRow.el.querySelector("td[data-value]").innerHTML = value;
-    updatedRow.el.querySelector("td[data-sender]").innerHTML = sender;
-    updatedRow.el.querySelector("td[data-type]").innerHTML = type;
-    updatedRow.el.querySelector("td[data-time]").innerHTML =
-      DateUtil.formattedTime(timeAgoMs);
+    let timeAgoFormatted = DateUtil.formattedTime(timeAgoMs);
+    DateUtil.formattedTime(timeAgoMs);
+
+    let rowEl = updatedRow.el;
+    rowEl.querySelector("td[data-value]").innerHTML = value;
+    rowEl.querySelector("td[data-sender]").innerHTML = sender;
+    rowEl.querySelector("td[data-type]").innerHTML = type;
+    rowEl.querySelector("td[data-time]").innerHTML = timeAgoFormatted;
+  }
+
+  getTBody() {
+    return this.querySelector("tbody");
   }
 
   getRowObj(key) {
@@ -94,15 +125,17 @@ class AppStoreTable extends HTMLElement {
 
   startTimeUpdates() {
     setInterval(() => {
-      this.updateTimeAgo();
+      this.updateTime();
     }, 1000);
   }
 
-  updateTimeAgo() {
+  updateTime() {
     this.rows.forEach((row) => {
       let timeAgoMs = row.time ? Math.round(Date.now() - row.time) : 0;
       row.el.querySelector("td[data-time]").innerHTML =
         DateUtil.formattedTime(timeAgoMs);
+
+      this.highlightProblems(row);
     });
   }
 
@@ -148,7 +181,7 @@ class AppStoreTable extends HTMLElement {
   }
 
   removeRowsFromTable() {
-    let tbody = this.querySelector("tbody");
+    let tbody = this.getTBody();
     if (tbody) {
       while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
@@ -159,9 +192,9 @@ class AppStoreTable extends HTMLElement {
   buildRows(data) {
     this.rows = [];
     Object.keys(data).forEach((key) => {
-      let obj = data[key];
-      obj.el = this.buildRowEl(obj); // add html element to state data object
-      this.rows.push(obj);
+      let rowData = data[key];
+      rowData.el = this.buildRowEl(rowData); // add html element to state data object
+      this.rows.push(rowData);
     });
     this.sortRows();
   }
@@ -176,7 +209,7 @@ class AppStoreTable extends HTMLElement {
     });
 
     // then re-add to dom in sorted order
-    let tbody = this.querySelector("tbody");
+    let tbody = this.getTBody();
     if (tbody)
       this.rows.forEach((row) => {
         tbody.appendChild(row.el);
@@ -200,6 +233,7 @@ class AppStoreTable extends HTMLElement {
       val = DateUtil.formattedTime(val);
       rowType = "heartbeat";
     }
+
     let markup =
       /*html*/
       `<tr data-key="${obj.key}" data-row-type="${rowType}">
@@ -215,13 +249,6 @@ class AppStoreTable extends HTMLElement {
         </td>
       </tr>`;
     return this.stringToTrElement(markup);
-  }
-
-  insertTableRows() {
-    let tbody = this.querySelector("tbody");
-    this.rows.forEach((row) => {
-      tbody.appendChild(row.el);
-    });
   }
 
   getRowEl(key) {
@@ -241,7 +268,7 @@ class AppStoreTable extends HTMLElement {
         ${this.css()}
       </style>
     `;
-    this.insertTableRows();
+    this.sortRows();
     this.tableBuilt = true;
   }
 

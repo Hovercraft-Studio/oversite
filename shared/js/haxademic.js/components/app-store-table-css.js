@@ -52,6 +52,9 @@ app-store-clients {
     max-width: 100%;
     font-size: var(--table-font-size);
   }
+  tr.error {
+    background-color: rgba(255, 0, 0, 0.5);
+  }
   th,
   td {
     padding: calc(var(--pico-spacing) / 4) calc(var(--pico-spacing) / 6);

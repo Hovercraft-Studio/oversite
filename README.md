@@ -118,6 +118,7 @@ Notes:
   - Should automatically set `store: true`, the data `type`, and `sender` ID when sending messages
   - Should have an optional `broadcast` argument, in case a key/value should be only local
   - When broadcasting a key/value, *should wait for the value to bounce back from the WebSocket server before updating locally*. This way, the app won't get out of sync with shared state across apps/devices in case of a disconnected WebSocket connection. `AppStoreDistributed.set()` handles this automatically, as does the TouchDesigner implementation.
+  - Should send a heartbeat value every 5-10 seconds to show the app is still connected. If "sender" is "tablet", then the heartbeat should be "tablet_heartbeat" - the heartbeat key is matched with the sender ID for extra visibility in Monitor UI.
 
 ### AppStoreDistributed
 
@@ -147,7 +148,8 @@ Some notes on the Monitor UI:
 - The AppStore table has extra info and state indicators based on the full server.mjs 
 - Heartbeats should be in milliseconds since the client app started
   - This lets us see uptime across clients and takes advantage of special formatting and indicators for keys with "heartbeat" in the name
-  - If "sender" is "tablet", then the heartbeat should be "tablet_heartbeat" - the heartbeat is matched with the sender ID and the monitor has extra visibility in the client list
+  - If "sender" is "tablet", then the heartbeat should be "tablet_heartbeat" - the heartbeat is matched with the sender ID and the monitor has extra visibility in the client list. If not seen for 20 seconds, the heartbeat row will turn red
+- Besides "_heartbeat" keys, there's also a special case for "_health" keys. The monitor will show a red row if the value is false or 0. This can be helpful for monitoring the health of a camera feed, for example, but the value would have to be set in the originating app
 
 ### Web Components
 
