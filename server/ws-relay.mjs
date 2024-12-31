@@ -80,10 +80,11 @@ wsServer.on("connection", (connection, request, client) => {
     // relay incoming message to all clients
     wsServer.clients.forEach((client) => {
       let isSelf = client === connection;
+      let isReceiver = receiver && client.senderID == receiver;
       if (client.readyState === WebSocket.OPEN) {
         // relay message
-        if ((receiver && client.senderID === receiver) || !receiver) {
-          if ((sendOnly && !isSelf) || !sendOnly) {
+        if (!receiver || isReceiver || client.senderID == "monitor") {
+          if (!sendOnly || (sendOnly && !isSelf)) {
             client.send(message, { binary: isBinary });
           }
         }

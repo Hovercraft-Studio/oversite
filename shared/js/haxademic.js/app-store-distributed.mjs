@@ -47,7 +47,7 @@ class AppStoreDistributed extends AppStore {
     }
   }
 
-  set(key, value, broadcast = false, receiverId = null) {
+  set(key, value, broadcast = false, receiverId = null, sendOnly = false) {
     if (broadcast) {
       // get data type for java AppStore
       var type = "number";
@@ -62,6 +62,7 @@ class AppStoreDistributed extends AppStore {
       };
       if (this.senderId) data.sender = this.senderId;
       if (receiverId) data.receiver = receiverId;
+      if (sendOnly) data.sendonly = true;
       this.solidSocket.sendMessage(JSON.stringify(data)); // local AppStore is updated when message is broadcast back to us
     } else {
       super.set(key, value);
