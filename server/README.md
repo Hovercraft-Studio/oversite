@@ -1,7 +1,6 @@
 
 ## TODO:
 
-- Add a no-bounce option to prevent sending back to client - this would be for arduino or other devices that don't need a response
 - Move server responses to functions 
 - Test http-proxy
 - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
