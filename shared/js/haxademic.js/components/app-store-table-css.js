@@ -48,6 +48,10 @@ app-store-table,
 app-store-event-table,
 app-store-clients {
 
+  /* add horiz scroll if table is too wide */
+  display: block;
+  overflow-x: auto;
+
   table {
     max-width: 100%;
     font-size: var(--table-font-size);
