@@ -246,7 +246,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
       break;
     case WStype_CONNECTED:
       wsConnected = true;
-      sendKeyValue("arduino_connected", millis());
+      sendKeyValue("client_connected", millis());
       Serial.printf("[WSc] Connected to url: %s\n", payload);
       break;
     case WStype_TEXT:

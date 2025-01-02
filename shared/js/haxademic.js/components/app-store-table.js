@@ -206,7 +206,9 @@ class AppStoreTable extends HTMLElement {
       if (a.sender === b.sender) {
         return a.key.localeCompare(b.key);
       }
-      return a.sender.localeCompare(b.sender);
+      if (a.sender) {
+        return a.sender.localeCompare(b.sender);
+      }
     });
 
     // then re-add to dom in sorted order
