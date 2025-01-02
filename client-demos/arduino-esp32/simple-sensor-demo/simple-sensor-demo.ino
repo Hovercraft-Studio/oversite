@@ -7,7 +7,6 @@ Notes:
 - In Arduino's "Boards Manager" tab
   - Install the esp32 library by Expressif Systems
 - In Arduino's "Library Manager" tab
-  - Install the "Smoothed" library by Matthew Fryer
   - Install the "ArduinoWebsockets" library from gilmaimon
   - Install the "WebSockets" library by Markus Sattler
   - Install the "ArduinoJSON" library by Benoit Blanchon
