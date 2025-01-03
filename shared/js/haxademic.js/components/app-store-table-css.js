@@ -67,8 +67,12 @@ app-store-clients {
     color: inherit;
 
     white-space: nowrap;
-    /* line-break: anywhere;
-    white-space: break-spaces; */
+  }
+  td[data-value] {
+    /*line-break: anywhere;
+    white-space: break-spaces;*/
+    overflow: auto;
+    max-width: 10rem;
   }
   .heartbeat span svg path {
     fill: var(--pico-primary-background);
