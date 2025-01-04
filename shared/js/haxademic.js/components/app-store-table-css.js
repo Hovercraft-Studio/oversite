@@ -48,6 +48,10 @@ app-store-table,
 app-store-event-table,
 app-store-clients {
 
+  /* add horiz scroll if table is too wide */
+  display: block;
+  overflow-x: auto;
+
   table {
     max-width: 100%;
     font-size: var(--table-font-size);
@@ -63,8 +67,12 @@ app-store-clients {
     color: inherit;
 
     white-space: nowrap;
-    /* line-break: anywhere;
-    white-space: break-spaces; */
+  }
+  td[data-value] {
+    /*line-break: anywhere;
+    white-space: break-spaces;*/
+    overflow: auto;
+    max-width: 10rem;
   }
   .heartbeat span svg path {
     fill: var(--pico-primary-background);

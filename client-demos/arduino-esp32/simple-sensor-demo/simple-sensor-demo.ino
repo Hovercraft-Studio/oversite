@@ -7,7 +7,6 @@ Notes:
 - In Arduino's "Boards Manager" tab
   - Install the esp32 library by Expressif Systems
 - In Arduino's "Library Manager" tab
-  - Install the "Smoothed" library by Matthew Fryer
   - Install the "ArduinoWebsockets" library from gilmaimon
   - Install the "WebSockets" library by Markus Sattler
   - Install the "ArduinoJSON" library by Benoit Blanchon
@@ -32,6 +31,9 @@ Links:
 - Other:
   - https://www.hackster.io/shasha-liu/magic-wand-752f52
   - https://github.com/m5stack/MagicWand/blob/master/src/capture.cpp
+- Sensor: E18-D80NK
+  - https://www.instructables.com/Project-on-E18-D80NK-IR-Proximity-Sensor-With-Ardu/
+  - https://www.amazon.com/dp/B0BGCGBSD6
 
 ======================================================================================================
 */
@@ -83,11 +85,15 @@ int heartbeatInterval = 5000;
 void(* Reboot)(void) = 0;
 
 ////////////////////////////////////////////////////
-// sensor ws:// output timing
+// sensor & ws:// output timing
 ////////////////////////////////////////////////////
 
-long lastSendTime = 0;
-int sendReadingsInterval = 30;
+int inputPin = 25;
+int sensorValue = 0;
+long lastSensorTime = 0;
+int sensorInterval = 1;
+int sensorTimeout = 300;
+int sensorTriggerTime = 0;
 
 ////////////////////////////////////////////////////
 // LCD screen refresh interval
@@ -106,6 +112,7 @@ void setup() {
   Serial.begin(115200);
   initLCD();
   initNetwork();
+  initSensor();
 }
 
 void initLCD() {
@@ -123,11 +130,23 @@ void loop() {
   networkLoop();
   sendHeartbeat();
   checkButtonClick();
-  delay(20); // 50fps
+  delay(10); // 100hz
+}
+
+void initSensor() {
+  pinMode(inputPin, INPUT);
 }
 
 void updateSensors() {
-
+  if(!updateAllowed(lastSensorTime, sensorInterval)) return;
+  int newVal = digitalRead(inputPin);
+  if(newVal != sensorValue) {
+    sendKeyValue("sensor_value_1", newVal);
+  }
+  sensorValue = newVal;
+  if(sensorValue == 0) {
+    sensorTriggerTime = millis();
+  }
 }
 
 void sendKeyValue(String key, float value) {
@@ -147,7 +166,7 @@ void sendKeyValue(String key, float value) {
 }
 
 void sendReadings() {
-  if(!updateAllowed(lastSendTime, sendReadingsInterval)) return;
+  if(!updateAllowed(lastSensorTime, sensorInterval)) return;
   // sendKeyValue("motion_total", motionTotal);
 }
 
@@ -164,6 +183,14 @@ void drawReadings() {
   drawConnectionStatus(10, 30, "Wifi ", (WiFi.status() == WL_CONNECTED));
   drawConnectionStatus(10, 45, "ws://", wsConnected);
   M5.Lcd.setTextColor(WHITE, BLACK);
+
+  // sensor value
+  int sensorColor = (millis() - sensorTriggerTime < sensorTimeout) ? GREEN : RED;
+  M5.Lcd.drawFastHLine(10, 60, 100, sensorColor);
+  M5.Lcd.setCursor(10, 70);
+  M5.Lcd.println(sensorValue);
+  // M5.Lcd.setCursor(10, 85);
+  // M5.Lcd.println(sensorValAnalog);
 }
 
 void drawConnectionStatus(int x, int y, String connectionLabel, bool isConnected) {
@@ -178,7 +205,7 @@ void checkButtonClick() {
   M5.update();  // Read the press state of the key
   if (M5.BtnA.wasReleased()) {
     active = !active;
-    sendKeyValue("m5stick_button_pressed", active ? 1 : 0);
+    sendKeyValue("m5stick_front_button_pressed", active ? 1 : 0);
 
     // check active flag for bg color
     int bgColor = (active) ? BLACK : RED;
@@ -218,7 +245,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
       break;
     case WStype_CONNECTED:
       wsConnected = true;
-      sendKeyValue("arduino_connected", millis());
+      sendKeyValue("client_connected", millis());
       Serial.printf("[WSc] Connected to url: %s\n", payload);
       break;
     case WStype_TEXT:
@@ -240,8 +267,7 @@ void networkLoop() {
 }
 
 void sendHeartbeat() {
-  // only update on a reasonable interval
-  // but make it quick, because if messages get queued too much, the app will crash!
+  // send heartbeat every 5 seconds
   if(!updateAllowed(lastHeartbeatTime, heartbeatInterval)) return;
   sendKeyValue(String(sender) + "_heartbeat", millis());
 }

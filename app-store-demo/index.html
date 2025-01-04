@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../shared/css/styles.css" />
   </head>
   <body>
-    <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input kinect_1_depth_health kinect_2_depth_health kinect_3_depth_health" debug side-debug></app-store-init>
+    <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input camera_1_health camera_2_health camera_3_health" debug side-debug></app-store-init>
     <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="5000" show="false"></app-store-heartbeat>
     <custom-app>
       <main class="container">
@@ -45,11 +45,11 @@
           </p>
           <h4>Monitoring</h4>
           <p class="grid">
-            <app-store-health key="kinect_1_depth_health" value=""></app-store-health>
-            <app-store-health key="kinect_2_depth_health" value=""></app-store-health>
+            <app-store-health key="camera_1_health" value=""></app-store-health>
+            <app-store-health key="camera_2_health" value=""></app-store-health>
           </p>
           <p class="grid">
-            <app-store-health key="kinect_3_depth_health" value=""></app-store-health>
+            <app-store-health key="camera_3_health" value=""></app-store-health>
           </p>
         </section>
         <details>
