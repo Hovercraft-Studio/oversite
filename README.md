@@ -170,6 +170,7 @@ Here's a list of web components used in the frontend apps. Each may have optiona
 <app-store-button key="btn_toggle" value="0" toggle>Toggle</app-store-button>
 <app-store-textfield key="text_input" value=""></app-store-textfield>
 <app-store-slider key="slider_1" value="0" max="1"></app-store-slider>
+<app-store-health key="camera_1_health"></app-store-health>
 
 <!-- app-store-monitor -->
 <app-store-clients></app-store-clients>
