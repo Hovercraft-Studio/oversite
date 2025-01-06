@@ -3,18 +3,54 @@ import AppStoreDistributed from "../../../shared/js/haxademic.js/app-store-distr
 class AppStoreDemo {
   constructor() {
     this.config();
-    this.appStore = new AppStoreDistributed(`ws://${this.wsURL}`, "node_app");
+    this.appStore = new AppStoreDistributed(`${this.wsURL}`, "node_app");
     this.addListeners();
     this.startHeartbeat();
   }
 
+  getArg(key, defaultValue) {
+    const args = process.argv.slice(2);
+    const index = args.indexOf(key);
+    return index != -1 ? args[index + 1] : defaultValue;
+  }
+
   config() {
     // find ws:// server in args
-    // need to use 127.0.0.1 instead of localhost!
-    const args = process.argv.slice(2);
-    const serverIndex = args.indexOf("--server");
-    const nextArg = args[serverIndex + 1];
-    this.wsURL = serverIndex != -1 ? nextArg : "127.0.0.1:3001/ws";
+    this.wsURL = `ws://${this.getArg("--server", "127.0.0.1:3001/ws")}`; // need to use 127.0.0.1 instead of localhost!
+    // get server http port
+    this.httpPort = this.getArg("--portHttp", 3003);
+    // extrapolate http server from ws url and apply port
+    let socketURL = new URL(this.wsURL);
+    socketURL.protocol = "http:";
+    socketURL.search = "";
+    socketURL.pathname = "";
+    socketURL.port = this.httpPort;
+    this.serverURL = socketURL.href;
+
+    // hydrate with specified keys
+    this.hydrateOnInit(["user_id", "render_health", "render_status"]);
+  }
+
+  async hydrateOnInit(initKeys) {
+    // hydrate with specified keys, and if found in the server state
+    // set on local _store without broadcasting
+    try {
+      const response = await fetch(`${this.serverURL}state`);
+      if (!response.ok) {
+        throw new Error(
+          `Server error: ${response.status} ${response.statusText}`
+        );
+      }
+      const data = await response.json();
+      initKeys.forEach((key) => {
+        if (data[key]) {
+          console.log("hydrated", key, data[key].value);
+          this.appStore.set(key, data[key].value, false);
+        }
+      });
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
   }
 
   addListeners() {
