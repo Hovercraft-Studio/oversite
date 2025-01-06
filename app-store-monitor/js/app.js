@@ -83,7 +83,7 @@ class CustomApp extends HTMLElement {
   storeUpdated(key, value) {
     // console.log(key, value);
     if (key == "server_url") {
-      console.log(key, "=", value);
+      // console.log(key, "=", value);
       // set server url right header links
     }
   }
