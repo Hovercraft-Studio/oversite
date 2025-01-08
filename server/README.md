@@ -1,9 +1,12 @@
 
 ## TODO:
 
+- app-store-init init-keys should accept `*` for all keys
+- TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
+- Monitor:
+  - Click to resend a key/value
 - Move server responses to functions 
 - Test http-proxy
-- TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
 
 SSL
 
@@ -18,7 +21,6 @@ Nice-to-haves?
   - Add ws?sender= queryparam to Java client
   - Store sender in AppStoreDistributed for incoming messages
 - Monitor/frontend
-  - app-store-init init-keys should accept `*` for all keys
   - add "expected_clients" list to app-store-clients, and show a red row if a client is missing
   - QR code somewhere to launch BA app (or any link for a client app)
   - Client list last message sent time?
@@ -26,7 +28,6 @@ Nice-to-haves?
   - Add these to the client storage? or maybe just keep these in the Monitor?
     - Add `sender` to JS table (added to AppStoreDistributed via `getData()`)
     - Add `sender` to TD table
-  - Click to resend a key/value?
   - Add a button to wipe the store (it will repopulate as messages come in)
   - Can we send a message to remove a key on the clients?
 - ws-relay

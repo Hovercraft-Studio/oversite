@@ -8,6 +8,13 @@ Default locations & ports are:
 - http://localhost:3002 - Vite frontend
 - http://localhost:3003 - http server
 
+## Quickstart
+
+- `npm i`
+- `npm run start`
+- Open `http://localhost:3002` in a browser and view the UI demo or the Monitor
+- Open `app-store-demo.toe` in TouchDesigner
+
 ## Install
 
 ```bash
@@ -18,16 +25,11 @@ npm install
 
 ## Run
 
-**Legacy use**: Use `npm run ws` to only start the simple websocket relay server. This is useful for testing the websocket connection without the frontend.
-
-On the frontend, you should use AppStoreDistributed to connect to the websocket server and send messages. See `app-store-demo` for an example.
-
 **Recommended use**: Use `npm run start` to run the robust tooling including: 
 
 - Websocket server (`ws`) on port 3001
 - Frontend server (`dev`) on port 3002
 - Server app (`server`) on port 3003
-
 
 **Customizing the run commands**:
 
@@ -45,6 +47,11 @@ Packages used:
 - `concurrently` - Run multiple commands concurrently
 - `nodemon` - Automatically restart the node server when files change
 - `vite` - Frontend server for the demo UI and monitor
+
+
+**Legacy use**: Use `npm run ws` to only start the simple websocket relay server. This is useful for testing the websocket connection without the frontend.
+
+On the frontend, you should use the `<app-store-init>` web component to connect to the websocket server and send messages. See `app-store-demo` for an example.
 
 
 ## WebSocket & Server app
