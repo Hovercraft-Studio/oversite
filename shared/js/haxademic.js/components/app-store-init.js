@@ -69,6 +69,7 @@ class AppStoreInit extends HTMLElement {
       initKeys = initKeys.split(" ");
       if (initKeys.length > 0) {
         try {
+          // get data from server
           const response = await fetch(`${this.serverURL}state`);
           if (!response.ok) {
             throw new Error(
@@ -76,10 +77,21 @@ class AppStoreInit extends HTMLElement {
             );
           }
           const data = await response.json();
-          initKeys.forEach((key) => {
-            if (!data[key]) return;
-            _store.set(key, data[key].value, false);
-          });
+          // set local _store values based on which were requested
+          // either 1) all keys
+          if (initKeys.includes("*")) {
+            Object.keys(data).forEach((key) => {
+              _store.set(key, data[key].value, false);
+            });
+          }
+          // or 2) specific keys that we've defined, making sure they're in the server store before saving locally
+          else {
+            initKeys.forEach((key) => {
+              if (data[key]) {
+                _store.set(key, data[key].value, false);
+              }
+            });
+          }
         } catch (error) {
           console.error("Failed to fetch data:", error);
         }
