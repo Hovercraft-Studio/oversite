@@ -9,7 +9,7 @@ Notes:
 
 Usage:
 
-node run-chrome.mjs --url http://localhost:3002 --chrome "C:\\Program Files\\Chromium\\Application\\"
+node run-chrome.mjs --url http://localhost:3002 --chrome-path "C:\\Program Files\\Chromium\\Application\\"
 
 To launch 2 Chrome windows to different monitors:
 
@@ -29,7 +29,7 @@ Required params:
 
 Optional params:
 
-`--chrome` - Path to the Chrome executable. Needs formatting like: `C:\\Program Files\\Chromium\\Application\\`
+`--chrome-path` - Path to the Chrome executable. Needs formatting like: `C:\\Program Files\\Chromium\\Application\\`
 `--kiosk` - Whether to run in kiosk mode (true/false) - most likely for a user-facing locked-down touchscreen. Defaults to false. Don't combine with ---fullscreen mode.
 `--fullscreen` - Whether to launch in fullscreen. Defaults to false. Allows for exiting fullscreen mode for debugging. Don't combine with ---kiosk mode.
 `--screen-num` - Required when using kiosk/fullscreen across multiple monitors. It should be set to the display number to launch the window on. This creates a Chrome user profile directory on the computer on the C: drive for each browser. This user directory lets chrome launch 2+ fullscreen/kiosk windows on separate displays at the same time, as it runs them in separate sandboxes, to a degree. 
@@ -110,8 +110,11 @@ function getArg(key, defaultValue) {
   return index != -1 ? args[index + 1] : defaultValue;
 }
 
+const chrome = getArg(
+  "--chrome-path",
+  "C:\\Program Files\\Chromium\\Application\\"
+);
 const url = getArg("--url", "http://localhost:3002");
-const chrome = getArg("--chrome", "C:\\Program Files\\Chromium\\Application\\");
 const killBefore = getArg("--kill-before", "false") === "true";
 const isIncognito = getArg("--incognito", "false") === "true";
 const isKiosk = getArg("--kiosk", "false") === "true";
