@@ -42,10 +42,13 @@ class WebsocketIndicator extends HTMLElement {
 
   css() {
     return /*css*/ `
-      div {
+      :host {
+        z-index: 9999;
         position: absolute;
         top: 1rem;
         right: 1rem;
+      }
+      div {
         width: 20px; 
         height: 20px; 
         border-radius: 10px;
