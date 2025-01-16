@@ -29,6 +29,14 @@ class URLUtil {
     return null;
   }
 
+  static hashParamConfig(key, defaultVal) {
+    // use value from the URL hash if it exists, otherwise use default value and write to hash for the next reload
+    let hashParams = new URLSearchParams(document.location.hash);
+    let val = hashParams.has(key) ? hashParams.get(key) : defaultVal;
+    if (!hashParams.has(key)) document.location.hash += `&${key}=${val}`;
+    return val;
+  }
+
   static curAbsolutePath() {
     return `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
   }

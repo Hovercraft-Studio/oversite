@@ -1,4 +1,5 @@
 import AppStoreDistributed from "../app-store-distributed.mjs";
+import URLUtil from "../url-util.mjs";
 
 // self-registering child components
 import "./websocket-indicator.js";
@@ -13,19 +14,10 @@ class AppStoreInit extends HTMLElement {
   }
 
   initServerURL() {
-    // get any config from URL hash
-    // we'll write to the hash to make it easy to share
-    let hashParams = new URLSearchParams(document.location.hash);
-
     // get address from querystring or use default
     // and show in URL for easy sharing
-    let wsServerFromQuery = hashParams.get("wsURL");
-    this.webSocketURL = wsServerFromQuery;
-    this.webSocketURL ??= "ws://" + document.location.hostname + ":3001/ws"; // use webpage address to calculate default websocket address
-    if (!wsServerFromQuery) {
-      // write server to hash if not already there
-      document.location.hash += `&wsURL=${this.webSocketURL}`;
-    }
+    const defaultWsURL = "ws://" + document.location.hostname + ":3001/ws";
+    this.webSocketURL = URLUtil.hashParamConfig("wsURL", defaultWsURL);
 
     // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
     // we just need to check for a custom http port in the URL and otherwise use the ws:// address
@@ -33,12 +25,7 @@ class AppStoreInit extends HTMLElement {
     socketURL.protocol = "http:";
     socketURL.search = "";
     socketURL.pathname = "";
-    if (document.location.hash.includes("httpPort")) {
-      socketURL.port = hashParams.get("httpPort"); // use port from the URL if exists
-    } else {
-      socketURL.port = 3003; // use default server port and write to hash
-      document.location.hash += `&httpPort=${socketURL.port}`;
-    }
+    socketURL.port = URLUtil.hashParamConfig("httpPort", 3003);
     this.serverURL = socketURL.href;
   }
 
