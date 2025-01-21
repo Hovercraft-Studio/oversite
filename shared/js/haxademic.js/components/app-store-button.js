@@ -52,8 +52,8 @@ class AppStoreButton extends AppStoreElement {
       checkbox.checked = value == true || parseInt(value) == 1; // allow for 1/0 or true/false
     } else {
       // normal button behavior (w/possible shared key)
-      if (value == this.storeValue) this.button.setAttribute("disabled", true);
-      else this.button.removeAttribute("disabled");
+      if (value == this.storeValue) this.button.classList.add("secondary");
+      else this.button.classList.remove("secondary");
     }
   }
 

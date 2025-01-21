@@ -22,6 +22,7 @@ class AppStoreElement extends HTMLElement {
     else if (this.storeValue == "false") this.storeValue = false;
     else if (this.storeValue == "0") this.storeValue = 0;
     else if (this.storeValue == "1") this.storeValue = 1;
+    else if (this.storeValue == "-1") this.storeValue = -1;
 
     // AppStore connection when _store is available
     this.valueFromStore = null;
