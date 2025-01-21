@@ -29,8 +29,11 @@ class ObjectUtil {
   }
 
   static callbackWhenPropertyExists(obj, prop, callback) {
-    if (obj[prop]) callback(obj[prop]);
-    else {
+    if (obj[prop]) {
+      setTimeout(() => {
+        callback(obj[prop]);
+      }, 100);
+    } else {
       let interval = setInterval(() => {
         if (obj[prop]) {
           clearInterval(interval);
