@@ -32,7 +32,11 @@ class AppStoreButton extends AppStoreElement {
       // broadcast current value
       _store.set(this.storeKey, curVal, true);
       // if the storeValue is "momentary", send 1 and immediately 0
-      if (this.isMomentary) _store.set(this.storeKey, 0, true);
+      if (this.isMomentary) {
+        setTimeout(() => {
+          _store.set(this.storeKey, 0, true);
+        }, 50);
+      }
     });
 
     if (this.isToggle) {
