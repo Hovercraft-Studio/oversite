@@ -54,10 +54,13 @@ class AppStoreButton extends AppStoreElement {
       // set checkbox indicator
       let checkbox = this.button.querySelector("input");
       checkbox.checked = value == true || parseInt(value) == 1; // allow for 1/0 or true/false
+      // set background color
+      if (checkbox.checked) this.button.classList.add("secondary");
+      else this.button.classList.remove("secondary");
     } else {
       // normal button behavior (w/possible shared key)
-      if (value == this.storeValue) this.button.setAttribute("disabled", true);
-      else this.button.removeAttribute("disabled");
+      if (value == this.storeValue) this.button.classList.add("secondary");
+      else this.button.classList.remove("secondary");
     }
   }
 

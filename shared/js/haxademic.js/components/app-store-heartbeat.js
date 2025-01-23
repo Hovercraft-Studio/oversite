@@ -3,9 +3,9 @@ import DateUtil from "../date-util.mjs";
 
 class AppStoreHeartbeat extends AppStoreElement {
   initStoreListener() {
-    super.initStoreListener();
     this.displays = this.getAttribute("show") == "true";
     this.startInterval();
+    super.initStoreListener();
   }
 
   startInterval() {

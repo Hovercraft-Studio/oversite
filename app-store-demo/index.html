@@ -16,6 +16,7 @@
     <title>AppStore UI demo</title>
     <link rel="stylesheet" href="../shared/css/pico.css" />
     <link rel="stylesheet" href="../shared/css/styles.css" />
+    <script type="module" src="../shared/js/haxademic.js/components/_register-components.js"></script>
   </head>
   <body>
     <!-- <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input camera_1_health camera_2_health camera_3_health" debug side-debug></app-store-init> -->
@@ -39,9 +40,15 @@
           </nav>
           <h4>Input Fields</h4>
           <p>
+            <label>app-store-textfield</label>
             <app-store-textfield key="text_input" value=""></app-store-textfield>
           </p>
           <p>
+            <label>app-store-number</label>
+            <app-store-number key="numeric_input" value=""></app-store-number>
+          </p>
+          <p>
+            <label>app-store-slider</label>
             <app-store-slider key="slider_1" value="0" max="1"></app-store-slider>
           </p>
           <h4>Monitoring</h4>
