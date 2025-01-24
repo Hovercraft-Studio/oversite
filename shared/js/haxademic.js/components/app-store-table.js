@@ -28,6 +28,7 @@ class AppStoreTable extends HTMLElement {
   }
 
   storeUpdated(key, value) {
+    if (!key) return;
     this.addRow(key, value);
     this.flashRow(key);
   }
@@ -194,8 +195,10 @@ class AppStoreTable extends HTMLElement {
     this.cleanRows();
     Object.keys(data).forEach((key) => {
       let rowData = data[key];
-      rowData.el = this.buildRowEl(rowData); // add html element to state data object
-      this.rows.push(rowData);
+      if (rowData.key) {
+        rowData.el = this.buildRowEl(rowData); // add html element to state data object
+        this.rows.push(rowData);
+      }
     });
     this.sortRows();
   }
@@ -231,8 +234,7 @@ class AppStoreTable extends HTMLElement {
     let timeAgoMs = obj.time ? Math.round(Date.now() - obj.time) : 0;
     let rowType = "";
     let val = obj.value;
-
-    if (obj.key.toLowerCase().includes("heartbeat")) {
+    if (obj.key && obj.key.toLowerCase().includes("heartbeat")) {
       val = DateUtil.formattedTime(val);
       rowType = "heartbeat";
     }

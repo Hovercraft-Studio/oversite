@@ -40,6 +40,7 @@ class AppStoreDebug extends HTMLElement {
       : "";
     return /*css*/ `
       :host {
+        box-sizing: border-box;
         border-top: 2px solid green;
         position: fixed;
         bottom: 0;
