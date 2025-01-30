@@ -48,8 +48,8 @@ class AppStore {
     if (this.persistData) this.saveToLocalStorage(key);
   }
 
-  get(key) {
-    return this.state[key] || null;
+  get(key, defaultValue = null) {
+    return this.state[key] || defaultValue;
   }
 
   toString() {
