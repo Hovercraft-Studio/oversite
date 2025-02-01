@@ -9,6 +9,8 @@ import "./app-store-number.js";
 import "./app-store-slider.js";
 import "./app-store-textfield.js";
 import "./date-year.js";
+import "./modal-dialog.js";
+import "./notyf-listener.js";
 
 // app store init/logging/monitoring
 import "./app-store-init.js";
