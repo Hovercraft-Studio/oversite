@@ -7,16 +7,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "ws": "node ./server/ws-relay.mjs --port 3001",
-    "server": "nodemon --watch ./server --ext mjs node ./server/server.mjs --port 3001 --portHttp 3003",
+    "server": "node --watch ./server/server.mjs --port 3001 --portHttp 3003",
     "start": "concurrently \"npm run dev\" \"npm run server\"",
-    "node-app-demo": "nodemon --watch ./client-demos/nodejs/node-app-demo --ext mjs node ./client-demos/nodejs/node-app-demo/index.mjs --server 127.0.0.1:3001/ws --portHttp 3003",
+    "node-app-demo": "node --watch ./client-demos/nodejs/node-app-demo/index.mjs --server 127.0.0.1:3001/ws --portHttp 3003",
     "launch-chrome": "node ./scripts/run-chrome.mjs --url http://localhost:3002 --location 500,100 --fullscreen true --screen-num 1"
   },
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^1.1.0",
     "concurrently": "^9.0.1",
     "http-proxy": "^1.18.1",
-    "nodemon": "^3.1.9",
     "notyf": "^3.10.0",
     "vite": "^6.0.11",
     "websocket": "^1.0.34",
