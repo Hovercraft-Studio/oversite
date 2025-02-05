@@ -15,6 +15,7 @@ class ModalDialog extends HTMLElement {
 
   initStoreListener() {
     _store.addListener(this, "OPEN_MODAL");
+    _store.addListener(this, "CLOSE_MODAL");
   }
 
   config() {
@@ -22,6 +23,10 @@ class ModalDialog extends HTMLElement {
     this.content = `Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus pellentesque. Nullam finibus risus non semper euismod.`;
     this.cancelValue = "Cancel example";
     this.confirmValue = "Confirm example";
+    this.cancelBtnTextDef = "Cancel";
+    this.cancelBtnText = this.cancelBtnTextDef;
+    this.confirmBtnTextDef = "Confirm";
+    this.confirmBtnText = this.confirmBtnTextDef;
 
     this.isOpenClass = "modal-is-open";
     this.openingClass = "modal-is-opening";
@@ -70,7 +75,15 @@ class ModalDialog extends HTMLElement {
     this.content = config.content;
     this.cancelValue = config.cancelValue;
     this.confirmValue = config.confirmValue;
+    this.cancelBtnText = this.cancelBtnTextDef;
+    if (config.cancelBtnText) this.cancelBtnText = config.cancelBtnText;
+    this.confirmBtnText = this.confirmBtnTextDef;
+    if (config.confirmBtnText) this.confirmBtnText = config.confirmBtnText;
     this.openModal();
+  }
+
+  CLOSE_MODAL(val) {
+    this.closeModal();
   }
 
   openModal() {
@@ -116,13 +129,13 @@ class ModalDialog extends HTMLElement {
 
   cancelButton() {
     return /*html*/ `
-      <button role="button" class="secondary" data-action-close="cancel">Cancel</button>
+      <button role="button" class="secondary" data-action-close="cancel">${this.cancelBtnText}</button>
     `;
   }
 
   confirmButton() {
     return /*html*/ `
-      <button autofocus data-action-close="confirm">Confirm</button>
+      <button autofocus data-action-close="confirm">${this.confirmBtnText}</button>
     `;
   }
 
