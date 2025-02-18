@@ -8,11 +8,17 @@ class AppStoreButton extends AppStoreElement {
 
   initStoreListener() {
     this.button = this.el.querySelector("button");
-    this.isToggle = this.getAttribute("toggle") != null;
-    this.isMomentary = this.getAttribute("momentary") != null;
+    this.isToggle = this.hasAttribute("toggle");
+    this.isMomentary = this.hasAttribute("momentary");
+    this.isConfirm = this.hasAttribute("confirm");
     if (this.isMomentary) this.storeValue = 1; // if the storeValue is "momentary", always use 1/0 to send a pulse
     this.button.addEventListener(this.clickEvent(), (e) => {
       if (!this.storeKey) return;
+      if (this.isConfirm) {
+        let confirmMsg = this.getAttribute("confirm");
+        if (!confirmMsg || confirmMsg.length == 0) confirmMsg = "Are you sure?";
+        if (!confirm(confirmMsg)) return;
+      }
 
       // if value isn't in store yet, use initial attribute value
       // this is more for the toggle button, b/c it changes its value
