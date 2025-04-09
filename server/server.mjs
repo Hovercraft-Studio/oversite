@@ -1,3 +1,7 @@
+// Add dashboard
+import "./dashboard-init.mjs";
+
+// import http for simple web server
 import http from "http";
 import ipAddr from "./util.mjs";
 
@@ -21,10 +25,7 @@ wsServer.on("connection", (connection, request, client) => {
 
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Content-Type", "application/json");
 
