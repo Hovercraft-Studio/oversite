@@ -301,7 +301,7 @@ class DashboardView extends HTMLElement {
       ? this.renderProjectHistory(data.checkins[this.isDetail])
       : this.renderProjects(data);
 
-    let dashboardTitle = this.isDetail ? `<a href="#home">Dashboard</a>` : "Dashboard";
+    let dashboardTitle = this.isDetail ? `<a href="#home">All Projects</a>` : "All Projects";
     let apiLinkProject = this.isDetail ? `/${this.isDetail}` : "";
 
     // render
@@ -323,7 +323,7 @@ class DashboardView extends HTMLElement {
 
   breadcrumb(data, appId) {
     if (data && appId) {
-      return `🠊 ${data.checkins[appId].appTitle}`;
+      return `→ ${data.checkins[appId].appTitle}`;
     } else {
       return "";
     }
