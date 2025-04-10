@@ -2,8 +2,9 @@ import { promises as fs } from "fs";
 import { join } from "path";
 
 class PersistentState {
-  constructor(wsServer, baseDataPath, projectId) {
+  constructor(wsServer, app, baseDataPath, projectId) {
     this.wsServer = wsServer;
+    this.app = app;
     this.baseDataPath = baseDataPath;
     this.projectId = projectId;
 
@@ -12,6 +13,37 @@ class PersistentState {
     this.state = {};
     this.loadStateFromFile(this.dataPath);
     this.listenToWsServer();
+    this.addRoutes();
+  }
+
+  addRoutes() {
+    this.app.get("/", (req, res) => {
+      res.json({ message: "Welcome to AppStore" });
+    });
+
+    this.app.get("/state/:key", (req, res) => {
+      const key = req.params.key;
+      if (this.getState(key)) {
+        res.json(this.getState(key));
+      } else {
+        res.json(null);
+      }
+    });
+
+    this.app.get("/state", (req, res) => {
+      res.json(this.state);
+    });
+
+    this.app.get("/wipe/:key", (req, res) => {
+      const key = req.params.key;
+      this.removeKey(key);
+      res.json(this.state);
+    });
+
+    this.app.get("/wipe", (req, res) => {
+      this.removeAllKeys();
+      res.json(this.state);
+    });
   }
 
   getAll() {

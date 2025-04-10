@@ -37,11 +37,6 @@ eventLog(
 // Add dashboard
 import "./dashboard-init.mjs";
 
-import PersistentState from "./persistent-state.mjs";
-import SocketServer from "./socket-server.mjs";
-const persistentState = new PersistentState(wsServer, baseDataPath, "state");
-const socketServer = new SocketServer(wsServer, persistentState, debug);
-
 // CORS middleware
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -51,35 +46,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to AppStore" });
-});
+import PersistentState from "./persistent-state.mjs";
+import SocketServer from "./socket-server.mjs";
+const persistentState = new PersistentState(wsServer, app, baseDataPath, "state");
+const socketServer = new SocketServer(wsServer, persistentState, debug);
 
-app.get("/state/:key", (req, res) => {
-  const key = req.params.key;
-  if (persistentState.getState(key)) {
-    res.json(persistentState.getState(key));
-  } else {
-    res.json(null);
-  }
-});
-
-app.get("/state", (req, res) => {
-  res.json(persistentState.getAll());
-});
-
-app.get("/wipe/:key", (req, res) => {
-  const key = req.params.key;
-  persistentState.removeKey(key);
-  res.json(persistentState.getAll());
-});
-
-app.get("/wipe", (req, res) => {
-  persistentState.removeAllKeys();
-  res.json(persistentState.getAll());
-});
-
+// todo: move this into SocketServer??
 app.get("/clients", (req, res) => {
   let clients = [];
   wsServer.clients.forEach((client) => {
