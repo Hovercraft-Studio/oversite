@@ -14,16 +14,13 @@ const __dirname = path.dirname(__filename);
 const config =
   process.env.NODE_ENV === "production"
     ? {
-        dashboardPath: "/var/data/dashboard",
-        dashboardApiRoute: "/secret/dashboard",
+        dashboardPath: "data/dashboard",
+        dashboardApiRoute: "/dashboard",
       }
     : {
-        dashboardPath: "dashboard/data", // relative to project root
+        dashboardPath: "data/dashboard", // relative to script
         dashboardApiRoute: "/dashboard",
       };
-
-// fix headers on media files?
-// app.use(express.static("public"));
 
 // dashboard init
 // get project root path on disk

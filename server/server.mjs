@@ -1,9 +1,17 @@
-// Add dashboard
-import "./dashboard-init.mjs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+// get relative path to script
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// import http for simple web server
+// import web server tools
 import http from "http";
+import express from "express";
+const app = express();
+
+// Add dashboard
 import ipAddr from "./util.mjs";
+import "./dashboard-init.mjs";
 
 // import websocket server and event log
 import { wsServer, eventLog } from "./ws-relay.mjs";
@@ -23,65 +31,67 @@ wsServer.on("connection", (connection, request, client) => {
   });
 });
 
-const server = http.createServer((req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Content-Type", "application/json");
+// CORS middleware
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Content-Type", "application/json");
+  next();
+});
 
-  let url = req.url;
-  let method = req.method;
-  let pathSplit = url.split("/");
-  let isGET = method === "GET";
-  let isPOST = method === "POST";
+// Routes
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to AppStore" });
+});
 
-  if (url === "/" && isGET) {
-    // handle root
-    res.writeHead(200);
-    res.end(JSON.stringify({ message: "Welcome to AppStore" }));
-  } else if (url.startsWith("/state") && url.length > 6 && isGET) {
-    // return a single key
-    const key = pathSplit[2];
-    res.writeHead(200);
-    if (state[key]) {
-      res.end(JSON.stringify(state[key]));
-    } else {
-      res.end(JSON.stringify(null));
-    }
-  } else if (url === "/state" && isGET) {
-    // return entire state
-    res.writeHead(200);
-    res.end(JSON.stringify(state));
-  } else if (url.startsWith("/wipe") && url.length > 5 && isGET) {
-    // remove a single key
-    const key = pathSplit[2];
-    removeKey(key);
-    res.writeHead(200);
-    res.end(JSON.stringify(state));
-  } else if (url === "/wipe" && isGET) {
-    // remove all keys
-    removeAllKeys();
-    res.writeHead(200);
-    res.end(JSON.stringify(state));
-  } else if (url === "/clients" && isGET) {
-    let clients = [];
-    wsServer.clients.forEach((client) => {
-      clients.push({
-        sender: client.senderID,
-        connectedTime: Date.now() - client.startTime,
-      });
-    });
-    res.writeHead(200);
-    res.end(JSON.stringify(clients));
+app.get("/state/:key", (req, res) => {
+  const key = req.params.key;
+  if (state[key]) {
+    res.json(state[key]);
   } else {
-    res.writeHead(404);
-    res.end(JSON.stringify({ error: "Not Found" }));
+    res.json(null);
   }
 });
 
+app.get("/state", (req, res) => {
+  res.json(state);
+});
+
+app.get("/wipe/:key", (req, res) => {
+  const key = req.params.key;
+  removeKey(key);
+  res.json(state);
+});
+
+app.get("/wipe", (req, res) => {
+  removeAllKeys();
+  res.json(state);
+});
+
+app.get("/clients", (req, res) => {
+  let clients = [];
+  wsServer.clients.forEach((client) => {
+    clients.push({
+      sender: client.senderID,
+      connectedTime: Date.now() - client.startTime,
+    });
+  });
+  res.json(clients);
+});
+
+// Handle 404
+app.use((req, res) => {
+  res.status(404).json({ error: "Not Found" });
+});
+
+// Parse arguments and start server
 const args = process.argv.slice(2);
 const portArgIndex = args.indexOf("--portHttp");
 const httpPort = portArgIndex != -1 ? parseInt(args[portArgIndex + 1]) : 3003;
+
+// Create HTTP server
+const server = http.createServer(app);
 server.listen(httpPort, () => {
   eventLog(`Web server is running on http://${ipAddr}:${httpPort}`);
 });
