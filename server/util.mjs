@@ -32,4 +32,4 @@ function eventLog(...args) {
 }
 
 export default ipAddr;
-export { getLocalIpAddress, eventLog, getValueFromArgs };
+export { getLocalIpAddress, ipAddr, eventLog, getValueFromArgs };

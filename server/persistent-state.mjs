@@ -14,6 +14,18 @@ class PersistentState {
     this.listenToWsServer();
   }
 
+  getAll() {
+    return this.state;
+  }
+
+  getState(key) {
+    return this.state[key];
+  }
+
+  setState(key, value) {
+    this.state[key] = value;
+  }
+
   listenToWsServer() {
     // store incoming messages to state
     this.wsServer.on("connection", (connection, request, client) => {
