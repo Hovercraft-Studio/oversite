@@ -20,15 +20,22 @@ class DashboardApi {
     this.routeDeleteProject = `${this.routeBase}/delete/:appId`;
     this.routeImages = `${this.routeBase}/images`;
 
-    // create path if it doesn't exist
-    // use image dir, but recursive gets us the base dir too
+    // init
+    this.isWriting = false;
+    this.createDir(this.pathImages); // create entire local data path (on disk) recursively by creating the deepest level for images
+    this.loadDB();
+    this.addRoutes();
+  }
+
+  createDir(dirPath) {
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+  }
+
+  printConfig() {
     console.log("===========================================================================");
     console.log("Dashboard init ============================================================");
-    console.log("Init options:");
-    console.table([
-      ["dashboardDataPath", config.dashboardDataPath],
-      ["dashboardApiRoute", config.dashboardApiRoute],
-    ]);
     console.log("Paths on disk:");
     console.table([
       ["Dashboard data dir", this.pathDashboardData],
@@ -45,25 +52,13 @@ class DashboardApi {
       ["Checkin images route", this.routeImages],
     ]);
     console.log("===========================================================================");
-
-    // init
-    this.isWriting = false;
-    this.createDir(this.pathImages); // create entire local data path (on disk) recursively by creating the deepest level for images
-    this.loadDB();
-    this.configureRoutes();
-  }
-
-  createDir(dirPath) {
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
   }
 
   /////////////////////////////////////////////////////////
   // Server config
   /////////////////////////////////////////////////////////
 
-  configureRoutes() {
+  addRoutes() {
     // accept JSON post w/open CORS policy
     // this must be in place before following use() calls
     this.app.use(
@@ -97,10 +92,11 @@ class DashboardApi {
     try {
       let dbFile = fs.readFileSync(this.pathDbFile, "utf8");
       this.dashboardData = JSON.parse(dbFile);
-      console.log(`Dashboard data loaded with (${Object.keys(this.dashboardData.checkins).length}) projects`);
+      console.log(`✅ Dashboard data loaded with (${Object.keys(this.dashboardData.checkins).length}) projects`);
     } catch (error) {
-      console.warn("Error reading dashboard data, creating from scratch. Probably first run, or data was corrupt.");
+      console.warn("⚠️ Error reading dashboard data, creating from scratch. Probably first run, or data was corrupt.");
       this.dashboardData = { checkins: {} };
+      this.writeDbFile();
     }
   }
 
@@ -111,9 +107,9 @@ class DashboardApi {
       this.isWriting = true;
       try {
         fs.writeFileSync(this.pathDbFile, JSON.stringify(this.dashboardData, null, 2));
-        console.log("Dashboard data written to disk:", this.pathDbFile);
+        console.log("✅ Dashboard data written to disk:", this.pathDbFile);
       } catch (error) {
-        console.error("Error writing dashboard data:", error);
+        console.error("⚠️ Error writing dashboard data:", error);
       }
       this.isWriting = false;
     }

@@ -2,8 +2,9 @@ import WebSocket from "ws";
 import { eventLog } from "./util.mjs";
 
 class SocketServer {
-  constructor(wsServer, persistentState, debug) {
+  constructor(wsServer, app, persistentState, debug) {
     this.wsServer = wsServer;
+    this.app = app;
     this.persistentState = persistentState;
     this.wssPort = wsServer.options.port;
     this.debug = debug;
@@ -15,6 +16,20 @@ class SocketServer {
 
     // Set up connection listener
     this.wsServer.on("connection", this.handleConnection);
+    this.addRoutes();
+  }
+
+  addRoutes() {
+    this.app.get("/clients", (req, res) => {
+      let clients = [];
+      this.wsServer.clients.forEach((client) => {
+        clients.push({
+          sender: client.senderID,
+          connectedTime: Date.now() - client.startTime,
+        });
+      });
+      res.json(clients);
+    });
   }
 
   handleConnection(connection, request, client) {
