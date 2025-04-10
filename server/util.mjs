@@ -14,5 +14,22 @@ function getLocalIpAddress() {
 }
 const ipAddr = getLocalIpAddress();
 
+function getValueFromArgs(argName, defaultVal) {
+  const args = process.argv.slice(2);
+  const index = args.indexOf(argName);
+  if (index !== -1 && index + 1 < args.length) {
+    return args[index + 1];
+  }
+  return defaultVal;
+}
+
+function eventLog(...args) {
+  console.log("===================================");
+  for (let arg of args) {
+    console.log("\x1b[42m%s\x1b[0m", arg);
+  }
+  console.log("===================================");
+}
+
 export default ipAddr;
-export { getLocalIpAddress };
+export { getLocalIpAddress, eventLog, getValueFromArgs };

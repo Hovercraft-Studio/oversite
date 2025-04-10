@@ -1,8 +1,20 @@
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { getValueFromArgs } from "./util.mjs";
+
 // get relative path to script
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const baseDataPath = join(__dirname, "data");
+
+// get config from cli args
+const args = process.argv.slice(2);
+const portWssIndex = getValueFromArgs("--port", 3001);
+const httpPort = getValueFromArgs("--portHttp", 3003);
+const debug = args.indexOf("--debug") != -1;
+console.log("Debug mode:", debug);
+console.log("WebSocket server port:", portWssIndex);
+console.log("HTTP server port:", httpPort);
 
 // import web server tools
 import http from "http";
@@ -15,21 +27,11 @@ import "./dashboard-init.mjs";
 
 // import websocket server and event log
 import { wsServer, eventLog } from "./ws-relay.mjs";
-import { state, setStateData, removeKey, removeAllKeys } from "./state.mjs";
 
-// listen for incoming store values
-wsServer.on("connection", (connection, request, client) => {
-  connection.on("message", (message, isBinary) => {
-    try {
-      const json = JSON.parse(message);
-      if (json.store) {
-        setStateData(json);
-      }
-    } catch (error) {
-      console.error("Error parsing incoming message:", error);
-    }
-  });
-});
+import PersistentState from "./persistent-state.mjs";
+// import SocketServer from "./socket-server.mjs";
+const persistentState = new PersistentState(wsServer, baseDataPath, "state");
+// const SocketServer = new SocketServer(wsServer, persistentState);
 
 // CORS middleware
 app.use((req, res, next) => {
@@ -84,11 +86,6 @@ app.get("/clients", (req, res) => {
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
-
-// Parse arguments and start server
-const args = process.argv.slice(2);
-const portArgIndex = args.indexOf("--portHttp");
-const httpPort = portArgIndex != -1 ? parseInt(args[portArgIndex + 1]) : 3003;
 
 // Create HTTP server
 const server = http.createServer(app);

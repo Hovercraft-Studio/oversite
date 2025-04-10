@@ -1,0 +1,87 @@
+import { promises as fs } from "fs";
+import { join } from "path";
+
+class PersistentState {
+  constructor(wsServer, baseDataPath, projectId) {
+    this.wsServer = wsServer;
+    this.baseDataPath = baseDataPath;
+    this.projectId = projectId;
+
+    this.dataPath = join(this.baseDataPath, `${this.projectId}.json`);
+    this.lastSaveTime = Date.now();
+    this.state = {};
+    this.loadStateFromFile(this.dataPath);
+    this.listenToWsServer();
+  }
+
+  listenToWsServer() {
+    // store incoming messages to state
+    this.wsServer.on("connection", (connection, request, client) => {
+      connection.on("message", (message, isBinary) => {
+        try {
+          const json = JSON.parse(message);
+          if (json.store) {
+            this.setStateData(json);
+          }
+        } catch (error) {
+          console.error("Error parsing incoming message:", error);
+        }
+      });
+    });
+  }
+
+  setStateData(data) {
+    if (!data.store) return;
+
+    // add time to message
+    data.time = Date.now();
+
+    // store whole message to re-broadcast later
+    this.state[data.key] = data;
+    this.saveStateToFile();
+  }
+
+  removeKey(key) {
+    delete this.state[key];
+    this.saveStateToFile();
+  }
+
+  removeAllKeys() {
+    for (let key in this.state) {
+      delete this.state[key];
+    }
+    this.saveStateToFile();
+  }
+
+  async saveStateToFile() {
+    if (Date.now() - this.lastSaveTime > 1000) {
+      // save state to file no more than every second
+      this.lastSaveTime = Date.now();
+      try {
+        await fs.writeFile(this.dataPath, JSON.stringify(this.state, null, 2));
+      } catch (error) {
+        console.error("⚠️ Error saving state to file:", error);
+      }
+    }
+  }
+
+  async loadStateFromFile() {
+    try {
+      // try to load file and load state from it
+      const data = await fs.readFile(this.dataPath, "utf-8");
+      Object.assign(this.state, JSON.parse(data));
+      let numKeys = Object.keys(this.state).length;
+      console.log(`✅ State loaded from file with (${numKeys}) keys`);
+    } catch (error) {
+      console.error("🚨 Error loading state from file:", error);
+      console.warn("❔ This was probably the first run");
+      // create empty dir & file if it doesn't exist: ./data/state.json
+      await fs.mkdir(join(this.baseDataPath, "data"), { recursive: true });
+      await fs.writeFile(this.dataPath, "{}");
+      console.log("✅ Created empty state file. Let's go!");
+    }
+  }
+}
+
+export default PersistentState;
+export { PersistentState };
