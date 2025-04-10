@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import { join } from "path";
+import { logGreen } from "./util.mjs";
 
 class PersistentState {
   constructor(wsServer, app, baseDataPath, projectId) {
@@ -115,14 +116,14 @@ class PersistentState {
       const data = await fs.readFile(this.dataPath, "utf-8");
       Object.assign(this.state, JSON.parse(data));
       let numKeys = Object.keys(this.state).length;
-      console.log(`✅ State loaded from file with (${numKeys}) keys`);
+      logGreen(`✅ Persistent state loaded from file with (${numKeys}) keys`);
     } catch (error) {
       console.error("🚨 Error loading state from file:", error);
-      console.warn("❔ This was probably the first run");
+      logGreen("🤔 This was probably the first run");
       // create empty dir & file if it doesn't exist: ./data/state.json
-      await fs.mkdir(join(this.baseDataPath, "data"), { recursive: true });
+      await fs.mkdir(join(this.baseDataPath), { recursive: true });
       await fs.writeFile(this.dataPath, "{}");
-      console.log("✅ Created empty state file. Let's go!");
+      logGreen("✅ Created empty state file. Let's go!");
     }
   }
 }

@@ -31,5 +31,40 @@ function eventLog(...args) {
   console.log("===================================");
 }
 
+// add log functions in different colors
+function logRed(...args) {
+  console.log("\x1b[41m%s\x1b[0m", ...args);
+}
+function logGreen(...args) {
+  console.log("\x1b[42m%s\x1b[0m", ...args);
+}
+function logYellow(...args) {
+  console.log("\x1b[43m%s\x1b[0m", ...args);
+}
+function logBlue(...args) {
+  console.log("\x1b[44m%s\x1b[0m", ...args);
+}
+function logMagenta(...args) {
+  console.log("\x1b[45m%s\x1b[0m", ...args);
+}
+function logCyan(...args) {
+  console.log("\x1b[46m%s\x1b[0m", ...args);
+}
+function logGray(...args) {
+  console.log("\x1b[100m%s\x1b[0m", ...args);
+}
+
 export default ipAddr;
-export { getLocalIpAddress, ipAddr, eventLog, getValueFromArgs };
+export {
+  getLocalIpAddress,
+  ipAddr,
+  getValueFromArgs,
+  eventLog,
+  logBlue,
+  logRed,
+  logGreen,
+  logYellow,
+  logMagenta,
+  logCyan,
+  logGray,
+};

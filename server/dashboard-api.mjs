@@ -1,15 +1,16 @@
 import fs from "fs";
 import cors from "cors";
+import { logMagenta } from "./util.mjs";
 
 class DashboardApi {
   static maxHistory = 30;
 
-  constructor(config) {
+  constructor(app, express, dashboardDataPath, dashboardApiRoute) {
     // store options
-    this.express = config.express;
-    this.app = config.app;
-    this.pathDashboardData = config.dashboardDataPath; // disk location of dashboard db/images
-    this.routeBase = config.dashboardApiRoute; // route for posting data from apps & getting data for dashboard web component
+    this.express = express;
+    this.app = app;
+    this.pathDashboardData = dashboardDataPath; // disk location of dashboard db/images
+    this.routeBase = dashboardApiRoute; // route for posting data from apps & getting data for dashboard web component
 
     // create paths & routes
     this.pathImages = this.pathDashboardData + "/images";
@@ -34,16 +35,15 @@ class DashboardApi {
   }
 
   printConfig() {
-    console.log("===========================================================================");
-    console.log("Dashboard init ============================================================");
-    console.log("Paths on disk:");
+    logMagenta("Dashboard init ============================================================");
+    logMagenta("Paths on disk: ------------------------------------------------------------");
     console.table([
       ["Dashboard data dir", this.pathDashboardData],
       ["Static www dir", this.pathDashboardData],
       ["Persistent JSON file", this.pathDbFile],
       ["Static www/images dir", this.pathImages],
     ]);
-    console.log("WWW routes:");
+    logMagenta("Dashboard WWW routes: -----------------------------------------------------");
     console.table([
       ["[POST] Project check-in", this.routeBase],
       ["[GET] All projects JSON", this.routeDbFile],
@@ -51,7 +51,7 @@ class DashboardApi {
       ["[GET] Delete project route", this.routeDeleteProject],
       ["Checkin images route", this.routeImages],
     ]);
-    console.log("===========================================================================");
+    logMagenta("===========================================================================");
   }
 
   /////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ class DashboardApi {
     try {
       let dbFile = fs.readFileSync(this.pathDbFile, "utf8");
       this.dashboardData = JSON.parse(dbFile);
-      console.log(`✅ Dashboard data loaded with (${Object.keys(this.dashboardData.checkins).length}) projects`);
+      logMagenta(`✅ Dashboard data loaded with (${Object.keys(this.dashboardData.checkins).length}) projects`);
     } catch (error) {
       console.warn("⚠️ Error reading dashboard data, creating from scratch. Probably first run, or data was corrupt.");
       this.dashboardData = { checkins: {} };
@@ -102,12 +102,12 @@ class DashboardApi {
 
   writeDbFile() {
     if (this.isWriting == true) {
-      console.log("Dashboard already writing json, skipping write");
+      logMagenta("Dashboard already writing json, skipping write");
     } else {
       this.isWriting = true;
       try {
         fs.writeFileSync(this.pathDbFile, JSON.stringify(this.dashboardData, null, 2));
-        console.log("✅ Dashboard data written to disk:", this.pathDbFile);
+        logMagenta("✅ Dashboard data written to disk:", this.pathDbFile);
       } catch (error) {
         console.error("⚠️ Error writing dashboard data:", error);
       }
@@ -145,12 +145,12 @@ class DashboardApi {
   handlePostData(req, res) {
     // process incoming posted data
     let postedData = req.body;
-    console.log(postedData);
+    logMagenta(postedData);
     if (!postedData || !postedData.appId) {
       console.error("No valid data posted");
       res.status(400).json({ error: "No valid data posted" });
     } else {
-      console.log("Posted data:", postedData);
+      logMagenta("Posted data:", postedData);
       this.processCheckIn(postedData);
       res.status(200).json({
         status: `Successful check-in for ${postedData.appId}`,
@@ -180,7 +180,7 @@ class DashboardApi {
       // save to disk
       this.writeDbFile();
       res.status(200).json({ status: `Deleted checkin data for ${appId}` });
-      console.log(`Deleted checkin data for ${appId} in ${Date.now() - timestamp}ms`);
+      logMagenta(`Deleted checkin data for ${appId} in ${Date.now() - timestamp}ms`);
     } else {
       res.status(404).json({ error: `No checkin data found for ${appId}` });
     }
@@ -204,11 +204,11 @@ class DashboardApi {
     this.saveImages(postedData, timestamp, appId, lastSeen);
     this.saveCheckinData(postedData, appId, lastSeen);
     this.updateHistory(postedData, appId);
-    console.log(`received post data for ${appId} at ${lastSeen}`);
+    logMagenta(`received post data for ${appId} at ${lastSeen}`);
 
     // write database file to disk
     this.writeDbFile();
-    // console.log(`Dashboard data processed in ${Date.now() - timestamp}ms`);
+    // logMagenta(`Dashboard data processed in ${Date.now() - timestamp}ms`);
   }
 
   saveCheckinData(postedData, appId, lastSeen) {
@@ -224,8 +224,8 @@ class DashboardApi {
   updateHistory(postedData, appId) {
     // deepcopy posted data
     let deepCopy = JSON.parse(JSON.stringify(postedData));
-    console.log("Updating history for", appId);
-    console.log("- Data:", deepCopy);
+    logMagenta("Updating history for", appId);
+    logMagenta("- Data:", deepCopy);
 
     // create history array if it doesn't exist and add new data to the front
     // use a deep copy of the checkin data in history to avoid weird json circular reference issues
@@ -284,7 +284,7 @@ class DashboardApi {
     if (!imagePath) return;
     try {
       fs.unlinkSync(imagePath);
-      console.log("Deleted image:", imagePath);
+      logMagenta("Deleted image:", imagePath);
     } catch (error) {
       console.error("Error deleting image file:", imagePath);
     }

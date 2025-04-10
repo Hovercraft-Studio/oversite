@@ -1,20 +1,24 @@
 import WebSocket from "ws";
-import { eventLog } from "./util.mjs";
+import PersistentState from "./persistent-state.mjs";
+import { logGreen } from "./util.mjs";
 
 class SocketServer {
-  constructor(wsServer, app, persistentState, debug) {
+  constructor(wsServer, app, baseDataPath, debug) {
     this.wsServer = wsServer;
-    this.app = app;
-    this.persistentState = persistentState;
     this.wssPort = wsServer.options.port;
+    this.app = app;
+    this.baseDataPath = baseDataPath;
     this.debug = debug;
+
+    // Create persistent state instance
+    this.persistentState = new PersistentState(wsServer, app, baseDataPath, "state");
 
     // Bind methods to this instance
     this.handleConnection = this.handleConnection.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
     this.handleClose = this.handleClose.bind(this);
 
-    // Set up connection listener
+    // Set up connection listener and routes
     this.wsServer.on("connection", this.handleConnection);
     this.addRoutes();
   }
@@ -22,7 +26,7 @@ class SocketServer {
   addRoutes() {
     this.app.get("/clients", (req, res) => {
       let clients = [];
-      this.wsServer.clients.forEach((client) => {
+      this.clients().forEach((client) => {
         clients.push({
           sender: client.senderID,
           connectedTime: Date.now() - client.startTime,
@@ -30,6 +34,10 @@ class SocketServer {
       });
       res.json(clients);
     });
+  }
+
+  clients() {
+    return this.wsServer.clients;
   }
 
   handleConnection(connection, request, client) {
@@ -44,7 +52,7 @@ class SocketServer {
     connection.startTime = Date.now(); // used by server.mjs for uptime
 
     // Log new connection
-    eventLog(`Client joined from ${fullReqURL} - We have ${this.wsServer.clients.size} users`);
+    logGreen(`🤗 Client joined from ${fullReqURL} - We have ${this.clients().size} users`);
 
     // Set up message and close listeners
     connection.on("message", (message, isBinary) => this.handleMessage(connection, message, isBinary));
@@ -60,11 +68,9 @@ class SocketServer {
       // make sure we really have a specified receiver
       try {
         let data = JSON.parse(message);
-        if (data.receiver) {
-          receiver = data.receiver;
-        }
+        if (data.receiver) receiver = data.receiver;
       } catch (e) {
-        eventLog("Error parsing JSON message");
+        logGreen("❌ Error parsing JSON message");
       }
     }
 
@@ -72,7 +78,7 @@ class SocketServer {
     let sendOnly = message.indexOf("sendonly") > -1;
 
     // relay incoming message to all clients
-    this.wsServer.clients.forEach((client) => {
+    this.clients().forEach((client) => {
       let isSelf = client === connection;
       let isReceiver = receiver && client.senderID == receiver;
       if (client.readyState === WebSocket.OPEN) {
@@ -92,7 +98,7 @@ class SocketServer {
   }
 
   handleClose(connection) {
-    eventLog("Client left - We have " + this.wsServer.clients.size + " users");
+    logGreen("👋 Client left - We have " + this.clients().size + " users");
   }
 }
 

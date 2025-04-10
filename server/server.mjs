@@ -1,22 +1,33 @@
-// import tools
+/////////////////////////////////////////////////////////
+// Import tools
+/////////////////////////////////////////////////////////
+
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { getValueFromArgs, ipAddr, eventLog } from "./util.mjs";
+import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
 
-// get relative path to this script
+/////////////////////////////////////////////////////////
+// Get relative path to this script
+/////////////////////////////////////////////////////////
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const baseDataPath = join(__dirname, "data");
 
-// get config from cli args
+/////////////////////////////////////////////////////////
+// Get config from cli args
+/////////////////////////////////////////////////////////
+
 const args = process.argv.slice(2);
 const wssPort = getValueFromArgs("--port", 3001);
 const httpPort = getValueFromArgs("--portHttp", 3003);
 const debug = args.indexOf("--debug") != -1;
 
-// store config
+/////////////////////////////////////////////////////////
+// Store config
+/////////////////////////////////////////////////////////
 const config = {
-  dashboardPath: join(baseDataPath, "dashboard"),
+  dashboardDataPath: join(baseDataPath, "dashboard"),
   dashboardApiRoute: "/dashboard",
 };
 // add any production overrides
@@ -32,18 +43,25 @@ config.wssPort = wssPort;
 config.httpPort = httpPort;
 config.ipAddr = ipAddr;
 
-eventLog(
-  `Config:`,
-  `Node env: ${process.env.NODE_ENV}`,
-  `Base data path: ${baseDataPath}`,
-  `Dashboard path: ${config.dashboardPath}`,
-  `Dashboard API route: ${config.dashboardApiRoute}`,
-  `Local ip address: ${ipAddr}`,
-  `WebSocket server at ws://localhost:${wssPort}/ws`,
-  `HTTP/Express server at http://${ipAddr}:${httpPort}`
-);
+logBlue("===================================");
+logBlue("Starting server with config: ------");
+console.table([
+  [`Node env`, `${process.env.NODE_ENV}`],
+  [`config.isProduction`, `${config.isProduction}`],
+  [`Local ip address`, `${ipAddr}`],
+  [`WebSocket server`, `ws://localhost:${wssPort}/ws`],
+  [`HTTP/Express server`, `http://${ipAddr}:${httpPort}`],
+  [`debug`, `${config.debug}`],
+  [`Base data path`, `${config.baseDataPath}`],
+  [`Dashboard data path`, `${config.dashboardDataPath}`],
+  [`Dashboard API route`, `${config.dashboardApiRoute}`],
+]);
+logBlue("===================================");
 
-// import web server tools
+/////////////////////////////////////////////////////////
+// Import web servers
+/////////////////////////////////////////////////////////
+
 import http from "http";
 import express from "express";
 import { WebSocketServer } from "ws";
@@ -54,7 +72,7 @@ const wsServer = new WebSocketServer({
   path: "/ws",
 }); // For Heroku launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
 
-// CORS middleware
+// Config CORS middleware for permissiveness
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -63,27 +81,31 @@ app.use((req, res, next) => {
   next();
 });
 
-// Build server components
-import PersistentState from "./persistent-state.mjs";
+/////////////////////////////////////////////////////////
+// Build main server components:
+// - WebSocket server with persistence & http API
+// - Dashboard API
+/////////////////////////////////////////////////////////
+
 import SocketServer from "./socket-server.mjs";
 import DashboardApi from "./dashboard-api.mjs";
-const persistentState = new PersistentState(wsServer, app, baseDataPath, "state");
-const socketServer = new SocketServer(wsServer, app, persistentState, debug);
-const dashboardApi = new DashboardApi({
-  app,
-  express,
-  dashboardDataPath: config.dashboardPath,
-  dashboardApiRoute: "/dashboard",
-});
+const socketServer = new SocketServer(wsServer, app, config.baseDataPath, debug);
+const dashboardApi = new DashboardApi(app, express, config.dashboardDataPath, config.dashboardApiRoute);
 if (debug) dashboardApi.printConfig();
 
-// Handle 404
+/////////////////////////////////////////////////////////
+// Handle 404 after all other routes have been defined
+/////////////////////////////////////////////////////////
+
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
+/////////////////////////////////////////////////////////
 // Create HTTP server
+/////////////////////////////////////////////////////////
+
 const server = http.createServer(app);
 server.listen(httpPort, () => {
-  eventLog(`🎉 Express initialized: http://${ipAddr}:${httpPort}`);
+  logBlue(`🎉 Express initialized: http://${ipAddr}:${httpPort}`);
 });
