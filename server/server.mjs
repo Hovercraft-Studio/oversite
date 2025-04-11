@@ -64,10 +64,13 @@ logBlue("===================================");
 
 import http from "http";
 import express from "express";
-import { WebSocketServer } from "ws";
 const app = express();
+const server = http.createServer(app);
+
+import { WebSocketServer } from "ws";
 const wsServer = new WebSocketServer({
   // port: wssPort,
+  server: server, // use the same server as express
   host: "0.0.0.0", // allows connections from localhost and IP addresses
   path: "/ws",
 }); // For Heroku launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
@@ -105,7 +108,7 @@ app.use((req, res) => {
 // Create HTTP server
 /////////////////////////////////////////////////////////
 
-const server = http.createServer(app);
-server.listen(httpPort, () => {
+const PORT = process.env.PORT || httpPort; // prod uses process.env.PORT
+server.listen(PORT, () => {
   logBlue(`🎉 Express initialized: http://${ipAddr}:${httpPort}`);
 });
