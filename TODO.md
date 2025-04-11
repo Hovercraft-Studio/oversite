@@ -10,6 +10,7 @@
 
 ## Dashboard:
 
+- Basic auth protection for the dashboard
 - Build examples dir for Dashboard poster
   - Universal javascript via node/frontend
     - Have frontend post to backend for easy testing, maybe from 2 apps, with an animating canvas element?
@@ -40,9 +41,9 @@
 ## Socket server
 
 - Add rooms concept from connected canvas
-  - For persistent state, we'd need a state json file per room!
-    - PersistentState needs to handle multiple projects. Can we jjust use the project name as the key for file and state??
-  - old rooms should get rtecycled after [x] days
+  - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
+    - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
+  - old rooms should get recycled after [x] days
   - Room creation should require some super basic auth key that only the server knows, via querystring
 - How to handle wss:// ? Check connected canvas
 - Hydration should happen from websockets instead of http, but maybe keep that for non ws:// connections

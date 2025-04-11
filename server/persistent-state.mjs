@@ -105,7 +105,7 @@ class PersistentState {
       try {
         await fs.writeFile(this.dataPath, JSON.stringify(this.state, null, 2));
       } catch (error) {
-        console.error("⚠️ Error saving state to file:", error);
+        logGreen("⚠️ Error saving state to file:", error);
       }
     }
   }
@@ -118,8 +118,8 @@ class PersistentState {
       let numKeys = Object.keys(this.state).length;
       logGreen(`✅ Persistent state loaded from file with (${numKeys}) keys`);
     } catch (error) {
-      console.error("🚨 Error loading state from file:", error);
-      logGreen("🤔 This was probably the first run");
+      logGreen("🚨 Error loading state from file:", this.dataPath); // error
+      logGreen("🤔 This was probably the first run, so this error is probably okay 🤞");
       // create empty dir & file if it doesn't exist: ./data/state.json
       await fs.mkdir(join(this.baseDataPath), { recursive: true });
       await fs.writeFile(this.dataPath, "{}");
