@@ -67,7 +67,7 @@ import express from "express";
 import { WebSocketServer } from "ws";
 const app = express();
 const wsServer = new WebSocketServer({
-  port: wssPort,
+  // port: wssPort,
   host: "0.0.0.0", // allows connections from localhost and IP addresses
   path: "/ws",
 }); // For Heroku launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets

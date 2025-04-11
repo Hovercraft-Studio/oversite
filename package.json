@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "vite --host --port 3002",
-    "build": "vite build",
+    "build_XXX": "vite build",
+    "build": "echo 'Skipping build on Heroku'",
     "preview": "vite preview",
     "ws": "node ./server/ws-relay.mjs --port 3001",
     "server": "nodemon --watch ./server --ext mjs node ./server/server.mjs --port 3001 --portHttp 3003 --debug",
