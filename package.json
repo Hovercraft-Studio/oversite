@@ -2,6 +2,9 @@
   "name": "hc-socket-server",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "vite --host --port 3002",
     "build": "vite build",
@@ -12,7 +15,7 @@
     "node-app-demo": "nodemon --watch ./client-demos/nodejs/node-app-demo --ext mjs node ./client-demos/nodejs/node-app-demo/index.mjs --server 127.0.0.1:3001/ws --portHttp 3003",
     "launch-chrome": "node ./scripts/run-chrome.mjs --url http://localhost:3002 --location 500,100 --fullscreen true --screen-num 1"
   },
-  "devDependencies": {
+  "dependencies": {
     "@vitejs/plugin-basic-ssl": "^2.0.0",
     "concurrently": "^9.0.1",
     "cors": "^2.8.5",
