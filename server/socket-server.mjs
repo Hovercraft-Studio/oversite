@@ -60,7 +60,7 @@ class SocketServer {
   }
 
   handleMessage(connection, message, isBinary) {
-    if (this.debug) console.log(`[JSON IN]: ${message}`);
+    if (this.debug) logGreen(`[JSON IN]: ${message}`);
 
     // check for 'receiver'
     let receiver = null;

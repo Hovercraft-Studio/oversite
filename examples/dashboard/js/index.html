@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="apple-touch-icon-precomposed" href="../../../share/images/icon.png" />
+    <link rel="apple-touch-startup-image" href="../../../shared/images/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../shared/images/icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="AppStore" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <title>Dashboard Poster Demo</title>
+    <link rel="stylesheet" href="../../../shared/css/pico.css" />
+    <link rel="stylesheet" href="../../../shared/css/styles.css" />
+    <script type="module" src="../../../shared/js/haxademic.js/components/_register-components.js"></script>
+  </head>
+  <body>
+    <app-store-init sender="dashboard_poster_example" init-keys="*" debug side-debug></app-store-init>
+    <app-store-heartbeat
+      key="dashboard_poster_example_heartbeat"
+      value="n/a"
+      interval="5000"
+      show="false"
+    ></app-store-heartbeat>
+    <custom-app>
+      <main class="container">
+        <section>
+          <h1>Dashboard Poster Demo</h1>
+          <p>Multiple pretend apps posting to the dashboard</p>
+          <div class="grid">
+            <dashboard-client-example app-id="test-app-1" app-title="Example App 1" post-interval="10"></dashboard-client-example>
+            <dashboard-client-example app-id="test-app-2" app-title="Example App 2" post-interval="5"></dashboard-client-example>
+          </div>
+        </section>
+        <section>
+          <h4>Import dashboard-view web component for easy testing:</h4>
+          <dashboard-view data-api-url="http://localhost:3003/dashboard" refresh-interval="5"></dashboard-view>
+        </section>
+        <details>
+          <summary>Event Log</summary>
+          <!-- <event-log-view max-length="10"></event-log-view> -->
+          <app-store-event-table max-length="10" hide-filters></app-store-event-table>
+        </details>
+      </main>
+      <footer class="container">
+        <small>Built by us 👋</small>
+      </footer>
+    </custom-app>
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>

@@ -16,6 +16,7 @@ class DashboardView extends HTMLElement {
   connectedCallback() {
     this.initialHTML = this.innerHTML;
     this.apiURL = this.getAttribute("data-api-url");
+    this.refreshInterval = this.getAttribute("refresh-interval") || 60;
     this.dashboardDataUrl = `${this.apiURL}/json`;
     this.shadow = this.attachShadow({ mode: "open" });
     this.el = this.shadow ? this.shadow : this;
@@ -56,12 +57,13 @@ class DashboardView extends HTMLElement {
     window.clearInterval(this.pollingInterval);
     this.pollingInterval = setInterval(() => {
       this.getData();
-    }, 1000 * 60);
+    }, 1000 * this.refreshInterval);
 
     this.startTime = Date.now();
     window.clearInterval(this.progressInterval);
     this.progressInterval = setInterval(() => {
       let progress = this.el.querySelector("progress");
+      progress.max = this.refreshInterval;
       if (progress) {
         progress.value = (Date.now() - this.startTime) / 1000;
       }

@@ -1,8 +1,17 @@
 # TODO
 
+## General
+
+- Move haxademic.js libs out of haxademic.js dir - we should decouple from the haxademic.js repo and remove the cruft
+
 ## Server unification:
 
 - Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
+- How to handle ports in examples?
+  - How to set the options for dashboard location in examples? Or do we just default to the default ports & such. It won't work on the cloud
+- ws:// vs wss://
+- Vite frontend
+  - Build to a public dir served by express
 - Launch to DigitalOcean
   - Try their App Platform before doing something custom
   - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
@@ -10,6 +19,16 @@
 
 ## Dashboard:
 
+- Fix back button
+- [WIP] Add dashboard poster example:
+  - Web component with animating canvas to show image uploads
+  - Add rAf in poster class to check fps automatically
+  - Make universal for nodejs
+    - Detect whether it's running in node or browser
+    - Add optional screenshot if nodejs - dynmic import of screenshot module?
+    - Add option window size if in browser
+    - Toggle mode: `"no-cors"` and other settings for the fetch() call. Need to test this
+    - Add nodejs script and call from package.json
 - Basic auth protection for the dashboard
 - Build examples dir for Dashboard poster
   - Universal javascript via node/frontend

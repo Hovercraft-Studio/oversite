@@ -3,7 +3,7 @@ import cors from "cors";
 import { logMagenta } from "./util.mjs";
 
 class DashboardApi {
-  static maxHistory = 30;
+  static maxHistory = 100;
 
   constructor(app, express, dashboardDataPath, dashboardApiRoute) {
     // store options
