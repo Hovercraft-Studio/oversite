@@ -36,16 +36,16 @@ function logRed(...args) {
   console.log("\x1b[41m%s\x1b[0m", ...args);
 }
 function logGreen(...args) {
-  console.log("\x1b[42m%s\x1b[0m %s", "socket-server", ...args);
+  console.log("\x1b[42m%s\x1b[0m %s", " socket-server ", ...args);
 }
 function logYellow(...args) {
   console.log("\x1b[43m%s\x1b[0m", ...args);
 }
 function logBlue(...args) {
-  console.log("\x1b[44m%s\x1b[0m %s", "server.mjs", ...args);
+  console.log("\x1b[44m%s\x1b[0m %s", " server.mjs ", ...args);
 }
 function logMagenta(...args) {
-  console.log("\x1b[45m%s\x1b[0m %s", "dashboard-api", ...args);
+  console.log("\x1b[45m%s\x1b[0m %s", " dashboard-api ", ...args);
 }
 function logCyan(...args) {
   console.log("\x1b[46m%s\x1b[0m", ...args);

@@ -42,7 +42,8 @@ class SocketServer {
 
   handleConnection(connection, request, client) {
     // get sender from searchParams and add metadata to connection object. format is: /ws?sender=MONITOR_DEMO
-    let fullReqURL = `ws://localhost:${this.wssPort}${request.url}`;
+    let fullReqURL = this.wssPort ? `ws://localhost:${this.wssPort}${request.url}` : `ws://localhost${request.url}`; // handle production where there's no port
+    if (this.debug) logGreen(`🤗 Client joined from ${fullReqURL}`);
     const searchParams = new URL(fullReqURL).searchParams;
     const sender = searchParams.get("sender");
     connection.senderID = sender;
