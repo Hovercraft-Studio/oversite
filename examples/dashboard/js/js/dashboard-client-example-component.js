@@ -25,6 +25,11 @@ class DashboardClientExampleComponent extends HTMLElement {
 
   successCallback(data) {
     this.debugEl.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    this.debugEl.animate([{ outline: "10px solid rgba(0, 255, 0, 1)" }, { outline: "10px solid rgba(0, 255, 0, 0)" }], {
+      duration: 1000,
+      iterations: 1,
+      easing: "ease-in-out",
+    });
   }
 
   css() {
@@ -44,6 +49,7 @@ class DashboardClientExampleComponent extends HTMLElement {
         white-space: pre-wrap;
         padding: 1rem;
         border-radius: 5px;
+        box-sizing: border-box;
       }
       label {
         font-weight: bold;
