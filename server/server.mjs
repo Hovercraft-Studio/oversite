@@ -133,7 +133,9 @@ app.use((req, res) => {
 if (process.env.NODE_ENV === "production") {
   // Explicitly handle the upgrade event
   server.on("upgrade", (request, socket, head) => {
+    logBlue("Handling upgrade event for WebSocket connection");
     wsServer.handleUpgrade(request, socket, head, (ws) => {
+      logBlue("Upgraded WebSocket connection!");
       wsServer.emit("connection", ws, request);
     });
   });

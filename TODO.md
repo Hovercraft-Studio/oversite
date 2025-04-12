@@ -6,6 +6,7 @@
 
 ## Server unification:
 
+- Persistent file storage is a problem on production - how to handle this?
 - Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
 - How to handle ports in examples?
   - How to set the options for dashboard location in examples? Or do we just default to the default ports & such. It won't work on the cloud
