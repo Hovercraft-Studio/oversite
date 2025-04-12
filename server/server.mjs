@@ -68,12 +68,18 @@ const app = express();
 const server = http.createServer(app);
 
 import { WebSocketServer } from "ws";
-const wsServer = new WebSocketServer({
-  // port: wssPort,
-  server: server, // use the same server as express
+let wssOptions = {
   host: "0.0.0.0", // allows connections from localhost and IP addresses
   path: "/ws",
-}); // For Heroku launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
+};
+// use either port or server depending on environment
+// For cloud apps launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
+if (process.env.NODE_ENV === "production") {
+  Object.assign(wssOptions, { server: server });
+} else {
+  Object.assign(wssOptions, { port: wssPort });
+}
+const wsServer = new WebSocketServer(wssOptions);
 
 // Config CORS middleware for permissiveness
 app.use((req, res, next) => {
