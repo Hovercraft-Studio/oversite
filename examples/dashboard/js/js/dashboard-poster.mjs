@@ -5,7 +5,7 @@ class DashboardCheckinPoller {
     this.appTitle = appTitle;
     this.startTime = Date.now();
     this.restartInterval(interval);
-    this.loadJson(); // check in on init
+    this.postJson(); // check in on init
   }
 
   restartInterval(interval) {
@@ -13,12 +13,27 @@ class DashboardCheckinPoller {
     if (checkinInterval > 1) {
       clearInterval(this.interval);
       this.interval = setInterval(() => {
-        this.loadJson();
+        this.postJson();
       }, checkinInterval);
     }
   }
 
-  loadJson() {
+  setImageCustom(canvas) {
+    this.imageCustom = canvas;
+  }
+
+  getImageCustomData() {
+    if (this.imageCustom) {
+      let data = this.imageCustom.toDataURL("image/png");
+      console.log("imageCustom data:", data);
+      // remove the data url prefix (data:image/png;base64,)
+      data = data.replace(/^data:image\/(png|jpg);base64,/, "");
+      return data;
+    }
+    return null;
+  }
+
+  postJson() {
     fetch(this.dashboardURL, {
       method: "POST",
       referrerPolicy: "unsafe-url",
@@ -35,7 +50,7 @@ class DashboardCheckinPoller {
         frameCount: 1,
         frameRate: 60,
         imageScreenshot: null,
-        imageExtra: null,
+        imageExtra: this.getImageCustomData(),
       }),
     })
       .then((response) => {

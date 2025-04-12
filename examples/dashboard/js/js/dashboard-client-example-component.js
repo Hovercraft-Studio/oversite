@@ -9,8 +9,10 @@ class DashboardClientExampleComponent extends HTMLElement {
     this.appId = this.getAttribute("app-id") || "no-app-id";
     this.appTitle = this.getAttribute("app-title") || "[NO TITLE]";
     this.postInterval = this.getAttribute("post-interval") || 10; // default to 10 seconds
+    this.initCanvas();
     this.render();
     this.initDashboard();
+    this.dashboardCheckin.setImageCustom(this.canvasEl);
   }
 
   initDashboard() {
@@ -30,6 +32,18 @@ class DashboardClientExampleComponent extends HTMLElement {
       iterations: 1,
       easing: "ease-in-out",
     });
+  }
+
+  initCanvas() {
+    this.canvasEl = document.createElement("canvas");
+    this.canvasEl.width = 400;
+    this.canvasEl.height = 400;
+    this.canvasEl.style.border = "1px solid black";
+    this.canvasEl.style.marginTop = "1rem";
+    const ctx = this.canvasEl.getContext("2d");
+    ctx.fillStyle = "blue";
+    ctx.fillRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+    ctx.fillStyle = "white";
   }
 
   css() {
@@ -69,11 +83,14 @@ class DashboardClientExampleComponent extends HTMLElement {
           Checkin Interval: <code>${this.postInterval}</code> seconds<br>
           Checkin URL: <code>${this.postURL}</code>
         </small>
+        <div id="canvas-container"></div>
       </article>
       <label>Checkin JSON Response:</label>
       <code id="debug"></code>
     `;
     this.debugEl = this.querySelector("#debug");
+    this.canvasContainerEl = this.querySelector("#canvas-container");
+    this.canvasContainerEl.appendChild(this.canvasEl);
   }
 
   static register() {
