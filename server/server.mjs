@@ -79,8 +79,7 @@ let wssOptions = {
 if (process.env.NODE_ENV === "production") {
   Object.assign(wssOptions, { server: server });
 } else {
-  const PORT_WS = process.env.PORT || wssPort; // prod uses process.env.PORT
-  Object.assign(wssOptions, { port: PORT_WS });
+  Object.assign(wssOptions, { port: wssPort });
 }
 const wsServer = new WebSocketServer(wssOptions);
 wsServer.on("error", (err) => {
@@ -88,6 +87,13 @@ wsServer.on("error", (err) => {
 });
 wsServer.on("listening", () => {
   logBlue(`🎉 WebSocket server listening on port ${wsServer.options.port}`);
+});
+wsServer.on("connection", (ws, req) => {
+  logBlue(`WebSocket connection received from ${req.socket.remoteAddress}`);
+
+  ws.on("error", (error) => {
+    console.error("WebSocket error:", error);
+  });
 });
 
 // Config CORS middleware for permissiveness
@@ -122,6 +128,16 @@ app.use((req, res) => {
 /////////////////////////////////////////////////////////
 // Create HTTP server
 /////////////////////////////////////////////////////////
+
+// Make sure your production setup is handling the upgrade event
+if (process.env.NODE_ENV === "production") {
+  // Explicitly handle the upgrade event
+  server.on("upgrade", (request, socket, head) => {
+    wsServer.handleUpgrade(request, socket, head, (ws) => {
+      wsServer.emit("connection", ws, request);
+    });
+  });
+}
 
 const PORT = process.env.PORT || httpPort; // prod uses process.env.PORT
 server.listen(PORT, () => {
