@@ -6,10 +6,12 @@ class PersistentState {
   constructor(wsServer, app, baseDataPath, projectId) {
     this.wsServer = wsServer;
     this.app = app;
-    this.baseDataPath = baseDataPath;
+    this.baseDataPath = join(baseDataPath, "state");
     this.projectId = projectId;
 
+    fs.mkdir(this.baseDataPath, { recursive: true });
     this.dataPath = join(this.baseDataPath, `${this.projectId}.json`);
+
     this.lastSaveTime = Date.now();
     this.state = {};
     this.loadStateFromFile(this.dataPath);
@@ -113,6 +115,7 @@ class PersistentState {
   async loadStateFromFile() {
     try {
       // try to load file and load state from it
+      logGreen("📂 Loading persistent state from file:", this.dataPath);
       const data = await fs.readFile(this.dataPath, "utf-8");
       Object.assign(this.state, JSON.parse(data));
       let numKeys = Object.keys(this.state).length;
@@ -121,7 +124,6 @@ class PersistentState {
       logGreen("🚨 Error loading state from file:", this.dataPath); // error
       logGreen("🤔 This was probably the first run, so this error is probably okay 🤞");
       // create empty dir & file if it doesn't exist: ./data/state.json
-      await fs.mkdir(join(this.baseDataPath), { recursive: true });
       await fs.writeFile(this.dataPath, "{}");
       logGreen("✅ Created empty state file. Let's go!");
     }

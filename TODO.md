@@ -6,6 +6,9 @@
 
 ## Server unification:
 
+- Add better prefixes to API routes
+  - dashboard is good, maybe
+  - appstore should be `state/:etc`
 - Persistent file storage is a problem on production - how to handle this?
 - Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
 - How to handle ports in examples?
@@ -17,6 +20,15 @@
   - Try their App Platform before doing something custom
   - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
   - https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
+
+
+## Documentation
+
+- Note the differences between running locally and on the cloud
+  - Persistent files
+  - Ports
+  - SSL connections
+  - CORS
 
 ## Dashboard:
 

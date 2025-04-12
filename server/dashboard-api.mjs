@@ -94,7 +94,7 @@ class DashboardApi {
       this.dashboardData = JSON.parse(dbFile);
       logMagenta(`✅ Dashboard data loaded with (${Object.keys(this.dashboardData.checkins).length}) projects`);
     } catch (error) {
-      console.warn("⚠️ Error reading dashboard data, creating from scratch. Probably first run, or data was corrupt.");
+      logMagenta("⚠️ Error reading dashboard data, creating from scratch. Probably first run, or data was corrupt.");
       this.dashboardData = { checkins: {} };
       this.writeDbFile();
     }
@@ -109,7 +109,7 @@ class DashboardApi {
         fs.writeFileSync(this.pathDbFile, JSON.stringify(this.dashboardData, null, 2));
         logMagenta("✅ Dashboard data written to disk:", this.pathDbFile);
       } catch (error) {
-        console.error("⚠️ Error writing dashboard data:", error);
+        logMagenta("⚠️ Error writing dashboard data:", error);
       }
       this.isWriting = false;
     }
@@ -145,12 +145,11 @@ class DashboardApi {
   handlePostData(req, res) {
     // process incoming posted data
     let postedData = req.body;
-    logMagenta(postedData);
+    // logMagenta("Posted data:", postedData);
     if (!postedData || !postedData.appId) {
       console.error("No valid data posted");
       res.status(400).json({ error: "No valid data posted" });
     } else {
-      logMagenta("Posted data:", postedData);
       this.processCheckIn(postedData);
       res.status(200).json({
         status: `Successful check-in for ${postedData.appId}`,
