@@ -124,8 +124,13 @@ class PersistentState {
       logGreen("🚨 Error loading state from file:", this.dataPath); // error
       logGreen("🤔 This was probably the first run, so this error is probably okay 🤞");
       // create empty dir & file if it doesn't exist: ./data/state.json
-      await fs.writeFile(this.dataPath, "{}");
-      logGreen("✅ Created empty state file. Let's go!");
+      try {
+        logGreen("📂 Writing empty state to file:", this.dataPath);
+        await fs.writeFile(this.dataPath, "{}");
+        logGreen("✅ Created empty state file. Let's go!");
+      } catch (error) {
+        logGreen("🚨 Error writing empty state file:", error);
+      }
     }
   }
 }

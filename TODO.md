@@ -9,6 +9,7 @@
 - Add better prefixes to API routes
   - dashboard is good, maybe
   - appstore should be `state/:etc`
+- Figure out a better debug mode for logging
 - Persistent file storage is a problem on production - how to handle this?
 - Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
 - How to handle ports in examples?
