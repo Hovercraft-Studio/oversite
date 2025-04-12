@@ -62,24 +62,33 @@ logBlue("===================================");
 // Import web servers
 /////////////////////////////////////////////////////////
 
+// basic express server
 import http from "http";
 import express from "express";
 const app = express();
 const server = http.createServer(app);
 
+// WebSocket server options:
+// - use either port or server depending on environment
+// - For cloud apps launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
 import { WebSocketServer } from "ws";
 let wssOptions = {
-  host: "0.0.0.0", // allows connections from localhost and IP addresses
+  host: "0.0.0.0", // allows connections from `localhost` *and* IP addresses
   path: "/ws",
 };
-// use either port or server depending on environment
-// For cloud apps launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
 if (process.env.NODE_ENV === "production") {
   Object.assign(wssOptions, { server: server });
 } else {
-  Object.assign(wssOptions, { port: wssPort });
+  const PORT_WS = process.env.PORT || wssPort; // prod uses process.env.PORT
+  Object.assign(wssOptions, { port: PORT_WS });
 }
 const wsServer = new WebSocketServer(wssOptions);
+wsServer.on("error", (err) => {
+  logBlue("⚠️ WebSocket server error:", err);
+});
+wsServer.on("listening", () => {
+  logBlue(`🎉 WebSocket server listening on port ${wsServer.options.port}`);
+});
 
 // Config CORS middleware for permissiveness
 app.use((req, res, next) => {
