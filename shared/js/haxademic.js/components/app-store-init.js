@@ -21,12 +21,12 @@ class AppStoreInit extends HTMLElement {
 
     // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
     // we just need to check for a custom http port in the URL and otherwise use the ws:// address
-    let socketURL = new URL(this.webSocketURL);
-    socketURL.protocol = "http:";
-    socketURL.search = "";
-    socketURL.pathname = "";
-    socketURL.port = URLUtil.hashParamConfig("httpPort", 3003);
-    this.serverURL = socketURL.href;
+    let socketToServerURL = new URL(this.webSocketURL);
+    socketToServerURL.protocol = this.webSocketURL.protocol == "ws:" ? "http:" : "wss:"; // SSL if production websocket server
+    socketToServerURL.search = "";
+    socketToServerURL.pathname = "";
+    socketToServerURL.port = URLUtil.hashParamConfig("httpPort", 3003);
+    this.serverURL = socketToServerURL.href;
   }
 
   async initSharedState() {
