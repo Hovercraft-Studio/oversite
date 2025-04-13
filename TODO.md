@@ -5,7 +5,8 @@
 - Fix dashboard images base path for www route - needs to be different from api route / static file serving
   - Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
 - [WIP] Figure out how to serve Vite app from build dir on Express prod server
-  - Build was breaking - can we fix this?
+  - Build was breaking on digitalocean - can we fix this?
+  - We need a big `dist` label on port 3003 if serving static files
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
 - How can we build the ATL app from this base? Should it be it's own server with the full implementation, and another server app added? Or would it use it's own room for websocket/AppStore commands for reset? How do we store the current team selection with persistence? Or could persistence be held on the FanCam/Protect servers?
@@ -49,6 +50,7 @@
       - server.mjs has a few lines to add static paths to `dist` folder
       - `vite.config.js` has a few lines to set the base path for the build: `rollupOptions`
       - Express automatically serves the static files from the `dist` folder, because express is the default server
+      - We serve Vite's static `dist` path from express port 3003! So `vite build` output is accessible locally here for testing, and is served as the default from the cloud
       - Temp data path for dashboard and persistent state is set in the server.mjs file and reroutes where Vite find things, and where the prod server looks
       - TODO: Dashboard image paths need to be adjusted here???
   - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
