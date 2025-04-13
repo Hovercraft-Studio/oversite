@@ -1,12 +1,19 @@
 # TODO
 
+## Next
+
+- Fix dashboard images base path for www route - needs to be different from api route / static file serving
+- Figure out how to server Vite app from build dir on Express prod server
+- Nodejs dashboard example & isomorphic poster class
+  - This also needs a local temp path for screenshot image  - this should share with main temp paths
+
 ## General
 
 - Move haxademic.js libs out of haxademic.js dir - we should decouple from the haxademic.js repo and remove the cruft
 
 ## Server unification:
 
-- Figure out a better debug mode for logging
+- Figure out a better debug mode for logging - log levels per app?
 - Persistent file storage is a problem on production - how to handle this?
   - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
 - Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
@@ -39,8 +46,6 @@
 
 - Fix back button
 - [WIP] Add dashboard poster example:
-  - Web component with animating canvas to show image uploads
-  - Add rAf in poster class to check fps automatically
   - Make universal for nodejs
     - Detect whether it's running in node or browser
     - Add optional screenshot if nodejs - dynmic import of screenshot module?

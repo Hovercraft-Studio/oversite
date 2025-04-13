@@ -12,8 +12,7 @@ import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const baseDataPath = join(__dirname, "data");
-const projectRoot = join(__dirname, "../"); // Go up one level from server/ to project root
+const baseDataPath = join(__dirname, "../", "public", "_tmp_data"); // Go up one level from server/ to project root
 
 /////////////////////////////////////////////////////////
 // Get config from cli args
@@ -28,8 +27,8 @@ const debug = args.indexOf("--debug") != -1;
 // Store config
 /////////////////////////////////////////////////////////
 const config = {
-  stateDataPath: join(projectRoot, "public", "_tmp_data", "state"),
-  dashboardDataPath: join(projectRoot, "public", "_tmp_data", "dashboard"),
+  stateDataPath: join(baseDataPath, "state"),
+  dashboardDataPath: join(baseDataPath, "dashboard"),
   dashboardApiRoute: "/api/dashboard",
 };
 // add any production overrides
