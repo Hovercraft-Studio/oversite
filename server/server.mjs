@@ -34,9 +34,9 @@ const config = {
 // add any production overrides
 if (process.env.NODE_ENV === "production") {
   Object.assign(config, {
-    stateDataPath: "/tmp/persist/state",
-    dashboardDataPath: "/tmp/persist/dashboard",
-    dashboardApiRoute: "/api/dashboard",
+    // stateDataPath: "/tmp/persist/state",
+    // dashboardDataPath: "/tmp/persist/dashboard",
+    // dashboardApiRoute: "/api/dashboard",
   });
 }
 config.debug = debug;
