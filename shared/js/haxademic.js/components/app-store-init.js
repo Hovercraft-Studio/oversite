@@ -14,9 +14,14 @@ class AppStoreInit extends HTMLElement {
   }
 
   initServerURL() {
+    // check dev port to detect if we're running locally or on a production server
+    let isDev = document.location.port > 0;
+    let isProd = !isDev;
+
     // get address from querystring or use default
     // and show in URL for easy sharing
-    const defaultWsURL = "ws://" + document.location.hostname + ":3001/ws";
+    let defaultWsURL = "ws://" + document.location.hostname + ":3001/ws";
+    if (isProd) defaultWsURL = "wss://" + document.location.hostname + "/ws"; // production server
     this.webSocketURL = URLUtil.hashParamConfig("wsURL", defaultWsURL);
 
     // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
@@ -26,6 +31,7 @@ class AppStoreInit extends HTMLElement {
     socketToServerURL.search = "";
     socketToServerURL.pathname = "";
     socketToServerURL.port = URLUtil.hashParamConfig("httpPort", 3003);
+    if (isProd) socketToServerURL.port = ""; // production server doesn't have a port in the URL
     this.serverURL = socketToServerURL.href;
   }
 

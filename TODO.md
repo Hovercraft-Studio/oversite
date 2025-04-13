@@ -40,6 +40,7 @@
       - wss://example-server.ondigitalocean.app/ws
     - Locally-running web apps *can* connect to remote wss:// on the cloud! Just remove the port by setting it to `80`, `443` or empty. Browser permissions allow SSL permissiveness as long as CORS is set up properly on the server.
       - http://localhost:3002/app-store-monitor/index.html#&wsURL=wss://example.ondigitalocean.app/ws&httpPort=
+      - `app-store-init` checks for ports passed in via querystring and removes them on the cloud
   - CORS
   - Routes
     - /api/state
