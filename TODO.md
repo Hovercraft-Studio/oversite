@@ -2,7 +2,6 @@
 
 ## Next
 
-- [DONE?] Fix SSL connections w/ports on production. AppStoreInit probably needs to check for https: and set the rest accordingly
 - Fix dashboard images base path for www route - needs to be different from api route / static file serving
   - Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
 - We need a big `dist` label on port 3003 if serving static files
@@ -12,7 +11,7 @@
 ## Big Mother replacement
 
 - Test having dashboard api at `/` for big mother replacement
-
+- Do we just have a tiny app at bigmother.hovercraftstudio.com to forward JSON posts to the new server? 
 
 ## ATL CMS
 
@@ -31,6 +30,7 @@
 
 ## Server unification:
 
+- Auto-build `dist`?
 - Figure out a better debug mode for logging - log levels per app?
 - Persistent file storage is a problem on production - how to handle this?
   - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
@@ -93,8 +93,6 @@
 - Write up how the dashboard works - backend api & frontend
 - Slack integration
   - Or other integrations to alert us when a machine is missing
-- Add a general-use websocket server
-  - Consider uses for Miami Heat / PlusSix implementations
 - Can we have different collections of projects???? One Big Mother to rule them all. Or is this just a special view with a different login, but otherwise the structure is all the same?
 - Add logging per project?
   - Every project should keep a user/session count and post to dashboard for locally-persisted basic analytics
@@ -120,16 +118,13 @@
       - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
   - old rooms should get recycled after [x] days
   - Room creation should require some super basic auth key that only the server knows, via querystring
-- How to handle wss:// ? Check connected canvas
 - Hydration should happen from websockets instead of http, but maybe keep that for non ws:// connections
 
 
-## TODO (Moved from /server/README.md):
+## hc-xocket-server TODO (Moved from /server/README.md):
 
 - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
-- Monitor:
 - Move server responses to functions 
-- Test http-proxy
 
 SSL
 
