@@ -9,6 +9,7 @@
 
 ## General
 
+- Build a form to broadcast test data into AppStore - could live in `app-store-demo`
 - Move haxademic.js libs out of haxademic.js dir - we should decouple from the haxademic.js repo and remove the cruft
 
 ## Server unification:
@@ -35,7 +36,9 @@
   - Ports
   - SSL connections
     - TD WebSocket needs to set port as 443
-    - wss://example-server.ondigitalocean.app/ws
+      - wss://example-server.ondigitalocean.app/ws
+    - Locally-running web apps *can* connect to remote wss:// on the cloud! Just remove the port by setting it to `80`, `443` or empty. Browser permissions allow SSL permissiveness as long as CORS is set up properly on the server.
+      - http://localhost:3002/app-store-monitor/index.html#&wsURL=wss://example.ondigitalocean.app/ws&httpPort=
   - CORS
   - Routes
     - /api/state
