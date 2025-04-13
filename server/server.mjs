@@ -87,19 +87,6 @@ if (process.env.NODE_ENV === "production") {
   Object.assign(wssOptions, { port: wssPort });
 }
 const wsServer = new WebSocketServer(wssOptions);
-wsServer.on("error", (err) => {
-  logBlue("⚠️ WebSocket server error:", err);
-});
-wsServer.on("listening", () => {
-  logBlue(`🎉 WebSocket server listening on port ${wsServer.options.port}`);
-});
-wsServer.on("connection", (ws, req) => {
-  logBlue(`WebSocket connection received from ${req.socket.remoteAddress}`);
-
-  ws.on("error", (error) => {
-    console.error("WebSocket error:", error);
-  });
-});
 
 // Config CORS middleware for maximum permissiveness
 app.use((req, res, next) => {
@@ -109,14 +96,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// TODO: hide behind production flag? Or set a css class to show "BUILD" on port 3003?
+// Serve Vite frontend files from the dist folder
+// We can test prod behavior by going to `localhost:3003`, which is what's served in production
 const DIST_PATH = path.join(path.resolve(), "dist");
 app.use("/", express.static(DIST_PATH));
 app.use("/public", express.static(path.join(__dirname, "../public")));
 app.use("/_tmp_data", express.static(baseDataPath));
 
 /////////////////////////////////////////////////////////
-// Build main server components:
+// Build main app components:
 // - WebSocket server with persistence & http API
 // - Dashboard API
 /////////////////////////////////////////////////////////
@@ -128,16 +116,13 @@ const dashboardApi = new DashboardApi(app, express, config.dashboardDataPath, co
 if (debug) dashboardApi.printConfig();
 
 /////////////////////////////////////////////////////////
-// Handle 404 after all other routes have been defined
+// Init HTTP server
 /////////////////////////////////////////////////////////
 
+// Handle 404 after all other routes have been defined
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
-
-/////////////////////////////////////////////////////////
-// Create HTTP server
-/////////////////////////////////////////////////////////
 
 const PORT = process.env.PORT || httpPort; // prod uses process.env.PORT
 server.listen(PORT, () => {

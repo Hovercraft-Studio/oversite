@@ -20,7 +20,23 @@ class SocketServer {
 
     // Set up connection listener and routes
     this.wsServer.on("connection", this.handleConnection);
+    this.addDebugListeners();
     this.addRoutes();
+  }
+
+  addDebugListeners() {
+    this.wsServer.on("error", (err) => {
+      logGreen("⚠️ WebSocket server error:", err);
+    });
+    this.wsServer.on("listening", () => {
+      logGreen(`🎉 WebSocket server listening on port ${this.wsServer.options.port}`);
+    });
+    this.wsServer.on("connection", (ws, req) => {
+      logGreen(`WebSocket connection received from ${req.socket.remoteAddress}`);
+      ws.on("error", (error) => {
+        console.error("WebSocket error:", error);
+      });
+    });
   }
 
   addRoutes() {
