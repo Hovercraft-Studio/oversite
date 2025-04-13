@@ -6,6 +6,7 @@
 - Figure out how to server Vite app from build dir on Express prod server
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
+- How can we build the ATL app from this base? Should it be it's own server with the full implementation, and another server app added? Or would it use it's own room for websocket/AppStore commands for reset? How do we store the current team selection with persistence? Or could persistence be held on the FanCam/Protect servers?
 
 ## General
 
@@ -23,10 +24,6 @@
 - ws:// vs wss://
 - Vite frontend
   - Build to a public dir served by express
-- Launch to DigitalOcean
-  - Try their App Platform before doing something custom
-  - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
-  - https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
 
 
 ## Documentation
@@ -44,6 +41,10 @@
     - /api/state
     - /api/dashboard
     - /ws for upgrade
+- Launch to DigitalOcean
+  - Note build process once that's figured out
+  - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
+  - https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
 
 ## Dashboard:
 
