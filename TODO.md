@@ -2,6 +2,7 @@
 
 ## Next
 
+- Fix SSL connections w/ports on production. AppStoreInit probably needs to check for https: and set the rest accordingly
 - Fix dashboard images base path for www route - needs to be different from api route / static file serving
   - Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
 - [WIP] Figure out how to serve Vite app from build dir on Express prod server
@@ -49,6 +50,7 @@
     - `vite build` creates `dist` folder, which is served by express
       - server.mjs has a few lines to add static paths to `dist` folder
       - `vite.config.js` has a few lines to set the base path for the build: `rollupOptions`
+      - DigitalOcean needs a specific rollup tool, so`package.json` has a prebuild step: `"prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",`
       - Express automatically serves the static files from the `dist` folder, because express is the default server
       - We serve Vite's static `dist` path from express port 3003! So `vite build` output is accessible locally here for testing, and is served as the default from the cloud
       - Temp data path for dashboard and persistent state is set in the server.mjs file and reroutes where Vite find things, and where the prod server looks
