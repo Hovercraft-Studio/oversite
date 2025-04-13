@@ -216,6 +216,9 @@ class DashboardApi {
       this.dashboardData.checkins[appId] = postedData;
     } else {
       // update existing data
+      // remove null images so they don't wipe the latest checkin image ref
+      if (postedData.imageScreenshot == null) delete postedData.imageScreenshot;
+      if (postedData.imageExtra == null) delete postedData.imageExtra;
       this.dashboardData.checkins[appId] = { ...this.dashboardData.checkins[appId], ...postedData };
     }
   }
@@ -223,8 +226,8 @@ class DashboardApi {
   updateHistory(postedData, appId) {
     // deepcopy posted data
     let deepCopy = JSON.parse(JSON.stringify(postedData));
-    logMagenta("Updating history for", appId);
-    logMagenta("- Data:", deepCopy);
+    // logMagenta("Updating history for", appId);
+    // logMagenta("- Data:", deepCopy);
 
     // create history array if it doesn't exist and add new data to the front
     // use a deep copy of the checkin data in history to avoid weird json circular reference issues
