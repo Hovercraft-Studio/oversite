@@ -38,12 +38,44 @@ class DashboardClientExampleComponent extends HTMLElement {
     this.canvasEl = document.createElement("canvas");
     this.canvasEl.width = 400;
     this.canvasEl.height = 400;
-    this.canvasEl.style.border = "1px solid black";
-    this.canvasEl.style.marginTop = "1rem";
+
+    this.animateCanvas();
+  }
+
+  animateCanvas() {
     const ctx = this.canvasEl.getContext("2d");
-    ctx.fillStyle = "blue";
+
+    // background color
+    ctx.fillStyle = this.appId.includes("1") ? "blue" : "gray";
     ctx.fillRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+
+    // draw a circle
+    // move
+    if (!this.pos) {
+      this.pos = { x: this.canvasEl.width * Math.random(), y: this.canvasEl.height * Math.random() };
+      this.vel = { x: Math.random() > 0.5 ? -1 : 1, y: Math.random() > 0.5 ? -1 : 1 };
+    }
+    this.pos.x += this.vel.x * 2;
+    this.pos.y += this.vel.y * 2;
+    if (this.pos.x < 0 || this.pos.x > this.canvasEl.width) this.vel.x *= -1;
+    if (this.pos.y < 0 || this.pos.y > this.canvasEl.height) this.vel.y *= -1;
+    // draw
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(this.pos.x, this.pos.y, 40, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+
+    // debug text
+    let textY = 10;
+    let spacing = 30;
+    ctx.font = "20px Arial";
     ctx.fillStyle = "white";
+    ctx.fillText("Dashboard Client Example", 10, (textY += spacing));
+    ctx.fillText("Checkin Interval: " + this.postInterval + " seconds", 10, (textY += spacing));
+    ctx.fillText("App ID: " + this.appId, 10, (textY += spacing));
+    ctx.fillText("App Title: " + this.appTitle, 10, (textY += spacing));
+    requestAnimationFrame(() => this.animateCanvas());
   }
 
   css() {
@@ -68,6 +100,9 @@ class DashboardClientExampleComponent extends HTMLElement {
       label {
         font-weight: bold;
       }
+      canvas {
+        max-width: 100%;
+      }
     `;
   }
 
@@ -78,10 +113,10 @@ class DashboardClientExampleComponent extends HTMLElement {
       <label>Config:</label>
       <article>
         <small>
+          Checkin URL: <code>${this.postURL}</code>
+          Checkin Interval: <code>${this.postInterval}</code> seconds<br>
           App ID: <code>${this.appId}</code><br>
           App Title: <code>${this.appTitle}</code><br>
-          Checkin Interval: <code>${this.postInterval}</code> seconds<br>
-          Checkin URL: <code>${this.postURL}</code>
         </small>
         <div id="canvas-container"></div>
       </article>

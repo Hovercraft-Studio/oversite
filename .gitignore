@@ -42,3 +42,4 @@ temp/
 
 # Server-generated files
 server/data/
+public/_tmp_data/
