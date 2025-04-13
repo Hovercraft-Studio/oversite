@@ -4,6 +4,7 @@
 
 import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
+import path from "path";
 import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
 
 /////////////////////////////////////////////////////////
@@ -13,6 +14,7 @@ import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const baseDataPath = join(__dirname, "../", "public", "_tmp_data"); // Go up one level from server/ to project root
+const prodDataPath = join(__dirname, "../", "dist", "_tmp_data"); // Go up one level from server/ to project root
 
 /////////////////////////////////////////////////////////
 // Get config from cli args
@@ -34,8 +36,8 @@ const config = {
 // add any production overrides
 if (process.env.NODE_ENV === "production") {
   Object.assign(config, {
-    // stateDataPath: "/tmp/persist/state",
-    // dashboardDataPath: "/tmp/persist/dashboard",
+    stateDataPath: join(prodDataPath, "state"),
+    dashboardDataPath: join(prodDataPath, "dashboard"),
     // dashboardApiRoute: "/api/dashboard",
   });
 }
@@ -99,14 +101,19 @@ wsServer.on("connection", (ws, req) => {
   });
 });
 
-// Config CORS middleware for permissiveness
+// Config CORS middleware for maximum permissiveness
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Content-Type", "application/json");
   next();
 });
+
+// TODO: hide behind production flag? Or set a css class to show "BUILD" on port 3003?
+const DIST_PATH = path.join(path.resolve(), "dist");
+app.use("/", express.static(DIST_PATH));
+app.use("/public", express.static(path.join(__dirname, "../public")));
+app.use("/_tmp_data", express.static(baseDataPath));
 
 /////////////////////////////////////////////////////////
 // Build main server components:
