@@ -5,16 +5,24 @@
 - [DONE?] Fix SSL connections w/ports on production. AppStoreInit probably needs to check for https: and set the rest accordingly
 - Fix dashboard images base path for www route - needs to be different from api route / static file serving
   - Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
-- [WIP] Figure out how to serve Vite app from build dir on Express prod server
-  - We need a big `dist` label on port 3003 if serving static files
+- We need a big `dist` label on port 3003 if serving static files
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
+
+## Big Mother replacement
+
+- Test having dashboard api at `/` for big mother replacement
+
+
+## ATL CMS
+
 - How can we build the ATL app from this base? 
   - Should it be it's own server with the full implementation, and another server app added? 
   - Or would it use it's own room for websocket/AppStore commands for reset? 
   - How do we store the current team selection with persistence? 
   - Or could persistence be held on the FanCam/Protect servers?
   - Can the ATL app be a separate repo? Or should it be a secret page in this app? We probably shouldn't let anyone know about our backend server, but probably should just password protect the whole thing?
+  - Could there be a simple node app that runs app-store-distributed and just triggers key commands for a restart initiated by Jasmine?
 
 ## General
 
@@ -27,18 +35,18 @@
 - Persistent file storage is a problem on production - how to handle this?
   - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
 - Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
-- How to handle ports in examples?
-  - How to set the options for dashboard location in examples? Or do we just default to the default ports & such. It won't work on the cloud
-- ws:// vs wss://
-- Vite frontend
-  - Build to a public dir served by express
-
 
 ## Documentation
 
+- Opinions:
+  - Keep local dev env as close to cloud env as possible
+    - Vite for frontend dev server
+      - On prod, we use Vite's `dist` folder, which is served by express
+    - Express for backend dev server
 - Note the differences between running locally and on the cloud
   - Persistent files
   - Ports
+    - Prod uses its own port for Express: `const PORT = process.env.PORT`
   - SSL connections
     - TD WebSocket needs to set port as 443
       - wss://example-server.ondigitalocean.app/ws
@@ -59,6 +67,7 @@
       - Express automatically serves the static files from the `dist` folder, because express is the default server
       - We serve Vite's static `dist` path from express port 3003! So `vite build` output is accessible locally here for testing, and is served as the default from the cloud
       - Temp data path for dashboard and persistent state is set in the server.mjs file and reroutes where Vite find things, and where the prod server looks
+      - Ports are removed on the cloud. our express app becomes the default server
       - TODO: Dashboard image paths need to be adjusted here???
   - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
   - https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
