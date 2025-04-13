@@ -23,20 +23,12 @@ class CustomApp extends HTMLElement {
     let serverURL = _store.get("server_url");
 
     // populate header links with server URL
-    document
-      .querySelector("a[data-state-url]")
-      .setAttribute("href", `${serverURL}state`);
-    document
-      .querySelector("a[data-clients-url]")
-      .setAttribute("href", `${serverURL}clients`);
-    document
-      .querySelector("a[data-wipe-url]")
-      .setAttribute("href", `${serverURL}wipe`);
+    document.querySelector("a[data-state-url]").setAttribute("href", `${serverURL}api/state/all`);
+    document.querySelector("a[data-clients-url]").setAttribute("href", `${serverURL}api/state/clients`);
+    document.querySelector("a[data-wipe-url]").setAttribute("href", `${serverURL}api/state/wipe`);
 
     // server url in header
-    let headerServerUrl = document.querySelector(
-      "a[data-server-address-display]"
-    );
+    let headerServerUrl = document.querySelector("a[data-server-address-display]");
     headerServerUrl.innerHTML = serverURL; // `${document.location.hostname}:${document.location.port}`;
     headerServerUrl.removeAttribute("aria-busy");
     headerServerUrl.setAttribute("href", serverURL);
@@ -60,9 +52,7 @@ class CustomApp extends HTMLElement {
   }
 
   getFontSize() {
-    return parseFloat(
-      getComputedStyle(this.root).getPropertyValue("--table-font-size")
-    );
+    return parseFloat(getComputedStyle(this.root).getPropertyValue("--table-font-size"));
   }
 
   setFontSize(size) {

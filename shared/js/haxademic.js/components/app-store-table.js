@@ -17,7 +17,7 @@ class AppStoreTable extends HTMLElement {
       if (e.target.classList.contains("delete")) {
         let key = e.target.getAttribute("data-key");
         try {
-          let res = await fetch(`${this.serverURL}wipe/${key}`);
+          let res = await fetch(`${this.serverURL}api/state/wipe/${key}`);
           let data = await res.json();
           this.getDataFromServer();
         } catch (error) {
@@ -132,8 +132,7 @@ class AppStoreTable extends HTMLElement {
   updateTime() {
     this.rows.forEach((row) => {
       let timeAgoMs = row.time ? Math.round(Date.now() - row.time) : 0;
-      row.el.querySelector("td[data-time]").innerHTML =
-        DateUtil.formattedTime(timeAgoMs);
+      row.el.querySelector("td[data-time]").innerHTML = DateUtil.formattedTime(timeAgoMs);
 
       this.highlightProblems(row);
     });
@@ -141,7 +140,7 @@ class AppStoreTable extends HTMLElement {
 
   async getDataFromServer() {
     try {
-      let res = await fetch(`${this.serverURL}state`);
+      let res = await fetch(`${this.serverURL}api/state/all`);
       let data = await res.json();
       this.buildTable(data);
     } catch (error) {
@@ -248,9 +247,7 @@ class AppStoreTable extends HTMLElement {
         <td data-sender>${obj.sender || ""}</td>
         <td data-time>${DateUtil.formattedTime(timeAgoMs)}</td>
         <td class="row-actions">
-          <span title="Delete" class="delete" data-key="${
-            obj.key
-          }">${this.getCrossIcon()}</span>
+          <span title="Delete" class="delete" data-key="${obj.key}">${this.getCrossIcon()}</span>
         </td>
       </tr>`;
     return this.stringToTrElement(markup);

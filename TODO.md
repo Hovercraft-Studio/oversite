@@ -6,11 +6,9 @@
 
 ## Server unification:
 
-- Add better prefixes to API routes
-  - dashboard is good, maybe
-  - appstore should be `state/:etc`
 - Figure out a better debug mode for logging
 - Persistent file storage is a problem on production - how to handle this?
+  - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
 - Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
 - How to handle ports in examples?
   - How to set the options for dashboard location in examples? Or do we just default to the default ports & such. It won't work on the cloud
@@ -29,7 +27,13 @@
   - Persistent files
   - Ports
   - SSL connections
+    - TD WebSocket needs to set port as 443
+    - wss://example-server.ondigitalocean.app/ws
   - CORS
+  - Routes
+    - /api/state
+    - /api/dashboard
+    - /ws for upgrade
 
 ## Dashboard:
 
@@ -73,9 +77,12 @@
 
 ## Socket server
 
+- Touchdesigner connect to cloud socket server - which port works? Does wss work?
 - Add rooms concept from connected canvas
   - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
     - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
+    - AppStore demos would need to handle a projectId
+      - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
   - old rooms should get recycled after [x] days
   - Room creation should require some super basic auth key that only the server knows, via querystring
 - How to handle wss:// ? Check connected canvas

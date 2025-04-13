@@ -5,7 +5,7 @@ class DashboardClientExampleComponent extends HTMLElement {
     super();
   }
   connectedCallback() {
-    this.postURL = this.getAttribute("post-url") || "http://localhost:3003/dashboard/";
+    this.postURL = this.getAttribute("post-url") || "http://localhost:3003/api/dashboard/";
     this.appId = this.getAttribute("app-id") || "no-app-id";
     this.appTitle = this.getAttribute("app-title") || "[NO TITLE]";
     this.postInterval = this.getAttribute("post-interval") || 10; // default to 10 seconds

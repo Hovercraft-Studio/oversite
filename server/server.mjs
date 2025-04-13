@@ -30,14 +30,14 @@ const debug = args.indexOf("--debug") != -1;
 const config = {
   stateDataPath: join(projectRoot, "public", "_tmp_data", "state"),
   dashboardDataPath: join(projectRoot, "public", "_tmp_data", "dashboard"),
-  dashboardApiRoute: "/dashboard",
+  dashboardApiRoute: "/api/dashboard",
 };
 // add any production overrides
 if (process.env.NODE_ENV === "production") {
   Object.assign(config, {
     stateDataPath: "/tmp/persist/state",
     dashboardDataPath: "/tmp/persist/dashboard",
-    dashboardApiRoute: "/dashboard",
+    dashboardApiRoute: "/api/dashboard",
   });
 }
 config.debug = debug;

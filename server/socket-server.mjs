@@ -24,7 +24,7 @@ class SocketServer {
   }
 
   addRoutes() {
-    this.app.get("/clients", (req, res) => {
+    this.app.get("/api/state/clients", (req, res) => {
       let clients = [];
       this.clients().forEach((client) => {
         clients.push({

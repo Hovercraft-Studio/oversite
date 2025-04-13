@@ -57,11 +57,9 @@ class AppStoreInit extends HTMLElement {
       if (initKeys.length > 0) {
         try {
           // get data from server
-          const response = await fetch(`${this.serverURL}state`);
+          const response = await fetch(`${this.serverURL}api/state/all`);
           if (!response.ok) {
-            throw new Error(
-              `Server error: ${response.status} ${response.statusText}`
-            );
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
           }
           const data = await response.json();
           // set local _store values based on which were requested

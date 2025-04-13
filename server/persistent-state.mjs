@@ -19,11 +19,11 @@ class PersistentState {
   }
 
   addRoutes() {
-    this.app.get("/", (req, res) => {
-      res.json({ message: "Welcome to AppStore" });
-    });
+    // this.app.get("/", (req, res) => {
+    //   res.json({ message: "Welcome to AppStore" });
+    // });
 
-    this.app.get("/state/:key", (req, res) => {
+    this.app.get("/api/state/get/:key", (req, res) => {
       const key = req.params.key;
       if (this.getState(key)) {
         res.json(this.getState(key));
@@ -32,17 +32,17 @@ class PersistentState {
       }
     });
 
-    this.app.get("/state", (req, res) => {
+    this.app.get("/api/state/all", (req, res) => {
       res.json(this.state);
     });
 
-    this.app.get("/wipe/:key", (req, res) => {
+    this.app.get("/api/state/wipe/:key", (req, res) => {
       const key = req.params.key;
       this.removeKey(key);
       res.json(this.state);
     });
 
-    this.app.get("/wipe", (req, res) => {
+    this.app.get("/api/state/wipe", (req, res) => {
       this.removeAllKeys();
       res.json(this.state);
     });

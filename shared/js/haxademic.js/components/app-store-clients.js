@@ -41,7 +41,7 @@ class AppStoreClients extends HTMLElement {
 
   async getDataFromServer() {
     try {
-      let res = await fetch(`${this.serverURL}clients`);
+      let res = await fetch(`${this.serverURL}api/state/clients`);
       let data = await res.json();
       this.buildTable(data);
     } catch (error) {
@@ -63,9 +63,7 @@ class AppStoreClients extends HTMLElement {
     // show table data
     Object.keys(data).forEach((key) => {
       let obj = data[key];
-      this.markup += `<tr data-key="${obj.sender}" data-time="${
-        obj.connectedTime
-      }">
+      this.markup += `<tr data-key="${obj.sender}" data-time="${obj.connectedTime}">
           <td>${obj.sender}</td>
           <td>${DateUtil.formattedTime(obj.connectedTime)}</td>
           <td class="heartbeat"><span>${this.getHeartIcon()}</span></td>
