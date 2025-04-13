@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////////////
 
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname, join, resolve } from "path";
 import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
 
 /////////////////////////////////////////////////////////
@@ -13,6 +13,7 @@ import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const baseDataPath = join(__dirname, "data");
+const projectRoot = join(__dirname, "../"); // Go up one level from server/ to project root
 
 /////////////////////////////////////////////////////////
 // Get config from cli args
@@ -27,13 +28,15 @@ const debug = args.indexOf("--debug") != -1;
 // Store config
 /////////////////////////////////////////////////////////
 const config = {
-  dashboardDataPath: join(baseDataPath, "dashboard"),
+  stateDataPath: join(projectRoot, "public", "_tmp_data", "state"),
+  dashboardDataPath: join(projectRoot, "public", "_tmp_data", "dashboard"),
   dashboardApiRoute: "/dashboard",
 };
 // add any production overrides
 if (process.env.NODE_ENV === "production") {
   Object.assign(config, {
-    dashboardDataPath: "/tmp/persist",
+    stateDataPath: "/tmp/persist/state",
+    dashboardDataPath: "/tmp/persist/dashboard",
     dashboardApiRoute: "/dashboard",
   });
 }
@@ -114,7 +117,7 @@ app.use((req, res, next) => {
 
 import SocketServer from "./socket-server.mjs";
 import DashboardApi from "./dashboard-api.mjs";
-const socketServer = new SocketServer(wsServer, app, config.baseDataPath, debug);
+const socketServer = new SocketServer(wsServer, app, config.stateDataPath, debug);
 const dashboardApi = new DashboardApi(app, express, config.dashboardDataPath, config.dashboardApiRoute);
 if (debug) dashboardApi.printConfig();
 

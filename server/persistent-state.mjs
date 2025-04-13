@@ -6,10 +6,9 @@ class PersistentState {
   constructor(wsServer, app, baseDataPath, projectId) {
     this.wsServer = wsServer;
     this.app = app;
-    this.baseDataPath = join(baseDataPath, "state");
+    this.baseDataPath = join(baseDataPath);
     this.projectId = projectId;
 
-    fs.mkdir(this.baseDataPath, { recursive: true });
     this.dataPath = join(this.baseDataPath, `${this.projectId}.json`);
 
     this.lastSaveTime = Date.now();
@@ -113,6 +112,7 @@ class PersistentState {
   }
 
   async loadStateFromFile() {
+    await fs.mkdir(this.baseDataPath, { recursive: true });
     try {
       // try to load file and load state from it
       logGreen("📂 Loading persistent state from file:", this.dataPath);
