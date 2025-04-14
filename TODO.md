@@ -89,7 +89,7 @@ General
     - Toggle mode: `"no-cors"` and other settings for the fetch() call. Need to test this
     - Add nodejs script and call from package.json
 - Basic auth protection for the dashboard
-- Build examples dir for Dashboard poster
+- [WIP] Build examples dir for Dashboard poster
   - Universal javascript via node/frontend
     - Have frontend post to backend for easy testing, maybe from 2 apps, with an animating canvas element?
   - TouchDesigner tox
@@ -97,14 +97,6 @@ General
   - Java
 - Write up client specs/requirements for a Dashboard client
 - Write up how the dashboard works - backend api & frontend
-- Slack integration
-  - Or other integrations to alert us when a machine is missing
-- Can we have different collections of projects???? One Big Mother to rule them all. Or is this just a special view with a different login, but otherwise the structure is all the same?
-  - Show specific projects in <dashboard-view> with an attribute. This could allow client-facing dashboards
-- Add logging per project?
-  - Every project should keep a user/session count and post to dashboard for locally-persisted basic analytics
-  - user metrics
-  - _health checks
 - Look at connecting to AppStoreDistributed
   - Potential Dashboard / AppStore features:
     - Accept checkins via appStore update w/receiver:dashboard
@@ -115,6 +107,18 @@ General
   - Websocket checkin alternative to http polling
     - We could have immdiate response on the dashboard
     - We could send Slack messages when disconnected
+
+Nice-to-haves:
+
+- Slack integration
+  - Or other integrations to alert us when a machine is missing
+- Can we have different collections of projects???? One Big Mother to rule them all. Or is this just a special view with a different login, but otherwise the structure is all the same?
+  - Show specific projects in <dashboard-view> with an attribute. This could allow client-facing dashboards
+- Add logging per project?
+  - Every project should keep a user/session count and post to dashboard for locally-persisted basic analytics
+  - user metrics
+  - _health checks
+
 
 ## Socket server
 

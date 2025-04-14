@@ -8,6 +8,14 @@ class CustomApp extends HTMLElement {
   connectedCallback() {
     this.init();
     _store.addListener(this);
+    this.initDashboardView();
+  }
+
+  initDashboardView() {
+    let apiServerURL = _store.get("server_url") + "api/dashboard";
+    this.querySelector("#dashboard-container").innerHTML = `
+      <dashboard-view data-api-url="${apiServerURL}" refresh-interval="60"></dashboard-view>
+    `;
   }
 
   storeUpdated(key, value) {
