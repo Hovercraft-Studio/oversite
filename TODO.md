@@ -3,9 +3,7 @@
 ## Next
 
 Dashboard fixes:
-- [DONE?] Add config for dashboard images base path for www route - should be different from api route / static file serving
-  - [DONE?] Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
-  - [DONE?] It's good on prod but needs to switch from :3002 to :3003 during dev
+- Dashboard-view in example poster doesn't have the server-base attribute, so its images are broken
 
 General
 - Nodejs dashboard example & isomorphic poster class
@@ -28,6 +26,7 @@ General
     - This could also turn the screens on/off by simulating the serial message
 
 ## General
+
 
 - We need a big `dist` label on port 3003 if serving static files
 - Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
@@ -121,6 +120,7 @@ Nice-to-haves:
 
 ## Socket server
 
+- How to have multiple clients? One for local and one for cloud
 - Add rooms ("channels") concept from connected canvas
   - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
     - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
@@ -131,6 +131,7 @@ Nice-to-haves:
 
 Nice-to-haves & ideas
 
+- Build an admin page with lists of special commands available for each app deployment. ATL is a good example
 - Hydration should happen from websockets instead of http?
 - A client should be able to hydrate the persistent state object
 - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init

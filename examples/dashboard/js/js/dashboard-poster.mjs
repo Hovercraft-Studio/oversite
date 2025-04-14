@@ -48,7 +48,7 @@ class DashboardCheckinPoller {
 
     // only post an image every 3 posts. don't post null
     if (this.postCount % 3 == 0) {
-      checkinData.imageScreenshot = this.getImageCustomData();
+      checkinData.imageExtra = this.getImageCustomData();
     }
 
     // post checkin data
