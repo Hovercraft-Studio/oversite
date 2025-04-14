@@ -2,9 +2,14 @@
 
 ## Next
 
+Dashboard fixes:
+- Prod fixes:
+  - <dashboard-view> is pulling from local:3003 instead of the prod server
+  - Dashboard poster example is also posting to: http://localhost:3003/api/dashboard/
 - Fix dashboard images base path for www route - needs to be different from api route / static file serving
   - Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
-- We need a big `dist` label on port 3003 if serving static files
+
+General
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
 
@@ -25,7 +30,8 @@
 
 ## General
 
-- Build a form to broadcast test data into AppStore - could live in `app-store-demo`
+- We need a big `dist` label on port 3003 if serving static files
+- Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
 - Move haxademic.js libs out of haxademic.js dir - we should decouple from the haxademic.js repo and remove the cruft
 
 ## Server unification:
@@ -94,12 +100,14 @@
 - Slack integration
   - Or other integrations to alert us when a machine is missing
 - Can we have different collections of projects???? One Big Mother to rule them all. Or is this just a special view with a different login, but otherwise the structure is all the same?
+  - Show specific projects in <dashboard-view> with an attribute. This could allow client-facing dashboards
 - Add logging per project?
   - Every project should keep a user/session count and post to dashboard for locally-persisted basic analytics
   - user metrics
   - _health checks
 - Look at connecting to AppStoreDistributed
   - Potential Dashboard / AppStore features:
+    - Accept checkins via appStore update w/receiver:dashboard
     - Real-time connection status
       - Slack integration (though this doesn't need websockets - could just be a check-in timeout)
     - Run commands like a BA tablet app
@@ -110,20 +118,20 @@
 
 ## Socket server
 
-- Touchdesigner connect to cloud socket server - which port works? Does wss work?
-- Add rooms concept from connected canvas
+- Add rooms ("channels") concept from connected canvas
   - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
     - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
     - AppStore demos would need to handle a projectId
       - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
   - old rooms should get recycled after [x] days
   - Room creation should require some super basic auth key that only the server knows, via querystring
-- Hydration should happen from websockets instead of http, but maybe keep that for non ws:// connections
 
+Nice-to-haves & ideas
 
-## hc-xocket-server TODO (Moved from /server/README.md):
-
+- Hydration should happen from websockets instead of http?
+- A client should be able to hydrate the persistent state object
 - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
+- An AppStore update should be able to come in via http post
 - Move server responses to functions 
 
 SSL
