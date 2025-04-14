@@ -3,11 +3,9 @@
 ## Next
 
 Dashboard fixes:
-- Prod fixes:
-  - <dashboard-view> is pulling from local:3003 instead of the prod server
-  - Dashboard poster example is also posting to: http://localhost:3003/api/dashboard/
-- Fix dashboard images base path for www route - needs to be different from api route / static file serving
-  - Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
+- [DONE?] Add config for dashboard images base path for www route - should be different from api route / static file serving
+  - [DONE?] Check between `vite/public` and `prod/dist` - hopefully there's a good solution for this
+  - [DONE?] It's good on prod but needs to switch from :3002 to :3003 during dev
 
 General
 - Nodejs dashboard example & isomorphic poster class
@@ -27,6 +25,7 @@ General
   - Or could persistence be held on the FanCam/Protect servers?
   - Can the ATL app be a separate repo? Or should it be a secret page in this app? We probably shouldn't let anyone know about our backend server, but probably should just password protect the whole thing?
   - Could there be a simple node app that runs app-store-distributed and just triggers key commands for a restart initiated by Jasmine?
+    - This could also turn the screens on/off by simulating the serial message
 
 ## General
 

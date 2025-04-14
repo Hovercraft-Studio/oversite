@@ -17,6 +17,7 @@ class DashboardView extends HTMLElement {
     this.initialHTML = this.innerHTML;
     this.apiURL = this.getAttribute("data-api-url");
     this.refreshInterval = this.getAttribute("refresh-interval") || 60;
+    this.serverBase = this.getAttribute("server-base") || "";
     this.dashboardDataUrl = `${this.apiURL}/json`;
     this.shadow = this.attachShadow({ mode: "open" });
     this.el = this.shadow ? this.shadow : this;
@@ -376,11 +377,12 @@ class DashboardView extends HTMLElement {
       return "";
     }
     imageURL = imageURL.replace("data/projects", "/data/dashboard/projects"); // convert old data format - not needed moving forward
+    imageURL = this.serverBase + imageURL;
     let imgHTML = /*html*/ `
       <div class="dashboard-img-outer">
         ${title}: ${this.timeElapsedString(this.getMsSince1970(lastSeen))}
         <span class="dashboard-img-container">
-          <img data-zoomable class="imagexpander" src="${imageURL}">
+          <img data-zoomable class="imagexpander" src="${imageURL}" crossorigin="anonymous">
         </span>
       </div>
     `;
