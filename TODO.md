@@ -4,7 +4,7 @@
 
 Dashboard fixes:
 - Dashboard-view in example poster doesn't have the server-base attribute, so its images are broken
-
+- Image rollover to show larger image on hover
 General
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
@@ -27,7 +27,9 @@ General
 
 ## General
 
-
+- SSL connections probably break if visiting ip address vs localhost
+  - Test this with chrome flags
+  - Probably won't work on iPad
 - We need a big `dist` label on port 3003 if serving static files
 - Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
 - Move haxademic.js libs out of haxademic.js dir - we should decouple from the haxademic.js repo and remove the cruft
@@ -35,6 +37,7 @@ General
 ## Server unification:
 
 - Auto-build `dist`?
+- Would there be a benefit of using Vite/Express like cacheflowe.com? There are fewer differences between the dev and prod servers, and we could use Vite's dev server for the dashboard. 
 - Figure out a better debug mode for logging - log levels per app?
 - Persistent file storage is a problem on production - how to handle this?
   - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
@@ -57,6 +60,7 @@ General
     - Locally-running web apps *can* connect to remote wss:// on the cloud! Just remove the port by setting it to `80`, `443` or empty. Browser permissions allow SSL permissiveness as long as CORS is set up properly on the server.
       - http://localhost:3002/app-store-monitor/index.html#&wsURL=wss://example.ondigitalocean.app/ws&httpPort=
       - `app-store-init` checks for ports passed in via querystring and removes them on the cloud
+    - How to handle local ip addresses? Local DNS server?
   - CORS
   - Routes
     - /api/state
