@@ -30,7 +30,8 @@ class DashboardView extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener("hashchange", this.processHashCallback);
     window.removeEventListener("visibilitychange", this.tabVisibilityCallback);
-    window.removeEventListener("click", this.clickListener);
+    window.removeEventListener("click", this.clickListenerBound);
+    window.removeEventListener("mouseover", this.hoverListenerBound);
     window.clearInterval(this.pollingInterval);
     window.clearInterval(this.progressInterval);
   }
@@ -44,13 +45,32 @@ class DashboardView extends HTMLElement {
   }
 
   listenForClicks() {
-    this.el.addEventListener("click", this.clickListener.bind(this));
+    this.clickListenerBound = this.clickListener.bind(this);
+    this.hoverListenerBound = this.hoverListener.bind(this);
+    this.el.addEventListener("click", this.clickListenerBound);
+    this.el.addEventListener("mouseover", this.hoverListenerBound.bind(this));
   }
 
   clickListener(e) {
     if (e.target.nodeName === "IMG") {
       let img = e.target;
-      // console.log(img.size, img.naturalWidth, img.naturalHeight);
+      console.log(img.size, img.naturalWidth, img.naturalHeight);
+    }
+  }
+
+  hoverListener(e) {
+    // get hovered image and pass to overlay
+    if (e.target.nodeName === "IMG") {
+      let img = e.target;
+      if (img.hasAttribute("zoomable")) {
+        let imageHighlight = this.el.querySelector(".dashboard-image-highlight");
+        let imgHighlightImg = imageHighlight.querySelector("img");
+        imgHighlightImg.src = img.src;
+        imageHighlight.style.opacity = 1;
+      }
+    } else {
+      let imageHighlight = this.el.querySelector(".dashboard-image-highlight");
+      imageHighlight.style.opacity = 0;
     }
   }
 
@@ -159,6 +179,29 @@ class DashboardView extends HTMLElement {
         width: 100%;
         height: 8px;
         margin: 0.5rem 0;
+      }
+
+      .dashboard-image-highlight {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+
+        img {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          max-width: 90%;
+          max-height: 90%;
+          border-radius: 10px;
+        }
       }
 
       .dashboard-cards {
@@ -318,6 +361,9 @@ class DashboardView extends HTMLElement {
       <div class="dashboard-cards">
         ${projectsCards}
       </div>
+      <div class="dashboard-image-highlight">
+        <img src="" crossorigin="anonymous" />
+      </div>
       <style>
         ${this.css()}
       </style>
@@ -382,7 +428,7 @@ class DashboardView extends HTMLElement {
       <div class="dashboard-img-outer">
         ${title}: ${this.timeElapsedString(this.getMsSince1970(lastSeen))}
         <span class="dashboard-img-container">
-          <img data-zoomable class="imagexpander" src="${imageURL}" crossorigin="anonymous">
+          <img zoomable src="${imageURL}" crossorigin="anonymous">
         </span>
       </div>
     `;
