@@ -29,15 +29,23 @@
           <h1>Dashboard Poster Demo</h1>
           <p>Multiple pretend apps posting to the dashboard</p>
           <div class="grid">
-            <dashboard-client-example app-id="test-app-1" app-title="Example App 1" post-interval="10"></dashboard-client-example>
-            <dashboard-client-example app-id="test-app-2" app-title="Example App 2" post-interval="5"></dashboard-client-example>
+            <dashboard-client-example
+              app-id="test-app-1"
+              app-title="Example App 1"
+              post-interval="10"
+            ></dashboard-client-example>
+            <dashboard-client-example
+              app-id="test-app-2"
+              app-title="Example App 2"
+              post-interval="5"
+            ></dashboard-client-example>
           </div>
         </section>
         <section>
           <h4>Import dashboard-view web component for easy testing:</h4>
           <div id="dashboard-container">
             <!-- Check ./js/app.js for dynamic creation of dashboard view, due to configuration needs on dev vs prod -->
-            <!-- <dashboard-view data-api-url="http://localhost:3003/api/dashboard" refresh-interval="60"></dashboard-view> -->
+            <!-- <dashboard-view api-url="http://localhost:3003/api/dashboard" refresh-interval="60"></dashboard-view> -->
           </div>
         </section>
         <details>

@@ -17,9 +17,12 @@ General
 
 - How can we build the ATL app from this base? 
   - If we use AppStore:
-    - SocketServer and PersistentState need to support channels
+    - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
+    - Should there be a tiny Node app on the remote PC? That would be good for Jasmine to reset
+    - Java App should switch to AppStoreDistributedand save team state in a TextPrefs file
+      - When it connects, it should broadcast the current team
+      - When the admin app connects, the java app should send back the current team
   - Should it be it's own server with the full implementation, and another server app added? 
-  - Or would it use it's own room for websocket/AppStore commands for reset? 
   - How do we store the current team selection with persistence? 
   - Or could persistence be held on the FanCam/Protect servers?
   - Can the ATL app be a separate repo? Or should it be a secret page in this app? We probably shouldn't let anyone know about our backend server, but probably should just password protect the whole thing?
@@ -51,6 +54,21 @@ General
     - Vite for frontend dev server
       - On prod, we use Vite's `dist` folder, which is served by express
     - Express for backend dev server
+  - Everything is ephemeral?!
+    - Dashboard reconstructs persisted data on the fly, but can be wiped when the server restarts
+    - SocketServer rebuilds channels and persisted data on the fly, but can be wiped when the server restarts
+- Components
+  - Dashboard
+    - `dashboard-view` - Frontend component that loads dashboard data
+      - `api-url` - where does the api live? allows for a dashboard on a remote frontend, but also helps us find the api (:3003) from Vite (:3002)
+      - `server-base` - helps find images on api server (:3003) in dev mode, when frontend is served by Vite (:3002). On prod, this is the same server
+      - `refresh-interval` - how often to refresh the data, 60 seconds is a good default
+    - `dashboard-api` - Backend component that serves the dashboard data
+      - Receives checkin JSON POST data and stores to a local json file. Images are sent as base64 strings but converted to files, which are replaced in the posted json as local www paths, but also with a reference to the file on disk tso we can remove them as the checkin data ages out
+      - `/api/dashboard` - base endpoint for the dashboard data
+      - `/api/dashboard/json` - Retrieves checkin data for all projects
+      - `/api/dashboard/json/:project` - Retrieves checkin data for a specific project
+      - `/api/dashboard/delete/:project` - Deletes checkin data for a specific project, along with images on disk
 - Note the differences between running locally and on the cloud
   - Persistent files
   - Ports

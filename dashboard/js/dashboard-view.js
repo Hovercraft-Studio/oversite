@@ -15,13 +15,13 @@ class DashboardView extends HTMLElement {
 
   connectedCallback() {
     this.initialHTML = this.innerHTML;
-    this.apiURL = this.getAttribute("data-api-url");
-    this.refreshInterval = this.getAttribute("refresh-interval") || 60;
+    this.apiURL = this.getAttribute("api-url");
     this.serverBase = this.getAttribute("server-base") || "";
+    this.refreshInterval = this.getAttribute("refresh-interval") || 60;
     this.dashboardDataUrl = `${this.apiURL}/json`;
     this.shadow = this.attachShadow({ mode: "open" });
     this.el = this.shadow ? this.shadow : this;
-    this.isDetail = null;
+    this.detailID = null;
     this.latestData = null;
     this.render();
     this.initComponent();
@@ -29,6 +29,8 @@ class DashboardView extends HTMLElement {
 
   disconnectedCallback() {
     window.removeEventListener("hashchange", this.processHashCallback);
+    window.removeEventListener("historychange", this.processHashCallback);
+    window.removeEventListener("popstate", this.processHashCallback);
     window.removeEventListener("visibilitychange", this.tabVisibilityCallback);
     window.removeEventListener("click", this.clickListenerBound);
     window.removeEventListener("mouseover", this.hoverListenerBound);
@@ -94,24 +96,36 @@ class DashboardView extends HTMLElement {
   listenForHashChange() {
     this.processHashCallback = this.processHash.bind(this);
     window.addEventListener("hashchange", this.processHashCallback);
+    window.addEventListener("historychange", this.processHashCallback);
+    window.addEventListener("popstate", this.processHashCallback);
     this.processHash();
+  }
+
+  getHashQueryParam(variable) {
+    const url = new URL(document.location);
+    const searchParams = new URLSearchParams(url.hash.substring(1));
+    for (let [key, value] of searchParams) {
+      if (key == variable) return value;
+    }
+    return null;
   }
 
   processHash(e) {
     let hash = window.location.hash;
-    if (hash.startsWith("#detail=")) {
-      let appId = hash.replace("#detail=", "");
-      this.isDetail = appId;
+    let actionDetail = this.getHashQueryParam("detail");
+    let actionDelete = this.getHashQueryParam("delete");
+    if (actionDetail) {
+      this.detailID = actionDetail;
       this.getData();
-    } else if (hash.startsWith("#home")) {
-      this.isDetail = null;
-      window.location.hash = "";
-      this.getData();
-    } else if (hash.startsWith("#delete=")) {
-      let appId = hash.replace("#delete=", "");
-      this.deleteApp(appId);
-      window.location.hash = "";
+    } else if (actionDelete) {
+      this.deleteApp(actionDelete);
+      window.location.hash = ""; // remove hash
       this.restartPolling();
+    } else {
+      // no action, show home listing
+      this.detailID = null;
+      window.location.hash = "";
+      this.getData();
     }
     setTimeout(() => {
       window.scrollTo(0, 0);
@@ -160,19 +174,17 @@ class DashboardView extends HTMLElement {
   css() {
     return /*css*/ `
 
-      .dashboard-actions {
-        display: flex;
-        float: right;
-        font-size: 14px;
-        font-weight: bold;
-      }
-
       .api-data-link::after {
         content: "↗";
         display: inline-block;
         margin: 0 0 0 0.25rem;
         transform: translateY(-23%);
         text-decoration: none;
+      }
+
+      article {
+        padding: var(--pico-spacing);
+        border: 1px solid #000;
       }
 
       progress {
@@ -343,20 +355,21 @@ class DashboardView extends HTMLElement {
 
   render(data) {
     // console.log(data);
-    let projectsCards = this.isDetail
-      ? this.renderProjectHistory(data.checkins[this.isDetail])
+    let projectsCards = this.detailID
+      ? this.renderProjectHistory(data.checkins[this.detailID])
       : this.renderProjects(data);
 
-    let dashboardTitle = this.isDetail ? `<a href="#home">All Projects</a>` : "All Projects";
-    let apiLinkProject = this.isDetail ? `/${this.isDetail}` : "";
+    let dashboardTitle = this.detailID ? `<a href="#home">All Projects</a>` : "All Projects";
+    let apiLinkProject = this.detailID ? `/${this.detailID}` : "";
 
     // render
     this.el.innerHTML = /*html*/ `
-      <h1>${dashboardTitle} ${this.breadcrumb(data, this.isDetail)}
-        <nav class="dashboard-actions">
-          <a href="${this.apiURL}/json${apiLinkProject}" target="_blank" class="api-data-link">API Data</a>
-        </nav>
-      </h1>
+      <h1>${dashboardTitle} ${this.breadcrumb(data, this.detailID)}</h1>
+      <article>
+        <div><small>apiURL: <code>${this.apiURL}</code></small></div>
+        <div><small>serverBase: <code>${this.serverBase}</code></small></div>
+        <a href="${this.apiURL}/json${apiLinkProject}" target="_blank" class="api-data-link">API Data</a>
+      </article>
       <progress id="file" max="60" value="0">70%</progress>
       <div class="dashboard-cards">
         ${projectsCards}
@@ -472,11 +485,11 @@ class DashboardView extends HTMLElement {
     let secondsSinceSeen = Date.now() / 1000 - project.lastSeen;
     // add offline alert color to card
     let offlineAlert = secondsSinceSeen > 20 * 60 ? " class='dashboard-offline'" : ""; // 20 minute window to show offline indication
-    if (this.isDetail && index > 0) {
+    if (this.detailID && index > 0) {
       offlineAlert = ""; // don't show offline alert on detail view
     }
     // add restarted alert color to card
-    let restartedWindow = this.isDetail ? 5 : 30;
+    let restartedWindow = this.detailID ? 5 : 30;
     let restartedAlert = uptime < restartedWindow * 60 ? " class='dashboard-restarted'" : ""; // 30 minute window to show restarted color
     // calculate times
     let uptimeClock = this.daysAndSecondsToClockTime(uptime);
@@ -516,7 +529,7 @@ class DashboardView extends HTMLElement {
         ${deleteButton}
       </div>
     `;
-    if (this.isDetail) {
+    if (this.detailID) {
       cardTitle = ""; //appTitle;
     }
 

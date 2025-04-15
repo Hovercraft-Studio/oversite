@@ -16,7 +16,7 @@ class CustomApp extends HTMLElement {
     let serverBase = _store.get("server_url").substring(0, _store.get("server_url").length - 1); // remove trailing slash
     this.querySelector("#dashboard-container").innerHTML = `
       <dashboard-view 
-        data-api-url="${apiServerURL}" 
+        api-url="${apiServerURL}" 
         server-base="${serverBase}" 
         refresh-interval="60"
       ></dashboard-view>
