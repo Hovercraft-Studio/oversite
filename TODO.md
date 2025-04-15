@@ -4,7 +4,6 @@
 
 Dashboard fixes:
 - Dashboard-view in example poster doesn't have the server-base attribute, so its images are broken
-- Image rollover to show larger image on hover
 General
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
@@ -17,6 +16,8 @@ General
 ## ATL CMS
 
 - How can we build the ATL app from this base? 
+  - If we use AppStore:
+    - SocketServer and PersistentState need to support channels
   - Should it be it's own server with the full implementation, and another server app added? 
   - Or would it use it's own room for websocket/AppStore commands for reset? 
   - How do we store the current team selection with persistence? 
