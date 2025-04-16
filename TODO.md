@@ -143,7 +143,7 @@ Nice-to-haves:
 
 ## Socket server
 
-- How to have multiple clients? One for local and one for cloud
+- How to have multiple clients in one app? One for local and one for cloud. Could they sync?
 - Add rooms ("channels") concept from connected canvas
   - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
     - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
@@ -151,6 +151,7 @@ Nice-to-haves:
       - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
   - old rooms should get recycled after [x] days
   - Room creation should require some super basic auth key that only the server knows, via querystring
+- Build a Plus-Six-style mouse cursor demo where each client has their own mouse
 
 Nice-to-haves & ideas
 
