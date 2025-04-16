@@ -1,5 +1,22 @@
 # TODO
 
+## Get to launch
+
+- Wrap up basic Dashboard functions
+  - Basic auth / password protection
+  - Test having dashboard api at `/` for big mother replacement
+    - Do we just have a tiny app at bigmother.hovercraftstudio.com to forward JSON posts to the new server? 
+- Set up company DigitalOcean account
+  - Launch app to new App Platform project
+  - Set up bigmother.hovercraftstudio.com to point to the new server
+- Get ATL app running
+  - Get the ATL app built and running on DigitalOcean? Or Vercel?
+  - Restart function for Jasmine
+    - Needs a Node app? Or are we setting AppStoreDistributed to run on the Java apps?
+  - Persistence via local file storage
+  - Point to digitalocean app URL in Java app to replace old Hovercraft Subdomain
+    - Tell Michael @ rEv about the change w/instructions
+
 ## Next
 
 Dashboard fixes:
@@ -7,11 +24,6 @@ Dashboard fixes:
 General
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
-
-## Big Mother replacement
-
-- Test having dashboard api at `/` for big mother replacement
-- Do we just have a tiny app at bigmother.hovercraftstudio.com to forward JSON posts to the new server? 
 
 ## ATL CMS
 
@@ -33,7 +45,9 @@ General
 
 - SSL connections probably break if visiting ip address vs localhost
   - Test this with chrome flags
-  - Probably won't work on iPad
+  - Probably won't work on iPad. Test solutions here
+    - Vite SSL 
+    - Vite proxy
 - We need a big `dist` label on port 3003 if serving static files
 - Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
 - Move haxademic.js libs out of haxademic.js dir - we should decouple from the haxademic.js repo and remove the cruft
@@ -101,7 +115,7 @@ General
 
 ## Dashboard:
 
-- Fix back button
+- Basic auth protection for the dashboard
 - [WIP] Add dashboard poster example:
   - Make universal for nodejs
     - Detect whether it's running in node or browser
@@ -109,7 +123,6 @@ General
     - Add option window size if in browser
     - Toggle mode: `"no-cors"` and other settings for the fetch() call. Need to test this
     - Add nodejs script and call from package.json
-- Basic auth protection for the dashboard
 - [WIP] Build examples dir for Dashboard poster
   - Universal javascript via node/frontend
     - Have frontend post to backend for easy testing, maybe from 2 apps, with an animating canvas element?
@@ -144,7 +157,7 @@ Nice-to-haves:
 ## Socket server
 
 - How to have multiple clients? One for local and one for cloud
-- Add rooms ("channels") concept from connected canvas
+- Add rooms ("channels") concept from Connected Canvas
   - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
     - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
     - AppStore demos would need to handle a projectId
