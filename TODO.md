@@ -48,6 +48,7 @@ General
   - Probably won't work on iPad. Test solutions here
     - Vite SSL 
     - Vite proxy
+- Move old haxademic.js files - we don't need to reference that project
 - We need a big `dist` label on port 3003 if serving static files
 - Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
 - Move haxademic.js libs out of haxademic.js dir - we should decouple from the haxademic.js repo and remove the cruft
