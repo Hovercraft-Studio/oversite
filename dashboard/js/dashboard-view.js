@@ -22,9 +22,18 @@ class DashboardView extends HTMLElement {
     this.shadow = this.attachShadow({ mode: "open" });
     this.el = this.shadow ? this.shadow : this;
     this.detailID = null;
-    this.latestData = null;
+    this.data = null;
+    this.isAuthenticated = this.checkAuthCookie();
     this.render();
     this.initComponent();
+  }
+
+  initComponent() {
+    this.listenForHashChange();
+    this.listenForTabVisibility();
+    this.listenForClicks();
+    this.getData();
+    this.restartPolling();
   }
 
   disconnectedCallback() {
@@ -38,60 +47,9 @@ class DashboardView extends HTMLElement {
     window.clearInterval(this.progressInterval);
   }
 
-  initComponent() {
-    this.listenForHashChange();
-    this.listenForTabVisibility();
-    this.listenForClicks();
-    this.getData();
-    this.restartPolling();
-  }
-
-  listenForClicks() {
-    this.clickListenerBound = this.clickListener.bind(this);
-    this.hoverListenerBound = this.hoverListener.bind(this);
-    this.el.addEventListener("click", this.clickListenerBound);
-    this.el.addEventListener("mouseover", this.hoverListenerBound.bind(this));
-  }
-
-  clickListener(e) {
-    if (e.target.nodeName === "IMG") {
-      let img = e.target;
-      console.log(img.size, img.naturalWidth, img.naturalHeight);
-    }
-  }
-
-  hoverListener(e) {
-    // get hovered image and pass to overlay
-    if (e.target.nodeName === "IMG") {
-      let img = e.target;
-      if (img.hasAttribute("zoomable")) {
-        let imageHighlight = this.el.querySelector(".dashboard-image-highlight");
-        let imgHighlightImg = imageHighlight.querySelector("img");
-        imgHighlightImg.src = img.src;
-        imageHighlight.style.opacity = 1;
-      }
-    } else {
-      let imageHighlight = this.el.querySelector(".dashboard-image-highlight");
-      imageHighlight.style.opacity = 0;
-    }
-  }
-
-  restartPolling() {
-    window.clearInterval(this.pollingInterval);
-    this.pollingInterval = setInterval(() => {
-      this.getData();
-    }, 1000 * this.refreshInterval);
-
-    this.startTime = Date.now();
-    window.clearInterval(this.progressInterval);
-    this.progressInterval = setInterval(() => {
-      let progress = this.el.querySelector("progress");
-      progress.max = this.refreshInterval;
-      if (progress) {
-        progress.value = (Date.now() - this.startTime) / 1000;
-      }
-    }, 16);
-  }
+  ////////////////////////////////////////
+  // Hash query navigation & actions
+  ////////////////////////////////////////
 
   listenForHashChange() {
     this.processHashCallback = this.processHash.bind(this);
@@ -132,22 +90,92 @@ class DashboardView extends HTMLElement {
     }, 100);
   }
 
-  listenForTabVisibility() {
-    this.tabVisibilityCallback = this.checkTabVisibility.bind(this);
-    document.addEventListener("visibilitychange", this.tabVisibilityCallback);
+  ////////////////////////////////////////
+  // Server data
+  ////////////////////////////////////////
+
+  login(data) {
+    // send login data to server
+    fetch(`${this.apiURL}/auth`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Login failed");
+        }
+      })
+      .then((data) => {
+        if (data.error) alert(data.error);
+        if (data.message) alert(data.message);
+        this.isAuthenticated = true;
+        // this.render();
+        this.getData();
+        this.restartPolling();
+        this.setAuthCookie();
+      })
+      .catch((error) => {
+        console.error("Error during login:", error);
+        alert("Login failed. Please try again.");
+      });
   }
 
-  checkTabVisibility() {
-    if (!document.hidden) {
-      this.getData();
+  setAuthCookie() {
+    // set auth cookie with 1 hour expiration
+    let expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = `auth=true; expires=${expires}; path=/`;
+  }
+
+  checkAuthCookie() {
+    // check if auth cookie is set
+    let cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+      let [name, value] = cookie.split("=");
+      if (name === "auth" && value === "true") {
+        this.isAuthenticated = true;
+        return true;
+      }
     }
+    this.isAuthenticated = false;
+    return false;
+  }
+
+  removeAuthCookie() {
+    // remove auth cookie
+    document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    this.isAuthenticated = false;
+  }
+
+  restartPolling() {
+    if (!this.isAuthenticated) return;
+    window.clearInterval(this.pollingInterval);
+    this.pollingInterval = setInterval(() => {
+      this.getData();
+    }, 1000 * this.refreshInterval);
+
+    this.startTime = Date.now();
+    window.clearInterval(this.progressInterval);
+    this.progressInterval = setInterval(() => {
+      let progress = this.el.querySelector("progress");
+      progress.max = this.refreshInterval;
+      if (progress) {
+        progress.value = (Date.now() - this.startTime) / 1000;
+      }
+    }, 16);
   }
 
   getData() {
+    if (!this.isAuthenticated) return;
     fetch(this.dashboardDataUrl)
       .then((response) => response.json())
       .then((data) => {
-        this.render(data);
+        this.data = data;
+        this.render();
       });
     this.restartPolling();
   }
@@ -171,8 +199,30 @@ class DashboardView extends HTMLElement {
       });
   }
 
+  // Retrieve data when switching back to browser tab
+
+  listenForTabVisibility() {
+    this.tabVisibilityCallback = this.checkTabVisibility.bind(this);
+    document.addEventListener("visibilitychange", this.tabVisibilityCallback);
+  }
+
+  checkTabVisibility() {
+    if (!document.hidden) {
+      this.getData();
+    }
+  }
+
+  ////////////////////////////////////////
+  // CSS styling
+  // Slight dependency on pico.css
+  ////////////////////////////////////////
+
   css() {
     return /*css*/ `
+
+      :host {
+        cursor: default;
+      }
 
       .api-data-link::after {
         content: "↗";
@@ -191,29 +241,6 @@ class DashboardView extends HTMLElement {
         width: 100%;
         height: 8px;
         margin: 0.5rem 0;
-      }
-
-      .dashboard-image-highlight {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        z-index: 9999;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-
-        img {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          max-width: 90%;
-          max-height: 90%;
-          border-radius: 10px;
-        }
       }
 
       .dashboard-cards {
@@ -300,6 +327,7 @@ class DashboardView extends HTMLElement {
           background: #000;
           object-fit: contain;
           display: block;
+          cursor: zoom-in;
         }
 
         .dashboard-custom-props {
@@ -343,28 +371,92 @@ class DashboardView extends HTMLElement {
           text-indent: 4px;
         }
 
-        .dashboard-login {
-          width: 260px;
-          padding: var(--pico-spacing);
-          background: #fff;
-          color: #000;
+      }
+
+      .dashboard-login {
+        input, button {
+          padding: 1rem;
+        }
+      }
+
+      .dashboard-image-highlight {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        pointer-events: none;
+
+        img {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          max-width: 90%;
+          max-height: 90%;
+          border-radius: 10px;
         }
       }
     `;
   }
 
-  render(data) {
-    // console.log(data);
+  ////////////////////////////////////////
+  // Render outer layout
+  ////////////////////////////////////////
+
+  render() {
+    this.el.innerHTML = /*html*/ `
+      ${this.curView()}
+      <style>
+        ${this.css()}
+      </style>
+    `;
+  }
+
+  curView() {
+    if (this.isAuthenticated) {
+      return this.renderDashboardLayout();
+    } else {
+      return this.renderAuthForm();
+    }
+  }
+
+  renderAuthForm() {
+    requestAnimationFrame(() => {
+      const form = this.el.querySelector("#login-form");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        this.login(data);
+      });
+    });
+    return /*html*/ `
+      <div class="dashboard-login">
+        <h3>Login</h3>
+        <form id="login-form">
+          <input type="text" name="username" placeholder="Username" required />
+          <input type="password" name="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    `;
+  }
+
+  renderDashboardLayout() {
     let projectsCards = this.detailID
-      ? this.renderProjectHistory(data.checkins[this.detailID])
-      : this.renderProjects(data);
+      ? this.renderProjectHistory(this.data.checkins[this.detailID])
+      : this.renderProjects(this.data);
 
     let dashboardTitle = this.detailID ? `<a href="#home">All Projects</a>` : "All Projects";
     let apiLinkProject = this.detailID ? `/${this.detailID}` : "";
 
-    // render
-    this.el.innerHTML = /*html*/ `
-      <h1>${dashboardTitle} ${this.breadcrumb(data, this.detailID)}</h1>
+    return /*html*/ `
+      <h1>${dashboardTitle} ${this.breadcrumb()}</h1>
       <article>
         <div><small>apiURL: <code>${this.apiURL}</code></small></div>
         <div><small>serverBase: <code>${this.serverBase}</code></small></div>
@@ -377,18 +469,48 @@ class DashboardView extends HTMLElement {
       <div class="dashboard-image-highlight">
         <img src="" crossorigin="anonymous" />
       </div>
-      <style>
-        ${this.css()}
-      </style>
     `;
   }
 
-  breadcrumb(data, appId) {
-    if (data && appId) {
-      return `→ ${data.checkins[appId].appTitle}`;
+  breadcrumb() {
+    if (this.data && this.detailID) {
+      return `→ ${this.data.checkins[this.detailID].appTitle}`;
     } else {
       return "";
     }
+  }
+
+  ////////////////////////////////////////
+  // Render checkin cards
+  ////////////////////////////////////////
+
+  renderProjects() {
+    let data = this.data;
+    if (!data || !data.checkins) {
+      return `<h2 aria-busy="true">Loading...</h2>`;
+    }
+    if (Object.keys(data.checkins).length === 0) {
+      return `<h2>No projects found</h2>`;
+    }
+    let projectKeys = Object.keys(data.checkins);
+    projectKeys.sort();
+    let projectsCards = projectKeys.map((appId) => {
+      let project = data.checkins[appId];
+      return this.renderCard(appId, project);
+    });
+
+    return projectsCards.join("");
+  }
+
+  renderProjectHistory(projectData) {
+    if (!projectData || !projectData.history || projectData.history.length === 0) {
+      return `<h2>No project history found</h2>`;
+    }
+    let historyCards = projectData.history.map((checkinData, i) => {
+      return this.renderCard(projectData.appId, checkinData, i);
+    });
+
+    return historyCards.join("");
   }
 
   daysAndSecondsToClockTime(seconds) {
@@ -446,34 +568,6 @@ class DashboardView extends HTMLElement {
       </div>
     `;
     return imgHTML;
-  }
-
-  renderProjects(data) {
-    if (!data || !data.checkins) {
-      return `<h2 aria-busy="true">Loading...</h2>`;
-    }
-    if (Object.keys(data.checkins).length === 0) {
-      return `<h2>No projects found</h2>`;
-    }
-    let projectKeys = Object.keys(data.checkins);
-    projectKeys.sort();
-    let projectsCards = projectKeys.map((appId) => {
-      let project = data.checkins[appId];
-      return this.renderCard(appId, project);
-    });
-
-    return projectsCards.join("");
-  }
-
-  renderProjectHistory(data) {
-    if (!data || !data.history || data.history.length === 0) {
-      return `<h2>No project history found</h2>`;
-    }
-    let historyCards = data.history.map((checkinData, i) => {
-      return this.renderCard(data.appId, checkinData, i);
-    });
-
-    return historyCards.join("");
   }
 
   renderCard(appId, project, index) {
@@ -548,6 +642,40 @@ class DashboardView extends HTMLElement {
         </div>
       </dashboard-card>
     `;
+  }
+
+  ////////////////////////////////////////
+  // Mouse & hover events
+  ////////////////////////////////////////
+
+  listenForClicks() {
+    this.clickListenerBound = this.clickListener.bind(this);
+    this.hoverListenerBound = this.hoverListener.bind(this);
+    this.el.addEventListener("click", this.clickListenerBound);
+    this.el.addEventListener("mouseover", this.hoverListenerBound.bind(this));
+  }
+
+  clickListener(e) {
+    if (e.target.nodeName === "IMG") {
+      let img = e.target;
+      console.log(img.size, img.naturalWidth, img.naturalHeight);
+    }
+  }
+
+  hoverListener(e) {
+    // get hovered image and pass to overlay
+    if (e.target.nodeName === "IMG") {
+      let img = e.target;
+      if (img.hasAttribute("zoomable")) {
+        let imageHighlight = this.el.querySelector(".dashboard-image-highlight");
+        let imgHighlightImg = imageHighlight.querySelector("img");
+        imgHighlightImg.src = img.src;
+        imageHighlight.style.opacity = 1;
+      }
+    } else {
+      let imageHighlight = this.el.querySelector(".dashboard-image-highlight");
+      if (imageHighlight) imageHighlight.style.opacity = 0;
+    }
   }
 
   static register() {

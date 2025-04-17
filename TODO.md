@@ -17,13 +17,6 @@
   - Point to digitalocean app URL in Java app to replace old Hovercraft Subdomain
     - Tell Michael @ rEv about the change w/instructions
 
-## Next
-
-Dashboard fixes:
-- Dashboard-view in example poster doesn't have the server-base attribute, so its images are broken
-General
-- Nodejs dashboard example & isomorphic poster class
-  - This also needs a local temp path for screenshot image  - this should share with main temp paths
 
 ## ATL CMS
 
@@ -44,8 +37,8 @@ General
 ## General
 
 - SSL connections probably break if visiting ip address vs localhost
-  - Test this with chrome flags
-  - Probably won't work on iPad. Test solutions here
+  - Test this with chrome flags for Windows machines
+  - Probably won't work on iPad. Test solutions here:
     - Vite SSL 
     - Vite proxy
 - Move old haxademic.js files - we don't need to reference that project
@@ -117,6 +110,11 @@ General
 ## Dashboard:
 
 - Basic auth protection for the dashboard
+  - Add logout button
+  - Add user list json config to be passed in
+  - Break out login form into own web component?
+- Nodejs dashboard example & isomorphic poster class
+  - This also needs a local temp path for screenshot image  - this should share with main temp paths
 - [WIP] Add dashboard poster example:
   - Make universal for nodejs
     - Detect whether it's running in node or browser

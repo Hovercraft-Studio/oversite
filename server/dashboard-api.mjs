@@ -20,6 +20,7 @@ class DashboardApi {
     this.routeDbProjectDetails = `${this.routeBase}/json/:appId`;
     this.routeDeleteProject = `${this.routeBase}/delete/:appId`;
     this.routeImages = `${this.routeBase}/images`;
+    this.routeAuth = `${this.routeBase}/auth`;
 
     // init
     this.isWriting = false;
@@ -75,6 +76,8 @@ class DashboardApi {
 
     // serve static files from the dashboard data path
     this.app.use(this.routeImages, this.express.static(this.pathImages));
+    // log in from frontend
+    this.app.post(this.routeAuth, this.handleAuthAttempt.bind(this));
     // accept JSON post data from apps
     this.app.post(this.routeBase, this.handlePostData.bind(this));
     // serve current JSON data object for the dashboard web component
@@ -116,7 +119,28 @@ class DashboardApi {
   }
 
   /////////////////////////////////////////////////////////
-  // Handle request
+  // Auth
+  /////////////////////////////////////////////////////////
+
+  handleAuthAttempt(req, res) {
+    const { username, password } = req.body;
+    const isValid = this.validateCredentials(username, password);
+    if (isValid) {
+      res.status(200).json({ message: "Authentication successful" });
+    } else {
+      res.status(401).json({ message: "Invalid credentials" });
+    }
+  }
+
+  validateCredentials(username, password) {
+    // Replace with your own authentication logic
+    const validUsername = "admin";
+    const validPassword = "password";
+    return username === validUsername && password === validPassword;
+  }
+
+  /////////////////////////////////////////////////////////
+  // Handle project request
   /////////////////////////////////////////////////////////
 
   async returnProjectsJson(req, res) {
