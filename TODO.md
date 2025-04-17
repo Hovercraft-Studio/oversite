@@ -4,6 +4,11 @@
 
 - Wrap up basic Dashboard functions
   - Basic auth / password protection
+    - Add logout button
+    - Check auth cookie behavior w/expiration
+    - Add user list json config to be passed in
+    - Break out login form into own web component?
+    - Should auth apply to entire site when on production???
   - Test having dashboard api at `/` for big mother replacement
     - Do we just have a tiny app at bigmother.hovercraftstudio.com to forward JSON posts to the new server? 
 - Set up company DigitalOcean account
@@ -110,9 +115,6 @@
 ## Dashboard:
 
 - Basic auth protection for the dashboard
-  - Add logout button
-  - Add user list json config to be passed in
-  - Break out login form into own web component?
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
 - [WIP] Add dashboard poster example:
@@ -128,6 +130,7 @@
   - TouchDesigner tox
   - Unity script
   - Java
+- Add reload button for manual fetch()
 - Write up client specs/requirements for a Dashboard client
 - Write up how the dashboard works - backend api & frontend
 - Look at connecting to AppStoreDistributed
