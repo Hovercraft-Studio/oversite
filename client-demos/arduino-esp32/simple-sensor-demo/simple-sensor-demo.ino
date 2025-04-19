@@ -60,7 +60,7 @@ const char* password = "birdmagnet";
 // - ws:// server 
 //   - Use `sendonly=true` if this device shouldn't receive any messages
 const char* websockets_server_host = "192.168.1.202";
-const uint16_t websockets_server_port = 3001;
+const uint16_t websockets_server_port = 3003;
 const char* sender = "esp32";
 String serverPath = String("/ws?sendonly=true&sender=") + sender;
 const char* websockets_server_path = serverPath.c_str();

@@ -21,7 +21,6 @@ const prodDataPath = join(__dirname, "../", "dist", "_tmp_data"); // Go up one l
 /////////////////////////////////////////////////////////
 
 const args = process.argv.slice(2);
-const wssPort = getValueFromArgs("--port", 3001);
 const httpPort = getValueFromArgs("--portHttp", 3003);
 const debug = args.indexOf("--debug") != -1;
 
@@ -36,7 +35,6 @@ const config = {
   debug: debug,
   isProduction: process.env.NODE_ENV === "production",
   baseDataPath: baseDataPath,
-  wssPort: wssPort,
   httpPort: httpPort,
   ipAddr: ipAddr,
 };
@@ -54,7 +52,7 @@ console.table([
   [`Node env`, `${process.env.NODE_ENV}`],
   [`config.isProduction`, `${config.isProduction}`],
   [`Local ip address`, `${ipAddr}`],
-  [`WebSocket server`, `ws://localhost:${wssPort}/ws`],
+  [`WebSocket server`, `ws://localhost:${httpPort}/ws`],
   [`HTTP/Express server`, `http://${ipAddr}:${httpPort}`],
   [`debug`, `${config.debug}`],
   [`Base data path`, `${config.baseDataPath}`],

@@ -20,7 +20,7 @@ class AppStoreInit extends HTMLElement {
 
     // get address from querystring or use default
     // and show in URL for easy sharing
-    let defaultWsURL = "ws://" + document.location.hostname + ":3001/ws";
+    let defaultWsURL = "ws://" + document.location.hostname + ":3003/ws";
     if (isProd) defaultWsURL = "wss://" + document.location.hostname + "/ws"; // production server
     this.webSocketURL = URLUtil.hashParamConfig("wsURL", defaultWsURL);
     // this.webSocketURL = isDev ? URLUtil.hashParamConfig("wsURL", defaultWsURL) : defaultWsURL; // prod doesn't need the hash?

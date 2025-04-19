@@ -16,7 +16,7 @@ class AppStoreDemo {
 
   config() {
     // find ws:// server in args
-    this.wsURL = `ws://${this.getArg("--server", "127.0.0.1:3001/ws")}`; // need to use 127.0.0.1 instead of localhost!
+    this.wsURL = `ws://${this.getArg("--server", "127.0.0.1:3003/ws")}`; // need to use 127.0.0.1 instead of localhost!
     // get server http port
     this.httpPort = this.getArg("--portHttp", 3003);
     // extrapolate http server from ws url and apply port
@@ -37,9 +37,7 @@ class AppStoreDemo {
     try {
       const response = await fetch(`${this.serverURL}state`);
       if (!response.ok) {
-        throw new Error(
-          `Server error: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
       initKeys.forEach((key) => {
