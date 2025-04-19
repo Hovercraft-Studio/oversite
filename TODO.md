@@ -40,7 +40,9 @@
 
 - SSL connections probably break if visiting ip address vs localhost
   - Test this with chrome flags for Windows machines
-  - Does Vite SSL plugin work w/websockets etc? Probably not unless we switch to vite as middleware like cacheflowe.com, but this worth a try
+  - Does Vite SSL plugin work w/websockets etc? Probably not unless we switch to vite as middleware like cacheflowe.com, but this worth a try, since it could allow for unified dev server ports w/SSL
+    - This could let all ports live under the same server!?
+    - `Normally you would run the api middleware separately using an express server for example and proxy requests from your Vite app to that server` - https://dev.to/brense/vite-dev-server-adding-middleware-3mp5
   - Probably won't work on iPad. Test solutions here:
     - Vite SSL 
     - Vite proxy

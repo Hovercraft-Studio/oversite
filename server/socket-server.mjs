@@ -29,7 +29,8 @@ class SocketServer {
       logGreen("⚠️ WebSocket server error:", err);
     });
     this.wsServer.on("listening", () => {
-      logGreen(`🎉 WebSocket server listening on port ${this.wsServer.options.port}`);
+      if (this.wsServer.options.port) logGreen(`🎉 WebSocket server listening on port ${this.wsServer.options.port}`);
+      else logGreen(`🎉 WebSocket server listening via express server`);
     });
     this.wsServer.on("connection", (ws, req) => {
       logGreen(`WebSocket connection received from ${req.socket.remoteAddress}`);

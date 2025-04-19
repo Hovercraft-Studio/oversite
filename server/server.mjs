@@ -33,20 +33,20 @@ const config = {
   dashboardDataPath: join(baseDataPath, "dashboard"),
   dashboardApiRoute: "/api/dashboard",
   dashboardPostRouteAlt: "/",
+  debug: debug,
+  isProduction: process.env.NODE_ENV === "production",
+  baseDataPath: baseDataPath,
+  wssPort: wssPort,
+  httpPort: httpPort,
+  ipAddr: ipAddr,
 };
 // add any production overrides
-if (process.env.NODE_ENV === "production") {
+if (config.isProduction) {
   Object.assign(config, {
     stateDataPath: join(prodDataPath, "state"),
     dashboardDataPath: join(prodDataPath, "dashboard"),
   });
 }
-config.debug = debug;
-config.isProduction = process.env.NODE_ENV === "production";
-config.baseDataPath = baseDataPath;
-config.wssPort = wssPort;
-config.httpPort = httpPort;
-config.ipAddr = ipAddr;
 
 logBlue("===================================");
 logBlue("Starting server with config: ------");
@@ -75,19 +75,14 @@ const app = express();
 const server = http.createServer(app);
 
 // WebSocket server options:
-// - use either port or server depending on environment
-// - For cloud apps launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
+// - use port *xor* server depending on environment. you only need a port if there's no server, but could set ws traffic to a different port if you want
+// - if you change the port/server config, make sure you check for the environment to toggle settings
 import { WebSocketServer } from "ws";
-let wssOptions = {
+const wsServer = new WebSocketServer({
   host: "0.0.0.0", // allows connections from `localhost` *and* IP addresses
   path: "/ws",
-};
-if (process.env.NODE_ENV === "production") {
-  Object.assign(wssOptions, { server: server });
-} else {
-  Object.assign(wssOptions, { port: wssPort });
-}
-const wsServer = new WebSocketServer(wssOptions);
+  server: server,
+});
 
 // Config CORS middleware for maximum permissiveness
 app.use((req, res, next) => {

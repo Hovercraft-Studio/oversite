@@ -36,10 +36,10 @@ function eventLog(...args) {
 
 // start server
 const wsServer = new WebSocketServer({
-  port: wssPort,
+  port: wssPort, // use `port` config when there's no http server involved
   host: "0.0.0.0", // allows connections from localhost and IP addresses
   path: "/ws",
-}); // For Heroku launch, remove `port`! Example server config here: https://github.com/heroku-examples/node-websockets
+});
 eventLog(
   `Running WebSocket server at port: ${wssPort}`,
   `Connect at ws://localhost:${wssPort}/ws`,
@@ -58,9 +58,7 @@ wsServer.on("connection", (connection, request, client) => {
   connection.sendonly = !!sendonly;
   connection.startTime = Date.now(); // used by server.mjs for uptime
   // Log new connection
-  eventLog(
-    `Client joined from ${fullReqURL} - We have ${wsServer.clients.size} users`
-  );
+  eventLog(`Client joined from ${fullReqURL} - We have ${wsServer.clients.size} users`);
 
   // handle incoming messages
   connection.on("message", (message, isBinary) => {
