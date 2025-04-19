@@ -32,13 +32,13 @@ const config = {
   stateDataPath: join(baseDataPath, "state"),
   dashboardDataPath: join(baseDataPath, "dashboard"),
   dashboardApiRoute: "/api/dashboard",
+  dashboardPostRouteAlt: "/",
 };
 // add any production overrides
 if (process.env.NODE_ENV === "production") {
   Object.assign(config, {
     stateDataPath: join(prodDataPath, "state"),
     dashboardDataPath: join(prodDataPath, "dashboard"),
-    // dashboardApiRoute: "/api/dashboard",
   });
 }
 config.debug = debug;
@@ -59,7 +59,8 @@ console.table([
   [`debug`, `${config.debug}`],
   [`Base data path`, `${config.baseDataPath}`],
   [`Dashboard data path`, `${config.dashboardDataPath}`],
-  [`Dashboard API route`, `${config.dashboardApiRoute}`],
+  [`Dashboard API & POST route`, `${config.dashboardApiRoute}`],
+  [`Dashboard POST route (alt)`, `${config.dashboardPostRouteAlt}`],
 ]);
 logBlue("===================================");
 
@@ -112,8 +113,14 @@ app.use("/_tmp_data", express.static(baseDataPath));
 import SocketServer from "./socket-server.mjs";
 import DashboardApi from "./dashboard-api.mjs";
 const socketServer = new SocketServer(wsServer, app, config.stateDataPath, debug);
-const dashboardApi = new DashboardApi(app, express, config.dashboardDataPath, config.dashboardApiRoute);
 if (debug) dashboardApi.printConfig();
+const dashboardApi = new DashboardApi(
+  app,
+  express,
+  config.dashboardDataPath,
+  config.dashboardApiRoute,
+  config.dashboardPostRouteAlt
+);
 
 /////////////////////////////////////////////////////////
 // Init HTTP server

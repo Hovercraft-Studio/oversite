@@ -234,7 +234,7 @@ class DashboardView extends HTMLElement {
 
       article {
         padding: var(--pico-spacing);
-        border: 1px solid #000;
+        background-color: var(--pico-contrast-inverse);
       }
 
       progress {

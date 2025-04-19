@@ -5,12 +5,13 @@ import { logMagenta } from "./util.mjs";
 class DashboardApi {
   static maxHistory = 100;
 
-  constructor(app, express, dashboardDataPath, dashboardApiRoute) {
+  constructor(app, express, dashboardDataPath, dashboardApiRoute, postRouteAlt = null) {
     // store options
     this.express = express;
     this.app = app;
     this.pathDashboardData = dashboardDataPath; // disk location of dashboard db/images
     this.routeBase = dashboardApiRoute; // route for posting data from apps & getting data for dashboard web component
+    this.postRouteAlt = postRouteAlt; // if the checkin POST route needs to be different than the nice base api route, this lets the old clients send checkins to `/`, but new clients to `/api/dashboard`
 
     // create paths & routes
     this.pathImages = this.pathDashboardData + "/images";
@@ -47,6 +48,7 @@ class DashboardApi {
     logMagenta("Dashboard WWW routes: -----------------------------------------------------");
     console.table([
       ["[POST] Project check-in", this.routeBase],
+      ["[POST] Project check-in (alt)", this.postRouteAlt],
       ["[GET] All projects JSON", this.routeDbFile],
       ["[GET] Project details JSON", this.routeDbProjectDetails],
       ["[GET] Delete project route", this.routeDeleteProject],
@@ -60,6 +62,7 @@ class DashboardApi {
   /////////////////////////////////////////////////////////
 
   addRoutes() {
+    // MIDDLEWARE CONFIG ----------------------------------
     // accept JSON post w/open CORS policy
     // this must be in place before following use() calls
     this.app.use(
@@ -73,13 +76,15 @@ class DashboardApi {
     // Allow posting JSON data and increase default size limit. Posting images was crashing on prod
     this.app.use(this.express.json({ limit: "50mb" }));
     this.app.use(this.express.urlencoded({ limit: "50mb" }));
-
     // serve static files from the dashboard data path
     this.app.use(this.routeImages, this.express.static(this.pathImages));
+
+    // SPECIFIC ROUTE HANDLING ----------------------------
     // log in from frontend
     this.app.post(this.routeAuth, this.handleAuthAttempt.bind(this));
     // accept JSON post data from apps
     this.app.post(this.routeBase, this.handlePostData.bind(this));
+    if (this.postRouteAlt) this.app.post(this.postRouteAlt, this.handlePostData.bind(this));
     // serve current JSON data object for the dashboard web component
     this.app.get(this.routeDbFile, this.returnProjectsJson.bind(this));
     this.app.get(this.routeDbProjectDetails, this.returnJsonProjectDetails.bind(this));

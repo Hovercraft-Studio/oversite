@@ -2,18 +2,15 @@
 
 ## Get to launch
 
+- Basic auth should be on entire site *if it's on production, or enabled*
 - Wrap up basic Dashboard functions
-  - Basic auth / password protection
+  - [WIP] Basic auth / password protection
     - Add logout button
     - Check auth cookie behavior w/expiration
     - Add user list json config to be passed in
     - Break out login form into own web component?
     - Should auth apply to entire site when on production???
-  - Test having dashboard api at `/` for big mother replacement
-    - Do we just have a tiny app at bigmother.hovercraftstudio.com to forward JSON posts to the new server? 
-- Set up company DigitalOcean account
-  - Launch app to new App Platform project
-  - Set up bigmother.hovercraftstudio.com to point to the new server
+- Cloudflare: point bigmother.hovercraftstudio.com to point to the new server
 - Get ATL app running
   - Get the ATL app built and running on DigitalOcean? Or Vercel?
   - Restart function for Jasmine
@@ -43,6 +40,7 @@
 
 - SSL connections probably break if visiting ip address vs localhost
   - Test this with chrome flags for Windows machines
+  - Does Vite SSL plugin work w/websockets etc? Probably not unless we switch to vite as middleware like cacheflowe.com, but this worth a try
   - Probably won't work on iPad. Test solutions here:
     - Vite SSL 
     - Vite proxy

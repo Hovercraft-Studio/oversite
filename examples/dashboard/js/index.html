@@ -27,14 +27,16 @@
       <main class="container">
         <section>
           <h1>Dashboard Poster Demo</h1>
-          <p>Multiple pretend apps posting to the dashboard</p>
+          <p>Multiple pretend apps posting to the dashboard, using both available POST routes.</p>
           <div class="grid">
             <dashboard-client-example
+              post-url="http://localhost:3003"
               app-id="test-app-1"
               app-title="Example App 1"
               post-interval="10"
             ></dashboard-client-example>
             <dashboard-client-example
+              post-url="http://localhost:3003/api/dashboard"
               app-id="test-app-2"
               app-title="Example App 2"
               post-interval="5"
