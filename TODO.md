@@ -41,7 +41,7 @@
 - SSL connections probably break if visiting ip address vs localhost
   - Test this with chrome flags for Windows machines
   - Does Vite SSL plugin work w/websockets etc? Probably not unless we switch to vite as middleware like cacheflowe.com, but this worth a try, since it could allow for unified dev server ports w/SSL
-    - This could let all ports live under the same server!?
+    - This is actually bad since we don't want vite running on prod! we want to serve the frontend fron /dist
     - `Normally you would run the api middleware separately using an express server for example and proxy requests from your Vite app to that server` - https://dev.to/brense/vite-dev-server-adding-middleware-3mp5
   - Probably won't work on iPad. Test solutions here:
     - Vite SSL 
@@ -54,7 +54,6 @@
 ## Server unification:
 
 - Auto-build `dist`?
-- Would there be a benefit of using Vite/Express like cacheflowe.com? There are fewer differences between the dev and prod servers, and we could use Vite's dev server for the dashboard. 
 - Figure out a better debug mode for logging - log levels per app?
 - Persistent file storage is a problem on production - how to handle this?
   - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
