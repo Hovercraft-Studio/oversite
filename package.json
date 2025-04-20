@@ -6,7 +6,8 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "vite --host --port 3002",
+    "vite": "vite --host --port 3002",
+    "dev": "concurrently \"npm run vite\" \"npm run server\"",
     "prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",
     "build": "vite build",
     "build_skip": "echo 'Skipping build on Heroku'",
@@ -15,20 +16,19 @@
     "server": "nodemon --watch ./server --ext mjs node ./server/server.mjs --portHttp 3003",
     "start-alt": "nodemon --watch ./server --ext mjs node ./server-alt.mjs --port 3002 --portHttp 3003",
     "server-debug": "nodemon --watch ./server --ext mjs node ./server/server.mjs --port 3001 --portHttp 3003 --debug",
-    "start": "concurrently \"npm run dev\" \"npm run server\"",
     "node-app-demo": "nodemon --watch ./client-demos/nodejs/node-app-demo --ext mjs node ./client-demos/nodejs/node-app-demo/index.mjs --server 127.0.0.1:3001/ws --portHttp 3003",
     "launch-chrome": "node ./scripts/run-chrome.mjs --url http://localhost:3002 --location 500,100 --fullscreen true --screen-num 1"
   },
   "dependencies": {
     "@vitejs/plugin-basic-ssl": "^2.0.0",
-    "concurrently": "^9.0.1",
+    "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "http-proxy": "^1.18.1",
     "nodemon": "^3.1.9",
     "notyf": "^3.10.0",
-    "vite": "^6.0.11",
+    "vite": "^6.3.2",
     "websocket": "^1.0.34",
-    "ws": "^8.18.0"
+    "ws": "^8.18.1"
   }
 }
