@@ -2,7 +2,6 @@
 
 ## Get to launch
 
-- rename to `oversite`
 - Clean up api routes port when connecting from an ip address
   - Needs to use https if served from a secure server
 - Basic auth should be on entire site *if it's on production, or specifically enabled for dev*

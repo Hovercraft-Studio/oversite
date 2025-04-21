@@ -29,7 +29,6 @@ class FaviconStatus extends HTMLElement {
   }
 
   updateFavicon(classList) {
-    console.log("classList", classList);
     if (classList.contains("no-socket")) {
       this.drawCircle("red");
       this.link.href = this.canvas.toDataURL("image/png"); // update favicon
