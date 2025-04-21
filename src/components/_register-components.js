@@ -13,6 +13,7 @@ import "./dashboard-view.js";
 import "./dashboard-client-example.js";
 
 import "./date-year.js";
+import "./favicon-status.js";
 import "./modal-dialog.js";
 import "./notyf-listener.js";
 

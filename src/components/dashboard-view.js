@@ -23,7 +23,7 @@ class DashboardView extends HTMLElement {
     this.el = this.shadow ? this.shadow : this;
     this.detailID = null;
     this.data = null;
-    this.isAuthenticated = this.checkAuthCookie();
+    this.isAuthenticated = true; // this.checkAuthCookie();
     this.render();
     this.initComponent();
   }

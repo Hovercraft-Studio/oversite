@@ -100,6 +100,7 @@ class AppStoreInit extends HTMLElement {
     this.shadow.innerHTML = this.isDebug()
       ? /*html*/ `
         <websocket-indicator></websocket-indicator>
+        <favicon-status></favicon-status>
         <app-store-debug ${sideDebug}></app-store-debug>
       `
       : /*html*/ `

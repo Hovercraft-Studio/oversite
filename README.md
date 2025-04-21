@@ -1,12 +1,19 @@
-# hc-socket-server
+# OVERSITE
 
-**hc-socket-server** is a simple websocket server that will relay messages between clients. It also contains a small Vite frontend for testing and visibility, which uses AppStoreDistributed to process messages.
+![](public/oversite-logo.png)
+
+**Oversite** is a collection of apps and libraries that connect and monitor site-specific apps and their web extensions.
+
+Apps include:
+
+- **AppStore**: A shared state system that glues disparate apps & computers together with WebSockets and a persistent key/value store
+- **Dashboard**: An app monitoring dashboard that keeps track of site-specific apps by storing checkins & heartbeats and notifying when apps are down
 
 Default locations & ports are:
 
-- ws://localhost:3001/ws - WebSocket server
 - http://localhost:3002 - Vite frontend
 - http://localhost:3003 - http server
+- http://localhost:3003/ws - WebSocket server
 
 ## Quickstart
 
@@ -18,18 +25,18 @@ Default locations & ports are:
 ## Install
 
 ```bash
-git clone https://github.com/Hovercraft-Studio/hc-socket-server.git
-cd hc-socket-server
+git clone https://github.com/Hovercraft-Studio/oversite.git
+cd oversite
 npm install
 ```
 
 ## Run
 
-**Recommended use**: Use `npm run start` to run the robust tooling including: 
+**Recommended use**: Use `npm run dev` to run the robust tooling including: 
 
-- Websocket server (`ws`) on port 3001
+- ~~Websocket server (`ws`) on port 3001~~
 - Frontend server (`dev`) on port 3002
-- Server app (`server`) on port 3003
+- Server app (http & ws) (`server`) on port 3003
 
 **Customizing the run commands**:
 
@@ -144,7 +151,7 @@ http://localhost:3002/app-store-monitor/index.html#&wsURL=ws://localhost:3001/ws
 
 ### app-store-demo
 
-This is a "starter app" that demonstrates how to use AppStoreDistributed to connect to the websocket server and send messages. It's a good starting point for building a more complex app that uses AppStore and `hc-socket-server`.
+This is a "starter app" that demonstrates how to use AppStoreDistributed to connect to the websocket server and send messages. It's a good starting point for building a more complex app that uses AppStore and `oversite`.
 
 ### app-store-monitor
 

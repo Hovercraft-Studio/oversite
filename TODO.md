@@ -2,9 +2,10 @@
 
 ## Get to launch
 
+- rename to `oversite`
 - Clean up api routes port when connecting from an ip address
   - Needs to use https if served from a secure server
-- Basic auth should be on entire site *if it's on production, or enabled*
+- Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
 - Wrap up basic Dashboard functions
   - [WIP] Basic auth / password protection
     - Add logout button
@@ -46,7 +47,10 @@
 
 - SSL connections break if visiting ip address vs localhost - mostly because ws:// is mixed SSL
   - Test this with chrome flags for Windows machines - doesn't work with Vite SSL and ws://
+    - Chromium allows mixed https/ws content but Chrome does not!
+    - Flags don't seem to help
     - https://www.damirscorner.com/blog/posts/20210528-AllowingInsecureWebsocketConnections.html
+    - https://gist.github.com/hhanh00/ddf3bf62294fc420a0de
   - Does Vite SSL plugin work w/websockets etc? Probably not unless we switch to vite as middleware like cacheflowe.com, but this worth a try, since it could allow for unified dev server ports w/SSL
     - This is actually bad since we don't want vite running on prod! we want to serve the frontend fron /dist
     - `Normally you would run the api middleware separately using an express server for example and proxy requests from your Vite app to that server` - https://dev.to/brense/vite-dev-server-adding-middleware-3mp5
@@ -122,6 +126,7 @@
 
 ## Dashboard:
 
+- Set default dashboard URL in TD to localhost:3002
 - Basic auth protection for the dashboard
 - Nodejs dashboard example & isomorphic poster class
   - This also needs a local temp path for screenshot image  - this should share with main temp paths
