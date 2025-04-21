@@ -1,4 +1,4 @@
-import DateUtil from "../date-util.mjs";
+import DateUtil from "../util/date-util.mjs";
 import css from "./app-store-table-css.js";
 
 class AppStoreClients extends HTMLElement {

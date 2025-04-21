@@ -1,6 +1,4 @@
-import ErrorUtil from "../../../../shared/js/haxademic.js/error-util.mjs";
-import "./dashboard-client-example-component.js";
-import "../../../../shared/js/haxademic.js/components/dashboard-view.js";
+import ErrorUtil from "../../../../src/util/error-util.mjs";
 
 class CustomApp extends HTMLElement {
   connectedCallback() {

@@ -1,4 +1,4 @@
-import DateUtil from "../date-util.mjs";
+import DateUtil from "../util/date-util.mjs";
 import css from "./app-store-table-css.js";
 
 class AppStoreEventTable extends HTMLElement {
@@ -22,27 +22,19 @@ class AppStoreEventTable extends HTMLElement {
     this.showOnlyFilterInput = this.querySelector("#show_only_keys");
     this.showOnlyDisplay = this.querySelector(`[for="show_only_keys"] > span`);
     this.excludeFilterInput.addEventListener("input", (e) => {
-      this.excludeKeys = this.buildFilterList(
-        this.excludeFilterInput.value,
-        this.excludeDisplay
-      );
+      this.excludeKeys = this.buildFilterList(this.excludeFilterInput.value, this.excludeDisplay);
       localStorage.setItem("excludeKeys", this.excludeFilterInput.value);
     });
     this.showOnlyFilterInput.addEventListener("input", (e) => {
-      this.showOnlyKeys = this.buildFilterList(
-        this.showOnlyFilterInput.value,
-        this.showOnlyDisplay
-      );
+      this.showOnlyKeys = this.buildFilterList(this.showOnlyFilterInput.value, this.showOnlyDisplay);
       localStorage.setItem("showOnlyKeys", this.showOnlyFilterInput.value);
     });
 
     // init from local storage
     this.excludeFilterInput.value = localStorage.getItem("excludeKeys") || "";
-    if (this.excludeFilterInput.value.length > 0)
-      this.excludeFilterInput.dispatchEvent(new Event("input"));
+    if (this.excludeFilterInput.value.length > 0) this.excludeFilterInput.dispatchEvent(new Event("input"));
     this.showOnlyFilterInput.value = localStorage.getItem("showOnlyKeys") || "";
-    if (this.showOnlyFilterInput.value.length > 0)
-      this.showOnlyFilterInput.dispatchEvent(new Event("input"));
+    if (this.showOnlyFilterInput.value.length > 0) this.showOnlyFilterInput.dispatchEvent(new Event("input"));
   }
 
   buildFilterList(inputStr, displayEl) {
@@ -66,16 +58,12 @@ class AppStoreEventTable extends HTMLElement {
 
   filterEvent(key) {
     // filter out keys if they're in the exclude list
-    let excludeMatched = this.excludeKeys.find((excludeKey) =>
-      key.toLowerCase().includes(excludeKey)
-    );
+    let excludeMatched = this.excludeKeys.find((excludeKey) => key.toLowerCase().includes(excludeKey));
     if (excludeMatched) return true;
 
     // filter out keys if they're not in the show-only list
     if (this.showOnlyKeys.length > 0) {
-      let showOnlyMatch = this.showOnlyKeys.find((showOnlyKey) =>
-        key.toLowerCase().includes(showOnlyKey)
-      );
+      let showOnlyMatch = this.showOnlyKeys.find((showOnlyKey) => key.toLowerCase().includes(showOnlyKey));
       if (!showOnlyMatch) return true;
     }
 
@@ -149,9 +137,7 @@ class AppStoreEventTable extends HTMLElement {
   updateTimeAgo() {
     this.events.forEach((row) => {
       let timeAgoMs = row.time ? Math.round(Date.now() - row.time) : 0;
-      row.el.querySelector("td[data-time]").innerHTML = `${Math.round(
-        timeAgoMs / 1000
-      )}s`;
+      row.el.querySelector("td[data-time]").innerHTML = `${Math.round(timeAgoMs / 1000)}s`;
     });
   }
 

@@ -1,5 +1,5 @@
 import AppStoreElement from "./app-store-element.js";
-import DateUtil from "../date-util.mjs";
+import DateUtil from "../util/date-util.mjs";
 
 class AppStoreHeartbeat extends AppStoreElement {
   initStoreListener() {
@@ -32,11 +32,7 @@ class AppStoreHeartbeat extends AppStoreElement {
   }
 
   html() {
-    return /*html*/ this.displays
-      ? `<div>Heartbeat uptime: ${DateUtil.formattedTime(
-          this.valueFromStore
-        )}</div>`
-      : "";
+    return /*html*/ this.displays ? `<div>Heartbeat uptime: ${DateUtil.formattedTime(this.valueFromStore)}</div>` : "";
   }
 
   static register() {

@@ -1,4 +1,4 @@
-import ObjectUtil from "../object-util.mjs";
+import ObjectUtil from "../util/object-util.mjs";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css"; // for Vite, React, Vue and Svelte
 

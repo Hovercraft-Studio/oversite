@@ -1,4 +1,4 @@
-import ObjectUtil from "../object-util.mjs";
+import ObjectUtil from "../util/object-util.mjs";
 
 class ModalDialog extends HTMLElement {
   connectedCallback() {
@@ -57,10 +57,8 @@ class ModalDialog extends HTMLElement {
       let actionClose = e.target.dataset.actionClose;
       if (actionClose) {
         this.closeModal();
-        if (actionClose == "confirm")
-          _store.set("MODAL_CONFIRM", this.confirmValue);
-        if (actionClose == "cancel")
-          _store.set("MODAL_CANCEL", this.cancelValue);
+        if (actionClose == "confirm") _store.set("MODAL_CONFIRM", this.confirmValue);
+        if (actionClose == "cancel") _store.set("MODAL_CANCEL", this.cancelValue);
       }
     });
   }
@@ -117,8 +115,7 @@ class ModalDialog extends HTMLElement {
 
   // Get scrollbar width
   getScrollbarWidth() {
-    const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     return scrollbarWidth;
   }
 

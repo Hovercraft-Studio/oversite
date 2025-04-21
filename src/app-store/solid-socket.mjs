@@ -18,10 +18,7 @@ class SolidSocket {
 
   async initSocketClass() {
     this.WebSocketClient;
-    if (
-      typeof window !== "undefined" &&
-      typeof window.WebSocket !== "undefined"
-    ) {
+    if (typeof window !== "undefined" && typeof window.WebSocket !== "undefined") {
       // Running in the browser
       this.WebSocketClient = window.WebSocket;
     } else {
@@ -151,8 +148,13 @@ class SolidSocket {
 
   buildSocketObject() {
     this.removeSocketListeners();
-    this.socket = new this.WebSocketClient(this.wsURL);
-    this.addSocketListeners();
+    try {
+      this.socket = new this.WebSocketClient(this.wsURL);
+      this.addSocketListeners();
+    } catch (e) {
+      this.onError(e);
+      throw e; // let normal error propagate
+    }
   }
 
   startMonitoringConnection() {
@@ -168,8 +170,7 @@ class SolidSocket {
     // check for disconnected socket & reinitialize if needed
     // do this on an interval with raf, since setTimeouts/setIntervals
     // are less reliable to actually happen when you come back to an inactive browser tab
-    let timeForReconnect =
-      Date.now() > this.lastConnectAttemptTime + SolidSocket.RECONNECT_INTERVAL;
+    let timeForReconnect = Date.now() > this.lastConnectAttemptTime + SolidSocket.RECONNECT_INTERVAL;
     if (timeForReconnect) {
       this.resetConnectionAttemptTime();
       // clean up failed socket object, and

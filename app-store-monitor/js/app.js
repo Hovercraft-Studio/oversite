@@ -1,5 +1,5 @@
-import MobileUtil from "../../shared/js/haxademic.js/mobile-util.mjs";
-import ErrorUtil from "../../shared/js/haxademic.js/error-util.mjs";
+import MobileUtil from "../../src/util/mobile-util.mjs";
+import ErrorUtil from "../../src/util/error-util.mjs";
 
 // custom web components
 // anything here?

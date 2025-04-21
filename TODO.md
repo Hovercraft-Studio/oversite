@@ -2,6 +2,8 @@
 
 ## Get to launch
 
+- Clean up api routes port when connecting from an ip address
+  - Needs to use https if served from a secure server
 - Basic auth should be on entire site *if it's on production, or enabled*
 - Wrap up basic Dashboard functions
   - [WIP] Basic auth / password protection
@@ -22,6 +24,10 @@
 
 ## ATL CMS
 
+- Can we use this repo as a module?
+  - `npm install git+https://github.com/my-org/hc-socket-server.git#main`
+  - `import myModule from 'hc-socket-server/myModule.js';`
+  - `npm update` to pull the latest
 - How can we build the ATL app from this base? 
   - If we use AppStore:
     - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
@@ -38,8 +44,9 @@
 
 ## General
 
-- SSL connections probably break if visiting ip address vs localhost
-  - Test this with chrome flags for Windows machines
+- SSL connections break if visiting ip address vs localhost - mostly because ws:// is mixed SSL
+  - Test this with chrome flags for Windows machines - doesn't work with Vite SSL and ws://
+    - https://www.damirscorner.com/blog/posts/20210528-AllowingInsecureWebsocketConnections.html
   - Does Vite SSL plugin work w/websockets etc? Probably not unless we switch to vite as middleware like cacheflowe.com, but this worth a try, since it could allow for unified dev server ports w/SSL
     - This is actually bad since we don't want vite running on prod! we want to serve the frontend fron /dist
     - `Normally you would run the api middleware separately using an express server for example and proxy requests from your Vite app to that server` - https://dev.to/brense/vite-dev-server-adding-middleware-3mp5
@@ -62,10 +69,12 @@
 ## Documentation
 
 - Opinions:
+  - Web Components for futureproofing, but you can use whatever frontend tech you want
   - Keep local dev env as close to cloud env as possible
     - Vite for frontend dev server
       - On prod, we use Vite's `dist` folder, which is served by express
     - Express for backend dev server
+  - Frontend should run from a static web server without Vite, and with needing to be built! Vite shortcuts like `@` would prevent this
   - Everything is ephemeral?!
     - Dashboard reconstructs persisted data on the fly, but can be wiped when the server restarts
     - SocketServer rebuilds channels and persisted data on the fly, but can be wiped when the server restarts
@@ -182,6 +191,8 @@ SSL
 
 Nice-to-haves?
 
+- Node system functions available to mobile clients
+  - Restart chrome launch script
 - Java/Haxademic updates 
   - Add heartbeat to Java client
   - Add sender to Java client
@@ -189,6 +200,7 @@ Nice-to-haves?
   - Add ws?sender= queryparam to Java client
   - Store sender in AppStoreDistributed for incoming messages
 - Monitor/frontend
+  - Filter event log by client/sender!
   - Click to resend a key/value from Monitor. anything else useful here?
   - add "expected_clients" list to app-store-clients, and show a red row if a client is missing
   - QR code somewhere to launch BA app (or any link for a client app)

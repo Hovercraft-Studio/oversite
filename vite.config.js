@@ -11,6 +11,12 @@ export default {
       "Cross-Origin-Embedder-Policy": "require-corp",
     },
   },
+  resolve: {
+    alias: {
+      // "@": resolve(__dirname, "./src"),
+      "@src": resolve(__dirname, "./src"),
+    },
+  },
   build: {
     rollupOptions: {
       input: {

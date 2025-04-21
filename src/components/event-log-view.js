@@ -1,4 +1,4 @@
-import EventLog from "../event-log.mjs";
+import EventLog from "../util/event-log.mjs";
 
 class EventLogView extends HTMLElement {
   connectedCallback() {

@@ -1,12 +1,12 @@
-import DashboardCheckinPoller from "./dashboard-poster.mjs";
+import DashboardCheckinPoller from "../dashboard/dashboard-poster.mjs";
 
-class DashboardClientExampleComponent extends HTMLElement {
+class DashboardClientExample extends HTMLElement {
   constructor() {
     super();
   }
   connectedCallback() {
     this.postURL = this.getAttribute("post-url") || "http://localhost:3003/api/dashboard";
-    if (_store.get("server_url") && !this.postURL) this.postURL = _store.get("server_url") + "api/dashboard/";
+    // if (_store.get("server_url") && !this.postURL) this.postURL = _store.get("server_url") + "api/dashboard/";
     this.appId = this.getAttribute("app-id") || "no-app-id";
     this.appTitle = this.getAttribute("app-title") || "[NO TITLE]";
     this.postInterval = this.getAttribute("post-interval") || 10; // default to 10 seconds
@@ -130,10 +130,10 @@ class DashboardClientExampleComponent extends HTMLElement {
   }
 
   static register() {
-    customElements.define("dashboard-client-example", DashboardClientExampleComponent);
+    customElements.define("dashboard-client-example", DashboardClientExample);
   }
 }
 
-DashboardClientExampleComponent.register();
+DashboardClientExample.register();
 
-export { DashboardClientExampleComponent };
+export { DashboardClientExample };

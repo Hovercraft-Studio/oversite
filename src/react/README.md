@@ -12,7 +12,7 @@ To use AppStoreDistributed in a React app, you’ll need to add the AppStore-rel
   <!-- path to your _register-components.js file, example: -->
   <script
     type="module"
-    src="/shared/js/haxademic.js/components/_register-components.js"
+    src="/src/components/_register-components.js"
   ></script>
 </head>
 <body>

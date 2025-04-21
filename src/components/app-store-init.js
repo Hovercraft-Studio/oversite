@@ -1,5 +1,5 @@
-import AppStoreDistributed from "../app-store-distributed.mjs";
-import URLUtil from "../url-util.mjs";
+import AppStoreDistributed from "../app-store/app-store-distributed.mjs";
+import URLUtil from "../util/url-util.mjs";
 
 // self-registering child components
 import "./websocket-indicator.js";

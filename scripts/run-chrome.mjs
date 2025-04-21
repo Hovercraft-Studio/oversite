@@ -110,11 +110,9 @@ function getArg(key, defaultValue) {
   return index != -1 ? args[index + 1] : defaultValue;
 }
 
-const chrome = getArg(
-  "--chrome-path",
-  "C:\\Program Files\\Chromium\\Application\\"
-);
+const chrome = getArg("--chrome-path", "C:\\Program Files\\Chromium\\Application\\");
 const url = getArg("--url", "http://localhost:3002");
+const urlWs = url.replaceAll("https://", "ws://");
 const killBefore = getArg("--kill-before", "false") === "true";
 const isIncognito = getArg("--incognito", "false") === "true";
 const isKiosk = getArg("--kiosk", "false") === "true";
@@ -125,9 +123,8 @@ const addressBar = getArg("--address-bar", "false") === "true";
 const location = getArg("--location", "0,0");
 const windowSize = getArg("--size", "800,600");
 const unsafeOrigins = getArg("--unsafe-origins", null);
-const unsafeOriginsArr = unsafeOrigins
-  ? unsafeOrigins.split(",").push(url) // add our main url to the list of unsafe origins if we've specified any
-  : [url];
+const unsafeOriginsArr = unsafeOrigins ? unsafeOrigins.split(",") : [];
+unsafeOriginsArr.push(url, urlWs); // add our main url to the list of unsafe origins if we've specified any
 const unsafeOriginsStr = unsafeOriginsArr.join(",");
 
 // log config
@@ -156,9 +153,7 @@ function buildChromeCommand() {
     (isKiosk ? `--kiosk ` : ``) +
     (addressBar ? `` : `--app=${url} `) +
     (isFullscreen ? `--start-fullscreen ` : ``) +
-    (screenNum != "-1"
-      ? `--user-data-dir=c:/_chrome-kiosk-prefs/screen-${screenNum} `
-      : ``) +
+    (screenNum != "-1" ? `--user-data-dir=c:/_chrome-kiosk-prefs/screen-${screenNum} ` : ``) +
     `--window-position=${location} ` +
     `--window-size=${windowSize} ` +
     (isIncognito ? `--incognito ` : ``) + // incognito disables localStorage, etc.
@@ -224,9 +219,7 @@ async function getDisplayDimensions() {
 
   // break output into lines and regex out the screen resolution
   const boundsLines = lines.filter((line) => line.includes("Bounds"));
-  const res = boundsLines.map((line) =>
-    line.match(/Bounds\s+:\s+{X=(\d+),Y=(\d+),Width=(\d+),Height=(\d+)}/)
-  );
+  const res = boundsLines.map((line) => line.match(/Bounds\s+:\s+{X=(\d+),Y=(\d+),Width=(\d+),Height=(\d+)}/));
   const screens = res.map((match) => {
     return {
       x: parseInt(match[1]),

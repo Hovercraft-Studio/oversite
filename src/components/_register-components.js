@@ -8,6 +8,10 @@ import "./app-store-health.js";
 import "./app-store-number.js";
 import "./app-store-slider.js";
 import "./app-store-textfield.js";
+
+import "./dashboard-view.js";
+import "./dashboard-client-example.js";
+
 import "./date-year.js";
 import "./modal-dialog.js";
 import "./notyf-listener.js";
