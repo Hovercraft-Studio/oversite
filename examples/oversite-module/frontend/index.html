@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="apple-touch-icon-precomposed" href="/icon.png" />
+    <link rel="apple-touch-startup-image" href="/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="AppStore" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <title>Client-specific implementation</title>
+  </head>
+  <body>
+    <app-store-init sender="tablet" init-keys="*" debug side-debug></app-store-init>
+    <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="5000" show="false"></app-store-heartbeat>
+    <custom-app>
+      <main class="container">
+        <a href="/" style="position: absolute; top: 0; left: 0; padding: 1rem">🏠</a>
+        <section>
+          <h1>AppStore Demo</h1>
+          <p>A nice way to communicate between apps</p>
+          <h4>Buttons with shared key: app_state</h4>
+          <nav>
+            <app-store-button key="app_state" value="attract">Attract</app-store-button>
+            <app-store-button key="app_state" value="gameplay">Gameplay</app-store-button>
+            <app-store-button key="app_state" value="game_over">Game Over</app-store-button>
+          </nav>
+          <h4>Special Buttons</h4>
+          <nav>
+            <app-store-button key="btn_pulse" value="1" momentary>Momentary / Pulse</app-store-button>
+            <app-store-button key="btn_toggle" value="0" toggle>Toggle</app-store-button>
+            <app-store-button key="btn_confirm" value="true" confirm>Confirm</app-store-button>
+          </nav>
+          <h4>Input Fields</h4>
+          <p>
+            <label>app-store-textfield</label>
+            <app-store-textfield key="text_input" value=""></app-store-textfield>
+          </p>
+          <p>
+            <label>app-store-number</label>
+            <app-store-number key="numeric_input" value=""></app-store-number>
+          </p>
+          <p>
+            <label>app-store-slider</label>
+            <app-store-slider key="slider_1" value="0" max="1"></app-store-slider>
+            <app-store-slider key="MOUSE_X" value="0" max="1"></app-store-slider>
+            <app-store-slider key="MOUSE_Y" value="0" max="1"></app-store-slider>
+          </p>
+          <h4>Monitoring</h4>
+          <p class="grid">
+            <app-store-health key="camera_1_health" value=""></app-store-health>
+            <app-store-health key="camera_2_health" value=""></app-store-health>
+          </p>
+          <p class="grid">
+            <app-store-health key="camera_3_health" value=""></app-store-health>
+          </p>
+        </section>
+        <details>
+          <summary>Event Log</summary>
+          <!-- <event-log-view max-length="10"></event-log-view> -->
+          <app-store-event-table max-length="10" hide-filters></app-store-event-table>
+        </details>
+      </main>
+      <footer class="container">
+        <small>Built by us 👋</small>
+      </footer>
+    </custom-app>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

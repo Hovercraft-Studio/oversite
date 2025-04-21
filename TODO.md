@@ -24,11 +24,8 @@
 
 ## ATL CMS
 
-- Can we use this repo as a module?
-  - `npm install git+https://github.com/my-org/hc-socket-server.git#main`
-  - `import myModule from 'hc-socket-server/myModule.js';`
-  - `npm update` to pull the latest
 - How can we build the ATL app from this base? 
+  - `app-store-init` should have an attribute to set the server URL instead of using hash query
   - If we use AppStore:
     - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
     - Should there be a tiny Node app on the remote PC? That would be good for Jasmine to reset
@@ -38,7 +35,7 @@
   - Should it be it's own server with the full implementation, and another server app added? 
   - How do we store the current team selection with persistence? 
   - Or could persistence be held on the FanCam/Protect servers?
-  - Can the ATL app be a separate repo? Or should it be a secret page in this app? We probably shouldn't let anyone know about our backend server, but probably should just password protect the whole thing?
+  - Frontend-only password protection is needed!
   - Could there be a simple node app that runs app-store-distributed and just triggers key commands for a restart initiated by Jasmine?
     - This could also turn the screens on/off by simulating the serial message
 
