@@ -161,10 +161,9 @@ class DashboardView extends HTMLElement {
     this.startTime = Date.now();
     window.clearInterval(this.progressInterval);
     this.progressInterval = setInterval(() => {
-      let progress = this.el.querySelector("progress");
-      progress.max = this.refreshInterval;
-      if (progress) {
-        progress.value = (Date.now() - this.startTime) / 1000;
+      if (this.progress) {
+        this.progress.max = this.refreshInterval;
+        this.progress.value = (Date.now() - this.startTime) / 1000;
       }
     }, 16);
   }
@@ -415,6 +414,7 @@ class DashboardView extends HTMLElement {
         ${this.css()}
       </style>
     `;
+    this.progress = this.el.querySelector("progress");
   }
 
   curView() {
