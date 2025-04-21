@@ -141,7 +141,7 @@ AppStoreDistributed is a universal/isomorphic JavaScript class that connects to 
 
 ### AppStoreInit
 
-Instead of using AppStoreDistributed on its own, it is recommended to use the `app-store-init` web component. The frontend will configure the default server ports and URLs for the WebSocket server backend. You can then customize these addresses/ports in the hash query of the URL and refresh the page to connect to a remote machine that's running the server app. The URL looks like this:
+Instead of using AppStoreDistributed on its own, it is recommended to use the `app-store-init` web component. The frontend will configure the default server ports and URLs for the WebSocket server backend. You can then customize these addresses/ports in the hash query of the URL and refresh the page to connect to a remote machine that's running the server app. You can also override the backend server location and avoid the hash query configuration (which is helpful on-site to point machines at others) by using the `ws-url` attribute. The URL looks like this:
 
 ```
 http://localhost:3002/app-store-monitor/index.html#&wsURL=ws://localhost:3001/ws&httpPort=3003

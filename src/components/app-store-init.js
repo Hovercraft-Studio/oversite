@@ -14,16 +14,19 @@ class AppStoreInit extends HTMLElement {
   }
 
   initServerURL() {
+    // get ws:// URL from attribute if available and
+    // override hash `URLUtil.hashParamConfig()` methods below if exists
+    let wsURL = this.getAttribute("ws-url");
+
     // check dev port to detect if we're running locally or on a production server
-    let isDev = document.location.port.length > 0;
+    let isDev = wsURL ? wsURL.includes(":") : document.location.port.length > 0;
     let isProd = !isDev;
 
     // get address from querystring or use default
     // and show in URL for easy sharing
     let defaultWsURL = "ws://" + document.location.hostname + ":3003/ws";
     if (isProd) defaultWsURL = "wss://" + document.location.hostname + "/ws"; // production server
-    this.webSocketURL = URLUtil.hashParamConfig("wsURL", defaultWsURL);
-    // this.webSocketURL = isDev ? URLUtil.hashParamConfig("wsURL", defaultWsURL) : defaultWsURL; // prod doesn't need the hash?
+    this.webSocketURL = wsURL ? wsURL : URLUtil.hashParamConfig("wsURL", defaultWsURL);
 
     // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
     // we just need to check for a custom http port in the URL and otherwise use the ws:// address
@@ -31,7 +34,7 @@ class AppStoreInit extends HTMLElement {
     socketToServerURL.protocol = socketToServerURL.protocol == "ws:" ? "http:" : "https:"; // SSL if production websocket server
     socketToServerURL.search = "";
     socketToServerURL.pathname = "";
-    if (isDev) socketToServerURL.port = URLUtil.hashParamConfig("httpPort", 3003);
+    if (isDev && !wsURL) socketToServerURL.port = URLUtil.hashParamConfig("httpPort", 3003);
     if (isProd) socketToServerURL.port = ""; // production server shouldn't have a port in the URL
     this.serverURL = socketToServerURL.href;
   }

@@ -7,3 +7,6 @@ Install:
 - npm create vite@latest
 - npm install git@github.com:Hovercraft-Studio/oversite.git#main
 - npm run dev
+
+Pull the latest from `oversite`
+- npm update oversite
