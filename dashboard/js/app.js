@@ -2,7 +2,7 @@ import MobileUtil from "../../shared/js/haxademic.js/mobile-util.mjs";
 import ErrorUtil from "../../shared/js/haxademic.js/error-util.mjs";
 
 // import web components
-import DashboardView from "./dashboard-view";
+import DashboardView from "../../shared/js/haxademic.js/components/dashboard-view";
 
 class CustomApp extends HTMLElement {
   connectedCallback() {
