@@ -5,7 +5,7 @@
 import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
 import path from "path";
-import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
+import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./src/server/util.mjs";
 
 /////////////////////////////////////////////////////////
 // Get relative path to this script
@@ -13,8 +13,8 @@ import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./util.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const baseDataPath = join(__dirname, "../", "public", "_tmp_data"); // Go up one level from server/ to project root
-const prodDataPath = join(__dirname, "../", "dist", "_tmp_data"); // Go up one level from server/ to project root
+const baseDataPath = join(__dirname, "./", "public", "_tmp_data"); // Go up one level from server/ to project root
+const prodDataPath = join(__dirname, "./", "dist", "_tmp_data"); // Go up one level from server/ to project root
 
 /////////////////////////////////////////////////////////
 // Get config from cli args
@@ -30,7 +30,6 @@ const debug = args.indexOf("--debug") != -1;
 
 const configFilePath = join(__dirname, "../config.json");
 let configFile = null;
-
 
 /////////////////////////////////////////////////////////
 // Store config
@@ -112,8 +111,8 @@ app.use("/_tmp_data", express.static(baseDataPath));
 // - Dashboard API
 /////////////////////////////////////////////////////////
 
-import SocketServer from "./socket-server.mjs";
-import DashboardApi from "./dashboard-api.mjs";
+import SocketServer from "./src/server/socket-server.mjs";
+import DashboardApi from "./src/server/dashboard-api.mjs";
 const socketServer = new SocketServer(wsServer, app, config.stateDataPath, debug);
 if (debug) dashboardApi.printConfig();
 const dashboardApi = new DashboardApi(
