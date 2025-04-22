@@ -1,3 +1,5 @@
+import DOMUtil from "../util/dom-util.mjs";
+
 class FaviconStatus extends HTMLElement {
   connectedCallback() {
     const shadow = this.attachShadow({ mode: "open" });
@@ -6,41 +8,24 @@ class FaviconStatus extends HTMLElement {
     this.canvas.width = 16;
     this.canvas.height = 16;
     this.context = this.canvas.getContext("2d");
-
-    // listen to body for class changes
-    this.observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === "attributes") {
-          this.updateFavicon(mutation.target.classList);
-        }
-      });
-    });
-    this.observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
+    this.observer = DOMUtil.observeCssClassChanges(this.updateFavicon.bind(this));
   }
 
   disconnectedCallback() {
-    // clean up observer
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    this.observer.disconnect();
   }
 
   updateFavicon(classList) {
     if (classList.contains("no-socket")) {
-      this.drawCircle("rgba(255, 0, 0, 1)");
-      this.link.href = this.canvas.toDataURL("image/png"); // update favicon
+      this.drawFavicon("#ff3333");
     } else if (classList.contains("has-socket")) {
-      this.drawCircle("rgba(0, 255, 0, 1)");
-      this.link.href = this.canvas.toDataURL("image/png"); // update favicon
+      this.drawFavicon("#33ff33");
     } else {
       this.link.href = "/icon.png"; // reset to default favicon
     }
   }
 
-  drawCircle(color) {
+  drawFavicon(color) {
     this.context.clearRect(0, 0, 16, 16);
     this.context.beginPath();
     this.context.fillStyle = color;

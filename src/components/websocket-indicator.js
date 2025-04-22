@@ -1,22 +1,16 @@
+import DOMUtil from "../util/dom-util.mjs";
+
 class WebsocketIndicator extends HTMLElement {
   connectedCallback() {
     this.shadow = this.attachShadow({ mode: "open" });
-    this.listenForBodyClassChanges();
+    this.observer = DOMUtil.observeCssClassChanges(this.updateIndicator.bind(this));
     this.render();
     this.div = this.shadow.querySelector("div");
     this.initClickListener();
   }
 
-  listenForBodyClassChanges() {
-    // watch for changes on <body>'s classList, so we can respond
-    var observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName == "class") {
-          this.updateIndicator();
-        }
-      });
-    });
-    observer.observe(document.body, { attributes: true });
+  disconnectedCallback() {
+    this.observer.disconnect();
   }
 
   initClickListener() {
@@ -25,9 +19,9 @@ class WebsocketIndicator extends HTMLElement {
     });
   }
 
-  updateIndicator() {
+  updateIndicator(classList) {
     if (!this.div) return;
-    if (document.body.classList.contains("no-socket")) {
+    if (classList.contains("no-socket")) {
       this.div.classList.add("no-socket");
     } else {
       this.div.classList.remove("no-socket");
@@ -53,6 +47,7 @@ class WebsocketIndicator extends HTMLElement {
         height: 20px; 
         border-radius: 10px;
         background-color: #33ff33;
+        cursor: pointer;
       }
       div.no-socket {
         background-color: #ff3333;
