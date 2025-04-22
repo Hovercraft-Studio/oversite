@@ -6,14 +6,14 @@
 
 Apps include:
 
-- **AppStore**: A shared state system that glues disparate apps & computers together with WebSockets and a persistent key/value store
+- **AppStore**: A (shared) state system that glues disparate apps & computers together with WebSockets and a persistent key/value store
 - **Dashboard**: An app monitoring dashboard that keeps track of site-specific apps by storing checkins & heartbeats and notifying when apps are down
 
 Default locations & ports are:
 
 - http://localhost:3002 - Vite frontend
 - http://localhost:3003 - http server
-- http://localhost:3003/ws - WebSocket server
+- ws://localhost:3003/ws - WebSocket server
 
 ## Quickstart
 
@@ -65,7 +65,7 @@ On the frontend, you should use the `<app-store-init>` web component to connect 
 
 There are two ways to run the WebSocket server app:
 
-- Using `ws-relay.mjs` as a barebones websocket server
+- ~~Using `ws-relay.mjs` as a barebones websocket server~~ - for legacy/example use only
 - Using `server.mjs`, which uses ws-relay.mjs and:
   - Stores all incoming AppStore-formatted messages in a local dictionary
   - Writes the AppStore dictionary to a file on disk and loads on startup
@@ -194,4 +194,29 @@ Here's a list of web components used in the frontend apps. Each may have optiona
 
 You can also choose a different [pico.css theme](https://picocss.com/docs/version-picker) and replace `shared/css/pico.css`: 
 
-More to come!
+## Using the `oversite` module in your own project
+
+### Frontend
+
+Create a new frontend project:
+
+- `npm create vite@latest`
+- `npm install git@github.com:Hovercraft-Studio/oversite.git#main`
+- `npm run dev`
+
+To pull the latest from `oversite` if it's already installed and has been updated:
+
+- `npm update oversite`
+- Restart dev server!
+
+## Related projects
+
+Others have tackled similar problems in different ways. Here are some projects that are similar to `oversite`:
+
+- [ampm](https://github.com/stimulant/ampm) - Multiple frontend clients - lots of overlap w/`oversite`
+- [LaunchPad](https://github.com/bluecadet/launchpad) - ([read more](https://www.bluecadet.com/news/launchpad/))
+- [sudoSignals](https://www.sudosignals.com/) - TouchDesigner-focused
+- [Phoenix](https://github.com/HeliosInteractive/Phoenix) - C#/Unity-focused
+- [ISAAC](https://www.isaacplatform.com/) - More of a professional AV product
+
+## More to come!

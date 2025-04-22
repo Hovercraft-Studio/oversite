@@ -8,5 +8,7 @@ Install:
 - npm install git@github.com:Hovercraft-Studio/oversite.git#main
 - npm run dev
 
-Pull the latest from `oversite`
+Pull the latest from `oversite`:
+
 - npm update oversite
+- Restart dev server!

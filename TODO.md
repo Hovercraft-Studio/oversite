@@ -2,10 +2,14 @@
 
 ## Get to launch
 
+- /clients should be emitted via websockets - would be helpful to see in the ATL app
+- Collapse MutationObserver instances listening for body class changes
+- Add pointer cursor to websocket indicator
 - Clean up api routes port when connecting from an ip address
   - Needs to use https if served from a secure server
 - Cloudflare: point bigmother.hovercraftstudio.com to point to the new server
 - Get ATL app running
+  - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
 
 ## ASAP
 
@@ -18,12 +22,9 @@
   - Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
     - This should be via express w/user list json config
 
-
 ## ATL CMS
 
 - How can we build the ATL app from this base? 
-  - Oversite
-   - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
   - [WIP] Admin app
     - Get it running on DigitalOcean? Or Vercel?
     - Frontend-only password protection is needed! Something dead simple

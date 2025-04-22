@@ -25,7 +25,7 @@ To use AppStoreDistributed in a React app, you’ll need to add the AppStore-rel
   <app-store-heartbeat
     key="schedule_display_heartbeat"
     value="n/a"
-    interval="5000"
+    interval="15000"
     show="false"
   ></app-store-heartbeat>
   <div id="root"></div>
