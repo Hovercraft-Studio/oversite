@@ -4,41 +4,43 @@
 
 - Clean up api routes port when connecting from an ip address
   - Needs to use https if served from a secure server
-- Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
-  - This should be via express w/user list json config
-- Wrap up basic Dashboard functions
-  - [WIP] Basic auth / password protection
-    - Add logout button
-    - Check auth cookie behavior w/expiration
-    - Add user list json config to be passed in
-    - Break out login form into own web component?
-    - Should auth apply to entire site when on production???
 - Cloudflare: point bigmother.hovercraftstudio.com to point to the new server
 - Get ATL app running
-  - Get the ATL app built and running on DigitalOcean? Or Vercel?
-  - Restart function for Jasmine
-    - Needs a Node app? Or are we setting AppStoreDistributed to run on the Java apps?
-  - Persistence via local file storage
-  - Get rid of JSON poller in the Java app
-  - Tell Michael @ rEv about the change w/instructions
+
+## ASAP
+
+- [WIP] Basic auth / password protection
+  - Add logout button
+  - Check auth cookie behavior w/expiration
+  - Add user list json config to be passed in
+  - Break out login form into own web component?
+  - Should auth apply to entire site when on production???
+  - Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
+    - This should be via express w/user list json config
 
 
 ## ATL CMS
 
 - How can we build the ATL app from this base? 
-  - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
-  - Should there be a tiny Node app on the remote PC? That would be good for Jasmine to reset so it can run key commands
-  - Java App should switch to AppStoreDistributedand save team state in a TextPrefs file
-    - When it connects, it should broadcast the current team so the admin app can show it
-    - When the admin app connects, the java app should send back the current team
-    - Admin app should show a client list so you can see which is online
-      - When the app is restarting, it would be offline
+  - Oversite
+   - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
+  - [WIP] Admin app
+    - Get it running on DigitalOcean? Or Vercel?
+    - Frontend-only password protection is needed! Something dead simple
+    - Admin app should show a client list so you can see which is online via /clients
+      - When the app is restarting, it would be offline, but this is good to know 
+  - Java updates
+    - Persistence via local file storage - this is where the team state should be saved, not in the cloud
+    - Get rid of JSON poller in the Java app
+    - Save team state in a TextPrefs file
+    - Switch to AppStoreDistributed
+      - When it connects, it should broadcast the current team so the admin app can show it
+      - When the admin app connects, the java app should send back the current team
+      - Add a heartbeat to the Java app
+    - Add serial key commands - on / off
+    - Add team switch commands - team = falcons / united
+  - Tell Michael @ rEv about the change w/instructions
   - Should it be its own server with the full implementation, and another server app added? 
-  - How do we store the current team selection with persistence? 
-  - Or could persistence be held on the FanCam/Protect servers?
-  - Frontend-only password protection is needed!
-  - Could there be a simple node app that runs app-store-distributed and just triggers key commands for a restart initiated by Jasmine?
-    - This could also turn the screens on/off by simulating the serial message
 
 ## General
 
