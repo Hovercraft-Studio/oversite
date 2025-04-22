@@ -5,6 +5,7 @@
 - Clean up api routes port when connecting from an ip address
   - Needs to use https if served from a secure server
 - Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
+  - This should be via express w/user list json config
 - Wrap up basic Dashboard functions
   - [WIP] Basic auth / password protection
     - Add logout button
@@ -18,21 +19,21 @@
   - Restart function for Jasmine
     - Needs a Node app? Or are we setting AppStoreDistributed to run on the Java apps?
   - Persistence via local file storage
-  - Point to digitalocean app URL in Java app to replace old Hovercraft Subdomain
-    - Tell Michael @ rEv about the change w/instructions
+  - Get rid of JSON poller in the Java app
+  - Tell Michael @ rEv about the change w/instructions
 
 
 ## ATL CMS
 
 - How can we build the ATL app from this base? 
-  - `app-store-init` should have an attribute to set the server URL instead of using hash query
-  - If we use AppStore:
-    - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
-    - Should there be a tiny Node app on the remote PC? That would be good for Jasmine to reset
-    - Java App should switch to AppStoreDistributedand save team state in a TextPrefs file
-      - When it connects, it should broadcast the current team
-      - When the admin app connects, the java app should send back the current team
-  - Should it be it's own server with the full implementation, and another server app added? 
+  - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
+  - Should there be a tiny Node app on the remote PC? That would be good for Jasmine to reset so it can run key commands
+  - Java App should switch to AppStoreDistributedand save team state in a TextPrefs file
+    - When it connects, it should broadcast the current team so the admin app can show it
+    - When the admin app connects, the java app should send back the current team
+    - Admin app should show a client list so you can see which is online
+      - When the app is restarting, it would be offline
+  - Should it be its own server with the full implementation, and another server app added? 
   - How do we store the current team selection with persistence? 
   - Or could persistence be held on the FanCam/Protect servers?
   - Frontend-only password protection is needed!
@@ -175,7 +176,6 @@ Nice-to-haves:
       - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
   - old rooms should get recycled after [x] days
   - Room creation should require some super basic auth key that only the server knows, via querystring
-- Build a Plus-Six-style mouse cursor demo where each client has their own mouse
 
 Nice-to-haves & ideas
 
@@ -185,6 +185,11 @@ Nice-to-haves & ideas
 - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
 - An AppStore update should be able to come in via http post
 - Move server responses to functions 
+- Cool demos:
+  - PlusSix-style interface - allow user connection and build temporary rooms
+  - Figma mouse cursor demo where each client has their own mouse. Allow actual clicking
+  - PONG game? Bonus points for running game logic on the server
+  - Multi-browser slideshow
 
 SSL
 
@@ -201,7 +206,7 @@ Nice-to-haves?
   - Add ws?sender= queryparam to Java client
   - Store sender in AppStoreDistributed for incoming messages
 - Monitor/frontend
-  - Filter event log by client/sender!
+  - Filter event log by client/sender w/a dropdown from client list!
   - Click to resend a key/value from Monitor. anything else useful here?
   - add "expected_clients" list to app-store-clients, and show a red row if a client is missing
   - QR code somewhere to launch BA app (or any link for a client app)
