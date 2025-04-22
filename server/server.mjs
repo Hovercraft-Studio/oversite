@@ -25,8 +25,17 @@ const httpPort = getValueFromArgs("--portHttp", 3003);
 const debug = args.indexOf("--debug") != -1;
 
 /////////////////////////////////////////////////////////
+// Get config from json file
+/////////////////////////////////////////////////////////
+
+const configFilePath = join(__dirname, "../config.json");
+let configFile = null;
+
+
+/////////////////////////////////////////////////////////
 // Store config
 /////////////////////////////////////////////////////////
+
 const config = {
   stateDataPath: join(baseDataPath, "state"),
   dashboardDataPath: join(baseDataPath, "dashboard"),
