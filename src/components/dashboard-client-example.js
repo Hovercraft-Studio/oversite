@@ -1,4 +1,4 @@
-import DashboardCheckinPoller from "../dashboard/dashboard-poster.mjs";
+import DashboardPoster from "../dashboard/dashboard-poster.mjs";
 
 class DashboardClientExample extends HTMLElement {
   constructor() {
@@ -17,12 +17,7 @@ class DashboardClientExample extends HTMLElement {
   }
 
   initDashboard() {
-    this.dashboardCheckin = new DashboardCheckinPoller(
-      this.postURL,
-      this.appId,
-      this.appTitle,
-      this.postInterval * 1000
-    );
+    this.dashboardCheckin = new DashboardPoster(this.postURL, this.appId, this.appTitle, this.postInterval * 1000);
     this.dashboardCheckin.successCallback(this.successCallback.bind(this));
   }
 

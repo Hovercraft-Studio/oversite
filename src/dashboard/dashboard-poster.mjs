@@ -1,4 +1,4 @@
-class DashboardCheckinPoller {
+class DashboardPoster {
   constructor(dashboardURL, appId, appTitle, interval) {
     this.dashboardURL = dashboardURL;
     this.appId = appId;
@@ -96,4 +96,4 @@ class DashboardCheckinPoller {
   }
 }
 
-export default DashboardCheckinPoller;
+export default DashboardPoster;
