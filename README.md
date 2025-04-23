@@ -149,6 +149,8 @@ http://localhost:3002/app-store-monitor/index.html#&wsURL=ws://localhost:3001/ws
 
 ## Frontend apps
 
+The frontend apps are both a starting point for custom projects and a demo of how to use the `oversite` module. They've been built with simplicty and vanilla JavaScript in mind, to avoid becoming out-of-date with the latest frameworks. The frontend apps rely heavily on `picocss`, which gives decent styling without using any classes. The apps are also built with Web Components, which can be used in any framework or vanilla JavaScript.
+
 ### app-store-demo
 
 This is a "starter app" that demonstrates how to use AppStoreDistributed to connect to the websocket server and send messages. It's a good starting point for building a more complex app that uses AppStore and `oversite`.

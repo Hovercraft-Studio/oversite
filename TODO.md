@@ -3,13 +3,11 @@
 ## Get to launch
 
 - /clients should be emitted via websockets - would be helpful to see in the ATL app
-- Collapse MutationObserver instances listening for body class changes
-- Add pointer cursor to websocket indicator
+- Clean up project ports - 3002/3003 and no others!
 - Clean up api routes port when connecting from an ip address
   - Needs to use https if served from a secure server
 - Cloudflare: point bigmother.hovercraftstudio.com to point to the new server
-- Get ATL app running
-  - SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
+- SocketServer and PersistentState need to support channels, since this would have to be on it's own channel
 
 ## ASAP
 
@@ -24,27 +22,18 @@
 
 ## ATL CMS
 
-- How can we build the ATL app from this base? 
-  - [WIP] Admin app
-    - Get it running on DigitalOcean? Or Vercel?
-    - Frontend-only password protection is needed! Something dead simple
-    - Admin app should show a client list so you can see which is online via /clients
-      - When the app is restarting, it would be offline, but this is good to know 
-  - Java updates
-    - Persistence via local file storage - this is where the team state should be saved, not in the cloud
-    - Get rid of JSON poller in the Java app
-    - Save team state in a TextPrefs file
-    - Switch to AppStoreDistributed
-      - When it connects, it should broadcast the current team so the admin app can show it
-      - When the admin app connects, the java app should send back the current team
-      - Add a heartbeat to the Java app
-    - Add serial key commands - on / off
-    - Add team switch commands - team = falcons / united
-  - Tell Michael @ rEv about the change w/instructions
-  - Should it be its own server with the full implementation, and another server app added? 
+- Get it running on DigitalOcean? Or Vercel?
+- Frontend-only password protection is needed! Something dead simple
+- [DONE - TEST!] Add serial key commands - on / off
+- [DONE - TEST!] Add team switch commands - team = falcons / united
+- Launch to prod
+  - Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
+- Tell Michael @ rEv about the change w/instructions
+- Tell Jasmine about the update
 
 ## General
 
+- Server should emit heartbeats, not clients
 - SSL connections break if visiting ip address vs localhost - mostly because ws:// is mixed SSL
   - Test this with chrome flags for Windows machines - doesn't work with Vite SSL and ws://
     - Chromium allows mixed https/ws content but Chrome does not!
