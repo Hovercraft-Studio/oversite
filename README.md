@@ -111,7 +111,7 @@ AppStore is a key/value store and event-emitting system that is used to store & 
   "key": "some_data",
   "value": "Hello World",
   "store": true,
-  "type": "number|string|boolean",
+  "type": "number|string|boolean|array|object",
   "sender": "tablet_app", // optional - helps identify the sender
   "receiver": "td_app", // optional - message only sent to receiver
 }
@@ -222,3 +222,58 @@ Others have tackled similar problems in different ways. Here are some projects t
 - [ISAAC](https://www.isaacplatform.com/) - More of a professional AV product
 
 ## More to come!
+
+## Documentation to sort through:
+
+- Opinions:
+  - Web Components for futureproofing, but you can use whatever frontend tech you want
+  - Keep local dev env as close to cloud env as possible
+    - Vite for frontend dev server
+      - On prod, we use Vite's `dist` folder, which is served by express
+    - Express for backend dev server
+  - Frontend should run from a static web server without Vite, and with needing to be built! Vite shortcuts like `@` would prevent this
+  - Everything is ephemeral?!
+    - Dashboard reconstructs persisted data on the fly, but can be wiped when the server restarts
+    - SocketServer rebuilds channels and persisted data on the fly, but can be wiped when the server restarts
+- Components
+  - Dashboard
+    - `dashboard-view` - Frontend component that loads dashboard data
+      - `api-url` - where does the api live? allows for a dashboard on a remote frontend, but also helps us find the api (:3003) from Vite (:3002)
+      - `server-base` - helps find images on api server (:3003) in dev mode, when frontend is served by Vite (:3002). On prod, this is the same server
+      - `refresh-interval` - how often to refresh the data, 60 seconds is a good default
+    - `dashboard-api` - Backend component that serves the dashboard data
+      - Receives checkin JSON POST data and stores to a local json file. Images are sent as base64 strings but converted to files, which are replaced in the posted json as local www paths, but also with a reference to the file on disk tso we can remove them as the checkin data ages out
+      - `/api/dashboard` - base endpoint for the dashboard data
+      - `/api/dashboard/json` - Retrieves checkin data for all projects
+      - `/api/dashboard/json/:project` - Retrieves checkin data for a specific project
+      - `/api/dashboard/delete/:project` - Deletes checkin data for a specific project, along with images on disk
+- Note the differences between running locally and on the cloud
+  - Persistent files
+  - Ports
+    - Prod uses its own port for Express: `const PORT = process.env.PORT`
+  - SSL connections
+    - TD WebSocket needs to set port as 443
+      - wss://example-server.ondigitalocean.app/ws
+    - Locally-running web apps *can* connect to remote wss:// on the cloud! Just remove the port by setting it to `80`, `443` or empty. Browser permissions allow SSL permissiveness as long as CORS is set up properly on the server.
+      - http://localhost:3002/app-store-monitor/index.html#&wsURL=wss://example.ondigitalocean.app/ws&httpPort=
+      - `app-store-init` checks for ports passed in via querystring and removes them on the cloud
+    - How to handle local ip addresses? Local DNS server?
+  - CORS
+  - Routes
+    - /api/state
+    - /api/dashboard
+    - /ws for upgrade
+- Launch to DigitalOcean
+  - WIP: Note build process once that's figured out
+    - `vite build` creates `dist` folder, which is served by express
+      - server.mjs has a few lines to add static paths to `dist` folder
+      - `vite.config.js` has a few lines to set the base path for the build: `rollupOptions`
+      - DigitalOcean needs a specific rollup tool, so`package.json` has a prebuild step: `"prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",`
+      - Express automatically serves the static files from the `dist` folder, because express is the default server
+      - We serve Vite's static `dist` path from express port 3003! So `vite build` output is accessible locally here for testing, and is served as the default from the cloud
+      - Temp data path for dashboard and persistent state is set in the server.mjs file and reroutes where Vite find things, and where the prod server looks
+      - Ports are removed on the cloud. our express app becomes the default server
+      - TODO: Dashboard image paths need to be adjusted here???
+  - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
+  - https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
+

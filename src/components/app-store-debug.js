@@ -14,7 +14,17 @@ class AppStoreDebug extends HTMLElement {
     for (let storeKey in _store.state) {
       let val = _store.state[storeKey];
       if (val && typeof val == "object" && val.length && val.length > 0) {
-        val = `Array(${val.length})`; // special display for arrays
+        if (storeKey == "clients") {
+          val = val
+            .map((client) => {
+              let uptime = Math.round((Date.now() - client.connectedTime) / 1000); // uptime in seconds
+              // return `${client.sender} - ${uptime}s`;
+              return `${client.sender}`;
+            })
+            .join("<br>");
+        } else {
+          val = `Array(${val.length})`; // special display for arrays
+        }
       }
       if (val && typeof val == "string" && val.length && val.length > 100) {
         val = `${val.substring(0, 100)}...`; // special display for long strings

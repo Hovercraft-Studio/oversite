@@ -114,7 +114,8 @@ class AppStoreInit extends HTMLElement {
   // AppStore listeners
 
   appstore_connected(val) {
-    _store.set("client_connected", Date.now(), true); // let desktop app know that we're here
+    // _store.set("client_connected", Date.now(), true); // let desktop app know that we're here
+    // _store.set("client_connected", this.appStore.senderId, true); // let desktop app know that we're here
   }
 
   storeUpdated(key, val) {}

@@ -22,6 +22,7 @@ class SocketServer {
     this.wsServer.on("connection", this.handleConnection);
     this.addDebugListeners();
     this.addRoutes();
+    this.startHeartbeat();
   }
 
   addDebugListeners() {
@@ -42,19 +43,69 @@ class SocketServer {
 
   addRoutes() {
     this.app.get("/api/state/clients", (req, res) => {
-      let clients = [];
-      this.clients().forEach((client) => {
-        clients.push({
-          sender: client.senderID,
-          connectedTime: Date.now() - client.startTime,
-        });
-      });
-      res.json(clients);
+      res.json(this.clientsJson());
     });
+  }
+
+  startHeartbeat() {
+    // helps keep certain ws clients alive
+    setInterval(() => {
+      this.broadcastMessage(this.createAppStoreObject("💓", "💓"));
+    }, 30000);
   }
 
   clients() {
     return this.wsServer.clients;
+  }
+
+  clientsJson() {
+    let clients = [];
+    this.clients().forEach((client) => {
+      clients.push({
+        sender: client.senderID,
+        connectedTime: Date.now() - client.startTime,
+      });
+    });
+    return clients;
+  }
+
+  createAppStoreObject(key, value, type = "string") {
+    // format app-store object
+    let data = {
+      key: key,
+      value: value,
+      store: true,
+      type: type,
+      sender: "server",
+    };
+    let jsonStr = JSON.stringify(data);
+    return jsonStr;
+  }
+
+  broadcastClients() {
+    // format clients list as app-store object
+    let data = this.createAppStoreObject("clients", this.clientsJson(), "array");
+    this.broadcastMessage(data); // send only to clients that are not sendonly
+  }
+
+  broadcastMessage(message, isBinary = false, sender = null, receiver = null, sendOnly = false) {
+    this.clients().forEach((client) => {
+      let isSelf = client === sender;
+      let isReceiver = receiver && client.senderID == receiver;
+      if (client.readyState === WebSocket.OPEN) {
+        // relay message:
+        // - if client is not sendonly (these clients should never get messages)
+        // - if client is the receiver or if no receiver is specified or if sender is monitor (for specific recipients)
+        // - if message is not sendonly or if message is sendonly and client is not the sender (doesn't get sent back to sender)
+        if (!client.sendonly) {
+          if (!receiver || isReceiver || client.senderID == "monitor") {
+            if (!sendOnly || (sendOnly && !isSelf)) {
+              client.send(message, { binary: isBinary });
+            }
+          }
+        }
+      }
+    });
   }
 
   handleConnection(connection, request, client) {
@@ -67,6 +118,7 @@ class SocketServer {
     connection.senderID ??= "unknown";
     const sendonly = searchParams.get("sendonly");
     connection.sendonly = !!sendonly;
+    // const channel = searchParams.get("channel");
     connection.startTime = Date.now(); // used by server.mjs for uptime
 
     // Log new connection
@@ -75,6 +127,9 @@ class SocketServer {
     // Set up message and close listeners
     connection.on("message", (message, isBinary) => this.handleMessage(connection, message, isBinary));
     connection.on("close", () => this.handleClose(connection));
+
+    this.broadcastClients();
+    this.broadcastMessage(this.createAppStoreObject("client_connected", connection.senderID), false, connection);
   }
 
   handleMessage(connection, message, isBinary) {
@@ -96,27 +151,13 @@ class SocketServer {
     let sendOnly = message.indexOf("sendonly") > -1;
 
     // relay incoming message to all clients
-    this.clients().forEach((client) => {
-      let isSelf = client === connection;
-      let isReceiver = receiver && client.senderID == receiver;
-      if (client.readyState === WebSocket.OPEN) {
-        // relay message:
-        // - if client is not sendonly
-        // - if client is the receiver or if no receiver is specified or if sender is monitor
-        // - if message is not sendonly or if message is sendonly and client is not the sender
-        if (!client.sendonly) {
-          if (!receiver || isReceiver || client.senderID == "monitor") {
-            if (!sendOnly || (sendOnly && !isSelf)) {
-              client.send(message, { binary: isBinary });
-            }
-          }
-        }
-      }
-    });
+    this.broadcastMessage(message, isBinary, connection, receiver, sendOnly);
   }
 
   handleClose(connection) {
     logGreen("👋 Client left - We have " + this.clients().size + " users");
+    this.broadcastClients();
+    this.broadcastMessage(this.createAppStoreObject("client_disconnected", connection.senderID), false, connection);
   }
 }
 

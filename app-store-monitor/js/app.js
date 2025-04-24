@@ -65,6 +65,12 @@ class CustomApp extends HTMLElement {
       // console.log(key, "=", value);
       // set server url right header links
     }
+    if (key == "client_connected") {
+      _store.set("toast", `🤗 Client joined: ${value}`);
+    }
+    if (key == "client_disconnected") {
+      _store.set("toast", `👋 Client left: ${value}`);
+    }
   }
 
   init() {
