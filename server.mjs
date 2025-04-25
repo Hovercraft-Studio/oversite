@@ -32,6 +32,7 @@ const debug = args.indexOf("--debug") != -1;
 logBlue("Loading config.json: ------");
 let configData = {
   allowedWsChannels: ["default"], // leave off "default" if you don't want to allow ws connections without specifying a channel
+  authApiUsers: [], // ex: [{ username: "admin", password: "password" }]
 };
 try {
   const configFilePath = join(__dirname, "config.json");
@@ -123,8 +124,10 @@ app.use("/_tmp_data", express.static(baseDataPath));
 // - Dashboard API
 /////////////////////////////////////////////////////////
 
+import AuthApi from "./src/server/auth-api.mjs";
 import SocketServer from "./src/server/socket-server.mjs";
 import DashboardApi from "./src/server/dashboard-api.mjs";
+const authApi = new AuthApi(app, express);
 const socketServer = new SocketServer(wsServer, app, config.stateDataPath, config.allowedWsChannels, debug);
 if (debug) dashboardApi.printConfig();
 const dashboardApi = new DashboardApi(

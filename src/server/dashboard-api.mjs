@@ -21,7 +21,6 @@ class DashboardApi {
     this.routeDbProjectDetails = `${this.routeBase}/json/:appId`;
     this.routeDeleteProject = `${this.routeBase}/delete/:appId`;
     this.routeImages = `${this.routeBase}/images`;
-    this.routeAuth = `${this.routeBase}/auth`;
 
     // init
     this.isWriting = false;
@@ -80,8 +79,6 @@ class DashboardApi {
     this.app.use(this.routeImages, this.express.static(this.pathImages));
 
     // SPECIFIC ROUTE HANDLING ----------------------------
-    // log in from frontend
-    this.app.post(this.routeAuth, this.handleAuthAttempt.bind(this));
     // accept JSON post data from apps
     this.app.post(this.routeBase, this.handlePostData.bind(this));
     if (this.postRouteAlt) this.app.post(this.postRouteAlt, this.handlePostData.bind(this));
@@ -121,27 +118,6 @@ class DashboardApi {
       }
       this.isWriting = false;
     }
-  }
-
-  /////////////////////////////////////////////////////////
-  // Auth
-  /////////////////////////////////////////////////////////
-
-  handleAuthAttempt(req, res) {
-    const { username, password } = req.body;
-    const isValid = this.validateCredentials(username, password);
-    if (isValid) {
-      res.status(200).json({ message: "Authentication successful" });
-    } else {
-      res.status(401).json({ message: "Invalid credentials" });
-    }
-  }
-
-  validateCredentials(username, password) {
-    // Replace with your own authentication logic
-    const validUsername = "admin";
-    const validPassword = "password";
-    return username === validUsername && password === validPassword;
   }
 
   /////////////////////////////////////////////////////////

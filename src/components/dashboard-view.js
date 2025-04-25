@@ -94,63 +94,6 @@ class DashboardView extends HTMLElement {
   // Server data
   ////////////////////////////////////////
 
-  login(data) {
-    // send login data to server
-    fetch(`${this.apiURL}/auth`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Login failed");
-        }
-      })
-      .then((data) => {
-        if (data.error) alert(data.error);
-        if (data.message) alert(data.message);
-        this.isAuthenticated = true;
-        // this.render();
-        this.getData();
-        this.restartPolling();
-        this.setAuthCookie();
-      })
-      .catch((error) => {
-        console.error("Error during login:", error);
-        alert("Login failed. Please try again.");
-      });
-  }
-
-  setAuthCookie() {
-    // set auth cookie with 1 hour expiration
-    let expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `auth=true; expires=${expires}; path=/`;
-  }
-
-  checkAuthCookie() {
-    // check if auth cookie is set
-    let cookies = document.cookie.split("; ");
-    for (let cookie of cookies) {
-      let [name, value] = cookie.split("=");
-      if (name === "auth" && value === "true") {
-        this.isAuthenticated = true;
-        return true;
-      }
-    }
-    this.isAuthenticated = false;
-    return false;
-  }
-
-  removeAuthCookie() {
-    // remove auth cookie
-    document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    this.isAuthenticated = false;
-  }
-
   restartPolling() {
     if (!this.isAuthenticated) return;
     window.clearInterval(this.pollingInterval);
@@ -372,12 +315,6 @@ class DashboardView extends HTMLElement {
 
       }
 
-      .dashboard-login {
-        input, button {
-          padding: 1rem;
-        }
-      }
-
       .dashboard-image-highlight {
         position: fixed;
         top: 0;
@@ -409,7 +346,7 @@ class DashboardView extends HTMLElement {
 
   render() {
     this.el.innerHTML = /*html*/ `
-      ${this.curView()}
+      ${this.renderDashboard()}
       <style>
         ${this.css()}
       </style>
@@ -417,37 +354,7 @@ class DashboardView extends HTMLElement {
     this.progress = this.el.querySelector("progress");
   }
 
-  curView() {
-    if (this.isAuthenticated) {
-      return this.renderDashboardLayout();
-    } else {
-      return this.renderAuthForm();
-    }
-  }
-
-  renderAuthForm() {
-    requestAnimationFrame(() => {
-      const form = this.el.querySelector("#login-form");
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-        this.login(data);
-      });
-    });
-    return /*html*/ `
-      <div class="dashboard-login">
-        <h3>Login</h3>
-        <form id="login-form">
-          <input type="text" name="username" placeholder="Username" required />
-          <input type="password" name="password" placeholder="Password" required />
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    `;
-  }
-
-  renderDashboardLayout() {
+  renderDashboard() {
     let projectsCards = this.detailID
       ? this.renderProjectHistory(this.data.checkins[this.detailID])
       : this.renderProjects(this.data);
