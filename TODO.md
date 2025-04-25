@@ -2,10 +2,11 @@
 
 ## Get to launch
 
-- Clean up project ports - 3002/3003 and no others!
-- Clean up api routes port when connecting from an ip address
-  - Needs to use https if served from a secure server
-- Cloudflare: point bigmother.hovercraftstudio.com to point to the new server
+- Clean up project ports 
+  - 3002/3003 and no others! Remove any `3001`
+  - Get rid of `httpPort` config entirely?
+- Cloudflare: point oversite.hovercraftstudio.com to point to the new server
+- Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
 
 ## ASAP
 
@@ -20,18 +21,16 @@
 
 ## ATL CMS
 
-- Add rooms ("channels") concept from Connected Canvas
+  - Auth should come from either post headers (public devices) or querystring (local devices)
   - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
     - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
     - AppStore demos would need to handle a projectId
       - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
-  - old rooms should get recycled after [x] days
 - Room creation should require some super basic auth key that only the server knows, via querystring
   - Check `wsAuthTokens` in config.json
 - Frontend-only password protection is needed! Something dead simple
   - CMS: `https://aficms.hovercraftstudio.com/`
   - Password: `r3v0lut10n!`
-- Get it running on DigitalOcean? Or Vercel?
 - Launch to prod
   - Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
   - [TEST!] Add serial key commands - on / off
@@ -58,7 +57,6 @@
 
 ## Server unification:
 
-- Auto-build `dist`?
 - Figure out a better debug mode for logging - log levels per app?
 - Persistent file storage is a problem on production - how to handle this?
   - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
@@ -67,11 +65,9 @@
 ## Dashboard:
 
 - Update cacheflowe.com with latest api & view classes
-- Save DashboardPoster.tox into `/examples` folder
 - Basic auth protection for the dashboard
-- Nodejs dashboard example & isomorphic poster class
 - [WIP] Add dashboard poster example:
-  - Make universal for nodejs
+  - Make universal/isomorphic for nodejs
     - Grab example code from macbook or haxademic.js repo
     - Detect whether it's running in node or browser
     - Add optional screenshot if nodejs - dynmic import of screenshot module?
@@ -80,9 +76,7 @@
     - Toggle mode: `"no-cors"` and other settings for the fetch() call. Need to test this
     - Add nodejs script and call from package.json
 - [WIP] Build examples dir for Dashboard poster
-  - Universal javascript via node/frontend
-    - Have frontend post to backend for easy testing, maybe from 2 apps, with an animating canvas element?
-  - TouchDesigner tox
+  - Universal javascript via node
   - Unity script
   - Java
 - <dashboard-view>
@@ -115,19 +109,24 @@ Nice-to-haves:
 
 ## Socket server
 
+- Add 'channel ID' to TD config & connection URL
+- old rooms should get shut down, but could websocket connections not properly allow this?
 - Handle `array|object` types - in javascript, these are decoded with the message. in Java, they need to be handled. what about python? or other languages? or if it's not a number|string|boolean, do we just store it as generic json, and detect before decoding?
-- Should there be special appStore messages that are system commands? Like give me a client list or persistent state?
-- Server should emit heartbeats, not necessarily clients, though client heartbeats are good for the app-store-monitor
+- Should there be special appStore messages that are system commands? 
+  - Like give me a client list or persistent state? Or all clients for the appStoreMonitor?
 - How to have multiple AppStoreDistributed clients in one app? One for local and one for cloud. Could they sync?
 
 Nice-to-haves & ideas
 
+- Monitor:
+  - Monitor should be able to switch between channels w/a dropdown
+  - Monitor's client list should be rebuilt with websockets instead of http polling
 - Build an admin page with lists of special commands available for each app deployment. ATL is a good example
 - Hydration updates:
   - Hydration should happen from websockets instead of http?
   - A client should be able to hydrate the persistent state object
   - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
-- An AppStore update should be able to come in via http post
+- An AppStore update should be able to come in via http post?
 - Move server responses to functions 
 - Cool demos:
   - PlusSix-style interface - allow user connection and build temporary rooms
@@ -137,6 +136,8 @@ Nice-to-haves & ideas
 
 SSL
 
+- Clean up api routes port when connecting from an ip address
+  - Needs to use https if served from a secure server
 - How to run iPad w/SSL for a webcam, but then proxy all non-SSL connections? Is that possible?
 
 Nice-to-haves?

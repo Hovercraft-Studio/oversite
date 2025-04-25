@@ -42,10 +42,11 @@ class AppStoreInit extends HTMLElement {
   async initSharedState() {
     // get config from web component attributes
     let sender = this.getAttribute("sender");
+    let channel = this.getAttribute("channel");
     let initKeys = this.getAttribute("init-keys");
 
     // connect to websocket server
-    this.appStore = new AppStoreDistributed(this.webSocketURL, sender);
+    this.appStore = new AppStoreDistributed(this.webSocketURL, sender, channel);
 
     // hydrate with specified keys
     this.hydrateOnInit(initKeys);

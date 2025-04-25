@@ -3,6 +3,7 @@
 /////////////////////////////////////////////////////////
 
 import { fileURLToPath } from "url";
+import { promises as fs } from "fs";
 import { dirname, join, resolve } from "path";
 import path from "path";
 import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./src/server/util.mjs";
@@ -28,8 +29,17 @@ const debug = args.indexOf("--debug") != -1;
 // Get config from json file
 /////////////////////////////////////////////////////////
 
-const configFilePath = join(__dirname, "../config.json");
-let configFile = null;
+logBlue("Loading config.json: ------");
+let configData = {
+  allowedWsChannels: ["default"], // leave off "default" if you don't want to allow ws connections without specifying a channel
+};
+try {
+  const configFilePath = join(__dirname, "config.json");
+  let configFile = await fs.readFile(configFilePath, "utf-8");
+  configData = JSON.parse(configFile);
+} catch (error) {
+  logBlue(`Config file not found or invalid: ${configFilePath}. Using default configuration.`);
+}
 
 /////////////////////////////////////////////////////////
 // Store config
@@ -37,6 +47,7 @@ let configFile = null;
 
 const config = {
   stateDataPath: join(baseDataPath, "state"),
+  allowedWsChannels: configData.allowedWsChannels,
   dashboardDataPath: join(baseDataPath, "dashboard"),
   dashboardApiRoute: "/api/dashboard",
   dashboardPostRouteAlt: "/",
@@ -64,6 +75,7 @@ console.table([
   [`HTTP/Express server`, `http://${ipAddr}:${httpPort}`],
   [`debug`, `${config.debug}`],
   [`Base data path`, `${config.baseDataPath}`],
+  [`ws:// channels`, `${config.allowedWsChannels}`],
   [`Dashboard data path`, `${config.dashboardDataPath}`],
   [`Dashboard API & POST route`, `${config.dashboardApiRoute}`],
   [`Dashboard POST route (alt)`, `${config.dashboardPostRouteAlt}`],
@@ -113,7 +125,7 @@ app.use("/_tmp_data", express.static(baseDataPath));
 
 import SocketServer from "./src/server/socket-server.mjs";
 import DashboardApi from "./src/server/dashboard-api.mjs";
-const socketServer = new SocketServer(wsServer, app, config.stateDataPath, debug);
+const socketServer = new SocketServer(wsServer, app, config.stateDataPath, config.allowedWsChannels, debug);
 if (debug) dashboardApi.printConfig();
 const dashboardApi = new DashboardApi(
   app,
@@ -132,7 +144,7 @@ app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
-const PORT = process.env.PORT || httpPort; // prod uses process.env.PORT
+const PORT = process.env.PORT ?? httpPort; // prod uses process.env.PORT
 server.listen(PORT, () => {
   logBlue(`🎉 Express initialized: http://${ipAddr}:${httpPort}`);
 });

@@ -25,6 +25,7 @@ class CustomApp extends HTMLElement {
     // populate header links with server URL
     document.querySelector("a[data-state-url]").setAttribute("href", `${serverURL}api/state/all`);
     document.querySelector("a[data-clients-url]").setAttribute("href", `${serverURL}api/state/clients`);
+    document.querySelector("a[data-channels-url]").setAttribute("href", `${serverURL}api/state/channels`);
     document.querySelector("a[data-wipe-url]").setAttribute("href", `${serverURL}api/state/wipe`);
 
     // server url in header

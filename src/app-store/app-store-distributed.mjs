@@ -6,15 +6,23 @@ class AppStoreDistributed extends AppStore {
   static DISCONNECTED = "appstore_disconnected";
   static CUSTOM_JSON = "custom_json";
 
-  constructor(socketServerUrl, senderId = null) {
+  constructor(socketServerUrl, senderId = null, channelId = null) {
     super();
-    this.senderId = senderId || "unknown_" + Math.round(Math.random() * 9999);
     this.stateData = {};
-    // track whether messages are from this instance
-    this.messageFromSelf = false;
-    // init websocket connection
+
+    // get websocket optional props and add to querystring
+    this.senderId = senderId || "unknown_" + Math.round(Math.random() * 9999);
+    this.channelId = channelId;
     this.socketServerUrl = socketServerUrl;
-    if (senderId) this.socketServerUrl += "?sender=" + this.senderId;
+
+    // build querystring from options & add to ws:// URL
+    const params = new URLSearchParams();
+    if (senderId) params.append("sender", this.senderId);
+    if (channelId) params.append("channel", this.channelId);
+    const queryString = params.toString();
+    if (queryString) this.socketServerUrl += "?" + queryString;
+
+    // build socket connection
     this.solidSocket = new SolidSocket(this.socketServerUrl);
     this.solidSocket.setOpenCallback((e) => this.onOpen(e));
     this.solidSocket.setCloseCallback((e) => this.onClose(e));
@@ -33,9 +41,6 @@ class AppStoreDistributed extends AppStore {
 
   onMessage(event) {
     let data = JSON.parse(event.data);
-
-    // note whether sender is self, so we can check before taking action on incoming data that was sent by us, with senderIsSelf()
-    this.messageFromSelf = data && data.sender && data.sender == this.senderId;
 
     // set incoming data on AppStore without broadcasting
     if (data["store"] && data["type"]) {

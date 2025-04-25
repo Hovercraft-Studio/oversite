@@ -89,11 +89,13 @@ Managing SSL certificates is a pain, and this project starts with a focus on sim
 
 ### API routes for `server.mjs`
 
-- `GET /state` - Returns the current state of the store
-- `GET /state/*` - Returns the json for a specific key in the store
-- `GET /wipe` - Clears the store
-- `GET /wipe/*` - Clears a specific key in the store
-- `GET /clients` - Lists the client connections with sender ID and connection time
+- `GET /api/state/all` - Returns the current state of the store
+- `GET /api/state/:key` - Returns the json for a specific key in the store
+- `GET /api/state/wipe` - Clears the store
+- `GET /api/state/wipe/:key` - Clears a specific key in the store
+- `GET /api/state/clients` - Lists all client connections 
+- `GET /api/state/clients/:id` - Lists the client connections in a specific channel
+- `GET /api/state/channels` - Lists all channels and their clients
 
 ## AppStore
 
