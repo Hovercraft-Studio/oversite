@@ -34,8 +34,8 @@ let configData = {
   allowedWsChannels: ["default"], // leave off "default" if you want to require specifying a channelId when connection
   authUsers: [], // ex: [{ username: "admin", password: "password" }]
 };
+const configFilePath = join(__dirname, "config.json");
 try {
-  const configFilePath = join(__dirname, "config.json");
   let configFile = await fs.readFile(configFilePath, "utf-8");
   configData = JSON.parse(configFile);
 } catch (error) {

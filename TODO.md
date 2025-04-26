@@ -34,6 +34,7 @@
 
 ## General
 
+- Move config into own class - between defaults, file loading, and production settings, this could be cleaned up
 - SSL connections break if visiting ip address vs localhost - mostly because ws:// is mixed SSL
   - Test this with chrome flags for Windows machines - doesn't work with Vite SSL and ws://
     - Chromium allows mixed https/ws content but Chrome does not!
