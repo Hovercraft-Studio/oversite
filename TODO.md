@@ -4,7 +4,7 @@
 
 - Clean up project ports 
   - 3002/3003 and no others! Remove any `3001`
-  - Get rid of `httpPort` config entirely?
+  - Get rid of `httpPort` config entirely? - should be `port`
 - Cloudflare: point oversite.hovercraftstudio.com to point to the new server
 - Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
 
