@@ -20,6 +20,7 @@ import "./auth-form.js";
 import "./auth-logout-button.js";
 import "./date-year.js";
 import "./favicon-status.js";
+import "./home-button.js";
 import "./modal-dialog.js";
 import "./notyf-listener.js";
 

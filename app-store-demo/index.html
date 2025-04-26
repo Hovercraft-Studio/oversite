@@ -25,7 +25,7 @@
     <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="30000" show="false"></app-store-heartbeat>
     <custom-app>
       <main class="container">
-        <a href="/" style="position: absolute; top: 0; left: 0; padding: 1rem; ">🏠</a>
+        <home-button></home-button>
         <section>
           <h1>AppStore Demo</h1>
           <p>A nice way to communicate between apps</p>
@@ -71,7 +71,6 @@
         </section>
         <details>
           <summary>Event Log</summary>
-          <!-- <event-log-view max-length="10"></event-log-view> -->
           <app-store-event-table max-length="10" hide-filters></app-store-event-table>
         </details>
       </main>
