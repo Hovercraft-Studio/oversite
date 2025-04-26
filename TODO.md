@@ -8,16 +8,11 @@
 - Cloudflare: point oversite.hovercraftstudio.com to point to the new server
 - Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
 
-## ASAP
+## AuthApi
 
-- [WIP] Basic auth / password protection
-  - Add logout button
-  - Check auth cookie behavior w/expiration
-  - Add user list json config to be passed in
-  - Break out login form into own web component?
-  - Should auth apply to entire site when on production???
-  - Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
-    - This should be via express w/user list json config
+- Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
+  - Bypass by checking for ip address, localhost, or .local/.dev domain
+- Should auth apply to entire site when on production???
 
 ## ATL CMS
 
@@ -26,11 +21,10 @@
     - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
     - AppStore demos would need to handle a projectId
       - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
-- Room creation should require some super basic auth key that only the server knows, via querystring
+- Add auth key that only the server knows, via querystring or post header. this should only apply on production, and not on localhost/dev
   - Check `wsAuthTokens` in config.json
-- Frontend-only password protection is needed! Something dead simple
-  - CMS: `https://aficms.hovercraftstudio.com/`
-  - Password: `r3v0lut10n!`
+- CMS: `https://aficms.hovercraftstudio.com/`
+- Password: `r3v0lut10n!`
 - Launch to prod
   - Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
   - [TEST!] Add serial key commands - on / off
@@ -110,7 +104,6 @@ Nice-to-haves:
 ## Socket server
 
 - Add 'channel ID' to TD config & connection URL
-- old rooms should get shut down, but could websocket connections not properly allow this?
 - Handle `array|object` types - in javascript, these are decoded with the message. in Java, they need to be handled. what about python? or other languages? or if it's not a number|string|boolean, do we just store it as generic json, and detect before decoding?
 - Should there be special appStore messages that are system commands? 
   - Like give me a client list or persistent state? Or all clients for the appStoreMonitor?
@@ -118,6 +111,7 @@ Nice-to-haves:
 
 Nice-to-haves & ideas
 
+- old rooms should currently shut down, but could rogue websocket connections not properly allow this? connected canvas had something to protect against this
 - Monitor:
   - Monitor should be able to switch between channels w/a dropdown
   - Monitor's client list should be rebuilt with websockets instead of http polling
