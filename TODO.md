@@ -13,6 +13,8 @@
 - Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
   - Bypass by checking for ip address, localhost, or .local/.dev domain
 - Should auth apply to entire site when on production???
+  - We should check cookie anywhere and redirect to /login if not logged in
+  - Need to build a tiny page for this login, with a redirect to the original page? Or just `/` for simplicity
 
 ## ATL CMS
 
