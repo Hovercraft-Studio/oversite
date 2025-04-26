@@ -14,11 +14,13 @@
 }
 
 header {
-  margin-bottom: var(--pico-spacing);
+  margin-bottom: calc(var(--pico-spacing) * 2);
+  text-align: center;
 
   img {
     max-width: 400px;
     height: auto;
+    mix-blend-mode: screen;
   }
 }
 
