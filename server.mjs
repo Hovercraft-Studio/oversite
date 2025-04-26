@@ -31,8 +31,8 @@ const debug = args.indexOf("--debug") != -1;
 
 logBlue("Loading config.json: ------");
 let configData = {
-  allowedWsChannels: ["default"], // leave off "default" if you don't want to allow ws connections without specifying a channel
-  authApiUsers: [], // ex: [{ username: "admin", password: "password" }]
+  allowedWsChannels: ["default"], // leave off "default" if you want to require specifying a channelId when connection
+  authUsers: [], // ex: [{ username: "admin", password: "password" }]
 };
 try {
   const configFilePath = join(__dirname, "config.json");
@@ -90,6 +90,7 @@ logBlue("===================================");
 // basic express server
 import http from "http";
 import express from "express";
+import cors from "cors";
 const app = express();
 const server = http.createServer(app);
 
@@ -127,9 +128,9 @@ app.use("/_tmp_data", express.static(baseDataPath));
 import AuthApi from "./src/server/auth-api.mjs";
 import SocketServer from "./src/server/socket-server.mjs";
 import DashboardApi from "./src/server/dashboard-api.mjs";
-const authApi = new AuthApi(app, express);
+DashboardApi.addJsonMiddleware(app, express, cors);
+const authApi = new AuthApi(app, express, configData.authUsers);
 const socketServer = new SocketServer(wsServer, app, config.stateDataPath, config.allowedWsChannels, debug);
-if (debug) dashboardApi.printConfig();
 const dashboardApi = new DashboardApi(
   app,
   express,
@@ -137,6 +138,7 @@ const dashboardApi = new DashboardApi(
   config.dashboardApiRoute,
   config.dashboardPostRouteAlt
 );
+if (debug) dashboardApi.printConfig();
 
 /////////////////////////////////////////////////////////
 // Init HTTP server

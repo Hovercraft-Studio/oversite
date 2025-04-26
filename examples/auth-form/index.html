@@ -57,6 +57,25 @@
               </div>
             </auth-form>
           </article>
+          <article>
+            <h4>Backend auth</h4>
+            <p>
+              <small>
+                This is secure, but you need to have the full backend server running, and users need to be configured in the root <code>config.json</code> file:
+                <code>&lt;auth-form api-url="/api/auth" logout-reloads="true"&gt;&lt;/auth-form&gt;</code>
+              </small>
+            </p>
+            <auth-form style="display: none" api-url="/api/auth" expiry-days="30" logout-reloads="true">
+              <div>
+                <p>
+                  <blockquote>
+                    Content here is only visible to logged in users. 
+                  </blockquote>
+                  <auth-logout-button></auth-logout-button>
+                </p>
+              </div>
+            </auth-form>
+          </article>
         </section>
         <details>
           <summary>Event Log</summary>

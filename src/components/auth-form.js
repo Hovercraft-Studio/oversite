@@ -1,5 +1,3 @@
-import ObjectUtil from "../util/object-util.mjs";
-
 class AuthForm extends HTMLElement {
   static AUTHENTICATED = "authenticated";
 
@@ -9,6 +7,8 @@ class AuthForm extends HTMLElement {
     this.passwords = atob(this.getAttribute("pass")).split(","); // base64-decode
     this.expiryDays = this.getAttribute("expiry-days") ?? 30; // default to 30 days
     this.apiURL = this.getAttribute("api-url") || null;
+    if (this.apiURL && this.apiURL.startsWith("/")) this.apiURL = this.apiURL.substring(1); // remove leading slash
+    this.logoutReloads = this.getAttribute("logout-reloads") || false;
 
     // prep markup for rendering
     this.innerContent = this.innerHTML;
@@ -22,7 +22,6 @@ class AuthForm extends HTMLElement {
     // render form but immediately show content if auth cookie is set
     this.render();
     if (this.checkAuthCookie()) {
-      // this.authSuccess(false);
       this.innerHTML = this.innerContent; // reset innerHTML to original protected content
     }
   }
@@ -45,11 +44,10 @@ class AuthForm extends HTMLElement {
 
     // do either frontend (insecure) or backend auth
     if (this.apiURL) {
-      console.log("Auth against API URL:", this.apiURL);
       this.loginViaApi(data);
     } else {
       if (this.checkFrontendAuth(data.username, data.password)) {
-        this.authSuccess(true);
+        this.authSuccess();
       } else {
         this.authFailed();
       }
@@ -68,8 +66,7 @@ class AuthForm extends HTMLElement {
   }
 
   loginViaApi(data) {
-    // send login data to server
-    fetch(`${this.apiURL}/auth`, {
+    fetch(`${_store.get("server_url")}${this.apiURL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,9 +81,7 @@ class AuthForm extends HTMLElement {
         }
       })
       .then((data) => {
-        if (data.error) alert(data.error);
-        if (data.message) alert(data.message);
-        this.authSuccess(true); // call authSuccess to reset innerHTML and set authenticated state
+        this.authSuccess(); // call authSuccess to reset innerHTML and set authenticated state
       })
       .catch((error) => {
         this.authFailed();
@@ -108,11 +103,11 @@ class AuthForm extends HTMLElement {
     _store.set("toast_error", "❌ Login Failed");
   }
 
-  authSuccess(notify = true) {
+  authSuccess() {
     this.setAuthCookie();
-    this.innerHTML = this.innerContent; // reset innerHTML to original protected content
     _store.set(AuthForm.AUTHENTICATED, true); // internal auth state in case content isn't wrapped in <auth-form>
-    if (notify) _store.set("toast", "✅ Login Successful");
+    this.innerHTML = this.innerContent; // reset innerHTML to original protected content
+    _store.set("toast", "✅ Login Successful");
   }
 
   //////////////////////////////////
@@ -127,7 +122,9 @@ class AuthForm extends HTMLElement {
 
   logOut() {
     document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    _store.set(AuthForm.AUTHENTICATED, false);
     this.render();
+    if (this.logoutReloads) window.location.reload();
   }
 
   checkAuthCookie() {
@@ -159,7 +156,7 @@ class AuthForm extends HTMLElement {
     return /*html*/ `
       <div class="dashboard-login">
         <h3>Login</h3>
-        <form id="login-form">
+        <form>
           <div class="grid">
             <div>
               <input type="text" name="username" placeholder="Username" required />

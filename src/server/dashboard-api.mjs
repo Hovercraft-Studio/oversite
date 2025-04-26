@@ -60,11 +60,10 @@ class DashboardApi {
   // Server config
   /////////////////////////////////////////////////////////
 
-  addRoutes() {
-    // MIDDLEWARE CONFIG ----------------------------------
+  static addJsonMiddleware(app, express, cors) {
     // accept JSON post w/open CORS policy
     // this must be in place before following use() calls
-    this.app.use(
+    app.use(
       cors({
         origin: "*", // Allow all origins
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow specific methods
@@ -73,8 +72,12 @@ class DashboardApi {
     );
 
     // Allow posting JSON data and increase default size limit. Posting images was crashing on prod
-    this.app.use(this.express.json({ limit: "50mb" }));
-    this.app.use(this.express.urlencoded({ limit: "50mb" }));
+    app.use(express.json({ limit: "50mb" }));
+    app.use(express.urlencoded({ limit: "50mb" }));
+  }
+
+  addRoutes() {
+    // MIDDLEWARE CONFIG ----------------------------------
     // serve static files from the dashboard data path
     this.app.use(this.routeImages, this.express.static(this.pathImages));
 
