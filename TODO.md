@@ -50,6 +50,7 @@
 - Should auth apply to entire site when on production???
   - We should check cookie anywhere and redirect to /login if not logged in
   - Need to build a tiny page for this login, with a redirect to the original page? Or just `/` for simplicity
+- Add optional redirect attribute on successful login
 
 ## General
 
