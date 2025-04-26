@@ -13,6 +13,15 @@
   }
 }
 
+header {
+  margin-bottom: var(--pico-spacing);
+
+  img {
+    max-width: 400px;
+    height: auto;
+  }
+}
+
 /* Typography */
 h2,
 h3,
