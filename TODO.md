@@ -7,36 +7,61 @@
   - Get rid of `httpPort` config entirely? - should be `port`
 - Cloudflare: point oversite.hovercraftstudio.com to point to the new server
 - Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
-
-## AuthApi
-
-- Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
-  - Bypass by checking for ip address, localhost, or .local/.dev domain
-- Should auth apply to entire site when on production???
-  - We should check cookie anywhere and redirect to /login if not logged in
-  - Need to build a tiny page for this login, with a redirect to the original page? Or just `/` for simplicity
+- ASAP: ws:// auth
+- ASAP: Persistent state updates
 
 ## ATL CMS
 
-  - Auth should come from either post headers (public devices) or querystring (local devices)
-  - For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
-    - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
-    - AppStore demos would need to handle a projectId
-      - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
-- Add auth key that only the server knows, via querystring or post header. this should only apply on production, and not on localhost/dev
-  - Check `wsAuthTokens` in config.json
-- CMS: `https://aficms.hovercraftstudio.com/`
-- Password: `r3v0lut10n!`
+- Web updates
+  - Pull latest from `oversite` module
+  - Add frontend auth-form to main page
+    - Password: `r3v0lut10n!`
 - Launch to prod
+  - CMS: `https://aficms.hovercraftstudio.com/`
   - Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
   - [TEST!] Add serial key commands - on / off
   - [TEST!] Add team switch commands - team = falcons / united
   - Tell Michael @ rEv about the change w/instructions
   - Tell Jasmine about the update
 
+## ws:// auth 
+
+- Implement some version of ws:// auth
+  - Check `wsAuthTokens` in config.json
+  - Auth should come from either post headers (public devices) or querystring (local devices)
+    - Put these into querystring for now, for later implementation
+  - Add auth key that only the server knows, via querystring or post header. this should only apply on production, and not on localhost/dev
+
+
+## Persistent state updates
+
+- For persistent state, we'd probably need a state json file per room! Probably need to add the roomID to the PersistentState endpoints
+  - Move server responses to functions while implementing
+  - PersistentState needs to handle multiple projects. Can we just use the project name as the key for file and state??
+  - AppStore demos would need to handle a projectId
+    - AppStoreMonitor has links to PersistentState endpoints and would need to handle a specific project
+
+
+## AuthApi
+
+- Can `api-url` be a different server? Surely, but let's test
+- Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
+  - Bypass by checking for ip address, localhost, or .local/.dev domain
+- Should auth apply to entire site when on production???
+  - We should check cookie anywhere and redirect to /login if not logged in
+  - Need to build a tiny page for this login, with a redirect to the original page? Or just `/` for simplicity
+
 ## General
 
 - Move config into own class - between defaults, file loading, and production settings, this could be cleaned up
+- We need a big `dist` label on port 3003 if serving static files
+- Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
+
+## SSL
+
+- Clean up api routes port when connecting from an ip address
+  - ws:// Needs to use https if served from a secure server
+- How to run iPad w/SSL for a webcam, but then proxy all non-SSL connections? Is that possible?
 - SSL connections break if visiting ip address vs localhost - mostly because ws:// is mixed SSL
   - Test this with chrome flags for Windows machines - doesn't work with Vite SSL and ws://
     - Chromium allows mixed https/ws content but Chrome does not!
@@ -49,15 +74,13 @@
   - Probably won't work on iPad. Test solutions here:
     - Vite SSL 
     - Vite proxy
-- We need a big `dist` label on port 3003 if serving static files
-- Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
+
 
 ## Server unification:
 
 - Figure out a better debug mode for logging - log levels per app?
 - Persistent file storage is a problem on production - how to handle this?
   - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
-- Handle CORS in one place - right now it's in 2 places. but dashboard API might need it independently
 
 ## Dashboard:
 
@@ -118,24 +141,17 @@ Nice-to-haves & ideas
 - Monitor:
   - Monitor should be able to switch between channels w/a dropdown
   - Monitor's client list should be rebuilt with websockets instead of http polling
-- Build an admin page with lists of special commands available for each app deployment. ATL is a good example
+- Build an admin page with lists of special admin commands (appstore key-value messages) available for each app deployment. ATL is a good example
 - Hydration updates:
   - Hydration should happen from websockets instead of http?
   - A client should be able to hydrate the persistent state object
   - TD hydration implementation in AppStore component w/keys par & json load - model after app-store-init
 - An AppStore update should be able to come in via http post?
-- Move server responses to functions 
 - Cool demos:
   - PlusSix-style interface - allow user connection and build temporary rooms
   - Figma mouse cursor demo where each client has their own mouse. Allow actual clicking
   - PONG game? Bonus points for running game logic on the server
   - Multi-browser slideshow
-
-SSL
-
-- Clean up api routes port when connecting from an ip address
-  - Needs to use https if served from a secure server
-- How to run iPad w/SSL for a webcam, but then proxy all non-SSL connections? Is that possible?
 
 Nice-to-haves?
 
