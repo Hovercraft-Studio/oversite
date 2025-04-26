@@ -565,7 +565,7 @@ class DashboardView extends HTMLElement {
   clickListener(e) {
     if (e.target.nodeName === "IMG") {
       let img = e.target;
-      console.log(img.size, img.naturalWidth, img.naturalHeight);
+      console.log(img.naturalWidth, img.naturalHeight);
     }
   }
 

@@ -6,7 +6,9 @@
   - 3002/3003 and no others! Remove any `3001`
   - Get rid of `httpPort` config entirely? - should be `port`
 - Cloudflare: point oversite.hovercraftstudio.com to point to the new server
-- Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
+- Build tiny Big Mother app - can it live on Vercel with serverless functions?
+  - Forward all post data to `/` and send it along to oversite.hovercraftstudio.com 
+  - Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
 - ASAP: ws:// auth
 - ASAP: Persistent state updates
 
@@ -18,7 +20,7 @@
     - Password: `r3v0lut10n!`
 - Launch to prod
   - CMS: `https://aficms.hovercraftstudio.com/`
-  - Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
+  - Java: Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
   - [TEST!] Add serial key commands - on / off
   - [TEST!] Add team switch commands - team = falcons / united
   - Tell Michael @ rEv about the change w/instructions
@@ -102,6 +104,7 @@
   - Java
 - <dashboard-view>
   - Add reload button for manual fetch()
+  - Add image size to renderImage() - pull from click listener and remove that
 - Documentation
   - Write up client specs/requirements for a Dashboard client
   - Write up how the dashboard works - backend api & frontend
