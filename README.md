@@ -34,9 +34,8 @@ npm install
 
 **Recommended use**: Use `npm run dev` to run the robust tooling including: 
 
-- ~~Websocket server (`ws`) on port 3001~~
 - Frontend server (`dev`) on port 3002
-- Server app (http & ws) (`server`) on port 3003
+- Server app (http:// & ws://) (`server`) on port 3003
 
 **Customizing the run commands**:
 
@@ -44,8 +43,8 @@ You can customize the script commands in `package.json` to use different ports i
 
 ```json
 "dev": "vite --host --port 3002",
-"ws": "node ./server/ws-relay.mjs --port 3001 --debug",
-"server": "nodemon --watch ./server --ext mjs node ./server/server.mjs --port 3001 --portHttp 3003 --debug",
+"ws": "node ./server/ws-relay.mjs --port 3003 --debug",
+"server": "nodemon --watch ./server --ext mjs node ./server/server.mjs --port 3003 --debug",
 "start": "concurrently \"npm run dev\" \"npm run server\"",
 ```
 
@@ -76,7 +75,7 @@ Running the more robust `server.mjs` allows clients to self-hydrate their specif
 When connecting to the WebSocket server, the URL looks like the following. The `sender` ID is optional, but helps identify the client on the server side. You can also add `sendonly=true` to prevent the client from receiving *any* messages. This would probably only apply to low-power sensor input devices like an ESP32.
 
 ```
-ws://localhost:3001/ws?sender=tablet
+ws://localhost:3003/ws?sender=tablet&sendonly=true
 ```
 
 ### SSL
@@ -146,7 +145,7 @@ AppStoreDistributed is a universal/isomorphic JavaScript class that connects to 
 Instead of using AppStoreDistributed on its own, it is recommended to use the `app-store-init` web component. The frontend will configure the default server ports and URLs for the WebSocket server backend. You can then customize these addresses/ports in the hash query of the URL and refresh the page to connect to a remote machine that's running the server app. You can also override the backend server location and avoid the hash query configuration (which is helpful on-site to point machines at others) by using the `ws-url` attribute. The URL looks like this:
 
 ```
-http://localhost:3002/app-store-monitor/index.html#&wsURL=ws://localhost:3001/ws&httpPort=3003
+http://localhost:3002/app-store-monitor/index.html#&wsURL=ws://localhost:3003/ws
 ```
 
 ## Frontend apps
@@ -259,7 +258,7 @@ Others have tackled similar problems in different ways. Here are some projects t
     - TD WebSocket needs to set port as 443
       - wss://example-server.ondigitalocean.app/ws
     - Locally-running web apps *can* connect to remote wss:// on the cloud! Just remove the port by setting it to `80`, `443` or empty. Browser permissions allow SSL permissiveness as long as CORS is set up properly on the server.
-      - http://localhost:3002/app-store-monitor/index.html#&wsURL=wss://example.ondigitalocean.app/ws&httpPort=
+      - http://localhost:3002/app-store-monitor/index.html#&wsURL=wss://example.ondigitalocean.app/ws
       - `app-store-init` checks for ports passed in via querystring and removes them on the cloud
     - How to handle local ip addresses? Local DNS server?
   - CORS

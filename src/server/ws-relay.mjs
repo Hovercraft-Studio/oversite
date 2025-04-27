@@ -19,7 +19,7 @@ import ipAddr from "./util.mjs";
 
 const args = process.argv.slice(2);
 const portArgIndex = args.indexOf("--port");
-const wssPort = portArgIndex != -1 ? parseInt(args[portArgIndex + 1]) : 3001;
+const wssPort = portArgIndex != -1 ? parseInt(args[portArgIndex + 1]) : 3003;
 const debug = args.indexOf("--debug") != -1;
 
 function eventLog(...args) {

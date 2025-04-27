@@ -1,4 +1,5 @@
-import AppStoreDistributed from "../../../src/app-store/app-store-distributed.mjs";
+import AppStoreDistributed from "../../../../src/app-store/app-store-distributed.mjs";
+import { getCliArg } from "../../../../src/server/util.mjs";
 
 class AppStoreDemo {
   constructor() {
@@ -8,23 +9,17 @@ class AppStoreDemo {
     this.startHeartbeat();
   }
 
-  getArg(key, defaultValue) {
-    const args = process.argv.slice(2);
-    const index = args.indexOf(key);
-    return index != -1 ? args[index + 1] : defaultValue;
-  }
-
   config() {
     // find ws:// server in args
-    this.wsURL = `ws://${this.getArg("--server", "127.0.0.1:3003/ws")}`; // need to use 127.0.0.1 instead of localhost!
+    this.wsURL = getCliArg("--server", "ws://127.0.0.1:3003/ws"); // need to use 127.0.0.1 instead of localhost!
     // get server http port
-    this.httpPort = this.getArg("--portHttp", 3003);
+    this.serverPort = process.env.PORT ?? getCliArg("--port", 3003); // prod uses process.env.PORT, but dev uses --port arg
     // extrapolate http server from ws url and apply port
     let socketURL = new URL(this.wsURL);
     socketURL.protocol = "http:";
     socketURL.search = "";
     socketURL.pathname = "";
-    socketURL.port = this.httpPort;
+    socketURL.port = this.serverPort;
     this.serverURL = socketURL.href;
 
     // hydrate with specified keys

@@ -22,7 +22,7 @@ const prodDataPath = join(__dirname, "./", "dist", "_tmp_data"); // Go up one le
 /////////////////////////////////////////////////////////
 
 const args = process.argv.slice(2);
-const httpPort = getCliArg("--portHttp", 3003);
+const PORT = process.env.PORT ?? getCliArg("--port", 3003); // prod uses process.env.PORT, but dev uses --port arg
 const debug = args.indexOf("--debug") != -1;
 
 /////////////////////////////////////////////////////////
@@ -55,7 +55,6 @@ const config = {
   debug: debug,
   isProduction: process.env.NODE_ENV === "production",
   baseDataPath: baseDataPath,
-  httpPort: httpPort,
   ipAddr: ipAddr,
 };
 // add any production overrides
@@ -72,8 +71,8 @@ console.table([
   [`Node env`, `${process.env.NODE_ENV}`],
   [`config.isProduction`, `${config.isProduction}`],
   [`Local ip address`, `${ipAddr}`],
-  [`WebSocket server`, `ws://localhost:${httpPort}/ws`],
-  [`HTTP/Express server`, `http://${ipAddr}:${httpPort}`],
+  [`WebSocket server`, `ws://localhost:${PORT}/ws`],
+  [`HTTP/Express server`, `http://${ipAddr}:${PORT}`],
   [`debug`, `${config.debug}`],
   [`Base data path`, `${config.baseDataPath}`],
   [`ws:// channels`, `${config.allowedWsChannels}`],
@@ -149,7 +148,6 @@ app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
-const PORT = process.env.PORT ?? httpPort; // prod uses process.env.PORT
 server.listen(PORT, () => {
-  logBlue(`🎉 Express initialized: http://${ipAddr}:${httpPort}`);
+  logBlue(`🎉 Express initialized: http://${ipAddr}:${PORT}`);
 });

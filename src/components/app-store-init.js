@@ -32,9 +32,8 @@ class AppStoreInit extends HTMLElement {
     // we just need to check for a custom http port in the URL and otherwise use the ws:// address
     let socketToServerURL = new URL(this.webSocketURL);
     socketToServerURL.protocol = socketToServerURL.protocol == "ws:" ? "http:" : "https:"; // SSL if production websocket server
-    socketToServerURL.search = "";
-    socketToServerURL.pathname = "";
-    if (isDev && !wsURL) socketToServerURL.port = URLUtil.hashParamConfig("httpPort", 3003);
+    socketToServerURL.search = ""; // remove querystring
+    socketToServerURL.pathname = ""; // remove `/ws` path
     if (isProd) socketToServerURL.port = ""; // production server shouldn't have a port in the URL
     this.serverURL = socketToServerURL.href;
   }

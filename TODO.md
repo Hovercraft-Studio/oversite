@@ -1,12 +1,11 @@
-# TODO
+## Info: 
 
 - Cloud ws host: `wss://hc-socket-server-v6taf.ondigitalocean.app/ws`;
 
+# TODO
+
 ## Get to launch
 
-- Clean up project ports 
-  - 3002/3003 and no others! Remove any `3001`
-  - Get rid of `httpPort` config entirely? - should be `port`
 - Cloudflare: point oversite.hovercraftstudio.com to point to the new server
 - Build tiny Big Mother app - can it live on Vercel with serverless functions?
   - Forward all post data to `/` and send it along to oversite.hovercraftstudio.com 
@@ -128,6 +127,7 @@ Nice-to-haves:
 
 ## Socket server
 
+- app-store-init should allow for override of sender/sendonly/etc options via querystring, and this would override any attribute settings
 - Add 'channel ID' to TD config & connection URL
 - Handle `array|object` types - in javascript, these are decoded with the message. in Java, they need to be handled. what about python? or other languages? or if it's not a number|string|boolean, do we just store it as generic json, and detect before decoding?
 - Should there be special appStore messages that are system commands? 
