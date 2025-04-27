@@ -10,7 +10,7 @@
 - Build tiny Big Mother app - can it live on Vercel with serverless functions?
   - Forward all post data to `/` and send it along to oversite.hovercraftstudio.com 
   - Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
-- ASAP: ws:// auth
+- ASAP: ws:// auth key in URL & server side
 - ASAP: Persistent state updates
 
 ## ATL CMS
@@ -18,7 +18,8 @@
 - Web updates
   - Pull latest from `oversite` module
   - Add frontend auth-form to main page
-    - Password: `r3v0lut10n!`
+    - Password: `admin` / `r3v0lut10n!`
+    - Password: `jasmine` / `amfam`
 - Launch to prod
   - CMS: `https://aficms.hovercraftstudio.com/`
   - Java: Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
@@ -47,8 +48,8 @@
 
 ## AuthApi
 
-- Can `api-url` be a different server? Surely, but let's test
-- Basic auth should be on entire site *if it's on production, or specifically enabled for dev*
+- Can `api-url` be a remote server? Surely, but let's test
+- Basic auth should be on entire site *if it's on production, or if specifically enabled for dev*
   - Bypass by checking for ip address, localhost, or .local/.dev domain
 - Should auth apply to entire site when on production???
   - We should check cookie anywhere and redirect to /login if not logged in
@@ -79,13 +80,6 @@
     - Vite SSL 
     - Vite proxy
 
-
-## Server unification:
-
-- Figure out a better debug mode for logging - log levels per app?
-- Persistent file storage is a problem on production - how to handle this?
-  - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
-
 ## Dashboard:
 
 - Update cacheflowe.com with latest api & view classes
@@ -99,19 +93,15 @@
 - <dashboard-view>
   - Add reload button for manual fetch()
   - Add image size to renderImage() - pull from click listener and remove that
-- Documentation
-  - Write up client specs/requirements for a Dashboard client
-  - Write up how the dashboard works - backend api & frontend
 - Look at connecting to AppStoreDistributed
-  - Potential Dashboard / AppStore features:
-    - Accept checkins via appStore update w/receiver:dashboard
+  - Potential Dashboard (w/ optional instance of) AppStoreDistributed features:
+    - Accept checkins via appStore update w/receiver = "dashboard"!!!!
+      - But would this need a separate AppStoreDistributed instance for each app to be on the Dashboard channel? Or can the DashboardApi have a websocket listener to pull in the specific checkin messages? This seems like the right way to route traffic
+      - We could also have realtime connection/disconnection status via the dashboard. But how to identify the client associated? We'd probably need to send an extra initial connection message to identify as a machine that should be tracked on the dashboard with `app-id`
     - Real-time connection status
-      - Slack integration (though this doesn't need websockets - could just be a check-in timeout)
-    - Run commands like a BA tablet app
-    - Show real-time logs
-  - Websocket checkin alternative to http polling
-    - We could have immdiate response on the dashboard
-    - We could send Slack messages when disconnected
+      - Slack integration (this doesn't need websockets - could just be a check-in timeout, but probably better to use the websocket connection)
+  - Run commands like a BA tablet app
+  - Show real-time logs
 
 Nice-to-haves:
 
@@ -151,6 +141,12 @@ Nice-to-haves & ideas
   - Figma mouse cursor demo where each client has their own mouse. Allow actual clicking
   - PONG game? Bonus points for running game logic on the server
   - Multi-browser slideshow
+
+## Server unification:
+
+- Figure out a better debug mode for logging - log levels per app?
+- Persistent file storage is a problem on production - how to handle this?
+  - Or is it a problem? Can everything be in-memory and rebuild properly on each launch? How badly could this break something down the line?
 
 Nice-to-haves?
 
