@@ -1,9 +1,8 @@
-import AppStoreDistributed from "../../../src/util/app-store-distributed.mjs";
+import AppStoreDistributed from "../../../src/app-store/app-store-distributed.mjs";
 
 class AppStoreDemo {
   constructor() {
     this.config();
-    this.wsURL = `wss://hc-socket-server-v6taf.ondigitalocean.app/ws`;
     this.appStore = new AppStoreDistributed(`${this.wsURL}`, "node_app");
     this.addListeners();
     this.startHeartbeat();

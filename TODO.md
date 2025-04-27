@@ -1,5 +1,7 @@
 # TODO
 
+- Cloud ws host: `wss://hc-socket-server-v6taf.ondigitalocean.app/ws`;
+
 ## Get to launch
 
 - Clean up project ports 
@@ -88,18 +90,11 @@
 ## Dashboard:
 
 - Update cacheflowe.com with latest api & view classes
-- Basic auth protection for the dashboard
-- [WIP] Add dashboard poster example:
-  - Make universal/isomorphic for nodejs
-    - Grab example code from macbook or haxademic.js repo
-    - Detect whether it's running in node or browser
-    - Add optional screenshot if nodejs - dynmic import of screenshot module?
-      - This needs a local temp path for screenshot image 
-        - this should share with main temp paths
-    - Toggle mode: `"no-cors"` and other settings for the fetch() call. Need to test this
-    - Add nodejs script and call from package.json
+- Nodejs DashboardPoster improvements:
+  - Resize screenshots if too large? https://www.npmjs.com/package/canvas
+  - Screenshot tmp dir should share with main temp paths?
+  - Toggle mode: `"no-cors"` and other settings for the fetch() call. Need to test this
 - [WIP] Build examples dir for Dashboard poster
-  - Universal javascript via node
   - Unity script
   - Java
 - <dashboard-view>

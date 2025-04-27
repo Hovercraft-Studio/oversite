@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import { promises as fs } from "fs";
 import { dirname, join, resolve } from "path";
 import path from "path";
-import { getValueFromArgs, ipAddr, eventLog, logBlue } from "./src/server/util.mjs";
+import { getCliArg, ipAddr, eventLog, logBlue } from "./src/server/util.mjs";
 
 /////////////////////////////////////////////////////////
 // Get relative path to this script
@@ -22,7 +22,7 @@ const prodDataPath = join(__dirname, "./", "dist", "_tmp_data"); // Go up one le
 /////////////////////////////////////////////////////////
 
 const args = process.argv.slice(2);
-const httpPort = getValueFromArgs("--portHttp", 3003);
+const httpPort = getCliArg("--portHttp", 3003);
 const debug = args.indexOf("--debug") != -1;
 
 /////////////////////////////////////////////////////////

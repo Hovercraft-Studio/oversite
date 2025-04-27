@@ -1,5 +1,9 @@
 import os from "os";
 
+//////////////////////////////////////
+// Networking
+//////////////////////////////////////
+
 function getLocalIpAddress() {
   const networkInterfaces = os.networkInterfaces();
   for (const interfaceName in networkInterfaces) {
@@ -14,7 +18,22 @@ function getLocalIpAddress() {
 }
 const ipAddr = getLocalIpAddress();
 
-function getValueFromArgs(argName, defaultVal) {
+function wsUrlToServerUrl(wsURL) {
+  // extrapolate http server from ws url and apply port
+  // convert ws:// to http://
+  let socketURL = new URL(wsURL);
+  socketURL.protocol = socketURL.protocol == "ws:" ? "http:" : "https:";
+  socketURL.search = "";
+  socketURL.pathname = "";
+  // socketURL.port = this.httpPort; // not needed, as the server is already running on the same port
+  return socketURL.href;
+}
+
+//////////////////////////////////////
+// Get value from command line arguments
+//////////////////////////////////////
+
+function getCliArg(argName, defaultVal) {
   const args = process.argv.slice(2);
   const index = args.indexOf(argName);
   if (index !== -1 && index + 1 < args.length) {
@@ -22,6 +41,10 @@ function getValueFromArgs(argName, defaultVal) {
   }
   return defaultVal;
 }
+
+//////////////////////////////////////
+// Logging functions
+//////////////////////////////////////
 
 function eventLog(...args) {
   console.log("===================================");
@@ -58,7 +81,8 @@ export default ipAddr;
 export {
   getLocalIpAddress,
   ipAddr,
-  getValueFromArgs,
+  getCliArg,
+  wsUrlToServerUrl,
   eventLog,
   logBlue,
   logRed,

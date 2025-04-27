@@ -239,6 +239,8 @@ Others have tackled similar problems in different ways. Here are some projects t
     - SocketServer rebuilds channels and persisted data on the fly, but can be wiped when the server restarts
 - Components
   - Dashboard
+    - Write up client specs/requirements for a Dashboard client
+    - Write up how the dashboard works - backend api & frontend
     - `dashboard-view` - Frontend component that loads dashboard data
       - `api-url` - where does the api live? allows for a dashboard on a remote frontend, but also helps us find the api (:3003) from Vite (:3002)
       - `server-base` - helps find images on api server (:3003) in dev mode, when frontend is served by Vite (:3002). On prod, this is the same server

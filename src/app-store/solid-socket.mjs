@@ -2,14 +2,14 @@ class SolidSocket {
   constructor(wsURL) {
     this.active = true;
     this.wsURL = wsURL;
+    this.isBrowser = typeof window !== "undefined";
     this.init();
   }
 
   async init() {
     await this.initSocketClass();
-    if (typeof window !== "undefined") this.hasWindow = true;
     this.bindCallbacks();
-    let startDelay = this.hasWindow ? 0 : 500; // node needs a moment to init
+    let startDelay = this.isBrowser ? 0 : 500; // node needs a moment to init
     setTimeout(() => {
       this.buildSocketObject();
       this.startMonitoringConnection();
@@ -18,7 +18,7 @@ class SolidSocket {
 
   async initSocketClass() {
     this.WebSocketClient;
-    if (typeof window !== "undefined" && typeof window.WebSocket !== "undefined") {
+    if (this.isBrowser && typeof window.WebSocket !== "undefined") {
       // Running in the browser
       this.WebSocketClient = window.WebSocket;
     } else {

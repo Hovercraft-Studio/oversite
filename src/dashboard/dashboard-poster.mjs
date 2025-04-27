@@ -3,10 +3,13 @@ class DashboardPoster {
     this.dashboardURL = dashboardURL;
     this.appId = appId;
     this.appTitle = appTitle;
+    this.interval = interval;
     this.startTime = Date.now();
     this.postCount = 0;
-    this.restartPostInterval(interval);
-    this.checkFPS();
+    this.isBrowser = typeof window !== "undefined";
+    if (this.isBrowser) this.checkFPS();
+    if (!this.isBrowser) this.prepBackend();
+    this.restartPostInterval(this.interval);
     this.postJson(); // check in on init
   }
 
@@ -34,7 +37,7 @@ class DashboardPoster {
   }
 
   postJson() {
-    let resolutionData = window ? `${window.innerWidth}x${window.innerHeight}` : null; // TODO: only for web
+    let resolutionData = this.isBrowser ? `${window.innerWidth}x${window.innerHeight}` : "headless";
     let checkinData = {
       appId: this.appId,
       appTitle: this.appTitle,
@@ -42,13 +45,20 @@ class DashboardPoster {
       resolution: resolutionData,
       frameCount: this.frameCount,
       frameRate: this.fps,
-      // imageScreenshot: null, // TODO: node app should submit a screenshot
+      // imageScreenshot: null,
       // imageExtra: imageExtraData,
     };
 
-    // only post an image every 3 posts. don't post null
+    // Add image data if available
     if (this.postCount % 3 == 0) {
+      // only post an image every 3 posts. don't post null
       checkinData.imageExtra = this.getImageCustomData();
+    }
+    if (this.imageScreenshot) {
+      // if a screenshot has been taken, send it!
+      checkinData.imageScreenshot = this.imageScreenshot;
+      this.imageScreenshot = null; // reset the image after posting
+      // this.deleteScreenshot(); // delete the screenshot after posting
     }
 
     // post checkin data
@@ -92,6 +102,61 @@ class DashboardPoster {
       // keep track of frames
       this.fpsLastTime = performance.now();
       this.checkFPS();
+    });
+  }
+
+  /////////////////////////////////////
+  // Backend additions for nodejs apps
+  /////////////////////////////////////
+
+  async prepBackend() {
+    // import node modules
+    // this doesn't exactly work on Mac! https://github.com/bencevans/screenshot-desktop/issues/156
+    this.fs = await import("fs");
+    this.path = await import("path");
+    this.os = await import("os");
+    const screenshotModule = await import("screenshot-desktop");
+    this.screenshot = screenshotModule.default; // Use the default export
+    // this.screenshot.listDisplays().then((displays) => {
+    //   console.log(displays);
+    // });
+
+    await this.buildTempDir();
+    setInterval(() => {
+      this.takeScreenshot();
+    }, 15 * 60 * 1000); // take a screenshot every 15 minutes
+    this.takeScreenshot();
+  }
+
+  async buildTempDir() {
+    try {
+      // Use fs.promises for cleaner async code
+      const prefix = this.path.join(this.os.tmpdir(), "nodejs-dashboard-screenshots");
+      this.tmpDir = await this.fs.promises.mkdtemp(prefix);
+      this.screenshotFilePath = this.path.join(this.tmpDir, "screenshot.jpg");
+      return this.tmpDir;
+    } catch (error) {
+      console.error("Error creating temp directory:", error);
+      throw error; // Rethrow to be caught in prepBackend
+    }
+  }
+
+  takeScreenshot() {
+    this.screenshot({ format: "png", filename: this.screenshotFilePath })
+      .then((img) => {
+        this.fs.readFile(this.screenshotFilePath, (err, data) => {
+          this.imageScreenshot = Buffer.from(data).toString("base64");
+          console.log("this.imageScreenshot", this.imageScreenshot.substring(0, 20));
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to save screenshot", err);
+      });
+  }
+
+  deleteScreenshot() {
+    this.fs.unlink(this.screenshotFilePath, (err) => {
+      if (err) return console.error(err);
     });
   }
 }
