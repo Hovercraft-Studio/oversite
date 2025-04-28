@@ -12,7 +12,7 @@ class DashboardDemo {
 
   config() {
     // find ws:// server in args
-    this.wsURL = `${getCliArg("--server", "ws://127.0.0.1:3003/ws")}`; // need to use 127.0.0.1 instead of localhost!
+    this.wsURL = getCliArg("--server", "ws://127.0.0.1:3003/ws"); // need to use 127.0.0.1 instead of localhost!
     this.serverURL = wsUrlToServerUrl(this.wsURL);
   }
 

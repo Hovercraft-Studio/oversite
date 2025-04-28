@@ -6,11 +6,11 @@
 
 ## Get to launch
 
+- ASAP: ws:// auth key in URL & server side
 - Cloudflare: point oversite.hovercraftstudio.com to point to the new server
 - Build tiny Big Mother app - can it live on Vercel with serverless functions?
   - Forward all post data to `/` and send it along to oversite.hovercraftstudio.com 
   - Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
-- ASAP: ws:// auth key in URL & server side
 - ASAP: Persistent state updates
 
 ## ATL CMS
@@ -117,12 +117,14 @@ Nice-to-haves:
 
 ## Socket server
 
+- Add 'channel ID' and 'auth key' to TD config & connection URL
+- How to have multiple AppStoreDistributed clients in one app? One for local and one for cloud. Could they sync? 
+  - And how would Dashboard and production AppStoreDistributed sync?
 - app-store-init should allow for override of sender/sendonly/etc options via querystring, and this would override any attribute settings
-- Add 'channel ID' to TD config & connection URL
+- AppStore Monitor has a nasty memory leak - can consume multiple GB of ram over time. Likely culprit is `app-store-table` component
 - Handle `array|object` types - in javascript, these are decoded with the message. in Java, they need to be handled. what about python? or other languages? or if it's not a number|string|boolean, do we just store it as generic json, and detect before decoding?
 - Should there be special appStore messages that are system commands? 
   - Like give me a client list or persistent state? Or all clients for the appStoreMonitor?
-- How to have multiple AppStoreDistributed clients in one app? One for local and one for cloud. Could they sync?
 
 Nice-to-haves & ideas
 
@@ -141,6 +143,14 @@ Nice-to-haves & ideas
   - Figma mouse cursor demo where each client has their own mouse. Allow actual clicking
   - PONG game? Bonus points for running game logic on the server
   - Multi-browser slideshow
+
+## Testing
+
+- All apps should be tested with:
+  - localhost, ip address, 
+  - http/https & ws/wss
+  - production server
+  - config.json & defaults
 
 ## Server unification:
 

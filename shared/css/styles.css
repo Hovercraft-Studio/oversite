@@ -15,13 +15,19 @@
 
 header {
   margin-bottom: calc(var(--pico-spacing) * 2);
-  text-align: center;
+  text-align: left;
 
   img {
     width: 100%;
     max-width: 400px;
     height: auto;
     mix-blend-mode: screen;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  header {
+    text-align: center;
   }
 }
 

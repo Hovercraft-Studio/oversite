@@ -31,13 +31,13 @@ class SolidSocket {
   // State
 
   setClassesConnected() {
-    if (!this.hasWindow) return;
+    if (!this.isBrowser) return;
     document.body.classList.add("has-socket");
     document.body.classList.remove("no-socket");
   }
 
   setClassesDisconnected() {
-    if (!this.hasWindow) return;
+    if (!this.isBrowser) return;
     document.body.classList.add("no-socket");
     document.body.classList.remove("has-socket");
   }
@@ -183,7 +183,7 @@ class SolidSocket {
     // keep checking connection until disposed
     // use more dependable raf if in browser, or setTimeout if in Node
     if (this.active == true) {
-      if (this.hasWindow) {
+      if (this.isBrowser) {
         window.requestAnimationFrame(() => this.checkConnection());
       } else {
         setTimeout(() => this.checkConnection(), 1000);
