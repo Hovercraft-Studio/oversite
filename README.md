@@ -18,7 +18,7 @@ Default locations & ports are:
 ## Quickstart
 
 - `npm i`
-- `npm run start`
+- `npm run dev`
 - Open `http://localhost:3002` in a browser and view the UI demo or the Monitor
 - Open `app-store-demo.toe` in TouchDesigner
 
@@ -64,7 +64,7 @@ On the frontend, you should use the `<app-store-init>` web component to connect 
 
 There are two ways to run the WebSocket server app:
 
-- ~~Using `ws-relay.mjs` as a barebones websocket server~~ - for legacy/example use only
+- ~~Using `ws-relay.mjs` as a barebones websocket server~~ - for legacy/example use only, though this should still work
 - Using `server.mjs`, which uses ws-relay.mjs and:
   - Stores all incoming AppStore-formatted messages in a local dictionary
   - Writes the AppStore dictionary to a file on disk and loads on startup
@@ -232,6 +232,7 @@ Others have tackled similar problems in different ways. Here are some projects t
     - Vite for frontend dev server
       - On prod, we use Vite's `dist` folder, which is served by express
     - Express for backend dev server
+  - AppStoreDistributed should work on a simple relay server like `ws-relay.mjs`, and the full server is just additive
   - Frontend should run from a static web server without Vite, and with needing to be built! Vite shortcuts like `@` would prevent this
   - Everything is ephemeral?!
     - Dashboard reconstructs persisted data on the fly, but can be wiped when the server restarts
@@ -267,13 +268,17 @@ Others have tackled similar problems in different ways. Here are some projects t
     - /api/dashboard
     - /ws for upgrade
 - Launch to DigitalOcean
-  - WIP: Note build process once that's figured out
+  - DigitalOcean setup Instructions:
+    - Create new App Platform app
+    - Connect to GitHub repo
+    - Leave all the defaults!, but set the build command to `npm run build` and the run command to `npm start`
+  - How build process works:
     - `vite build` creates `dist` folder, which is served by express
+      - Express automatically serves the static files from the `dist` folder, because express is the default server
       - server.mjs has a few lines to add static paths to `dist` folder
       - `vite.config.js` has a few lines to set the base path for the build: `rollupOptions`
-      - DigitalOcean needs a specific rollup tool, so`package.json` has a prebuild step: `"prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",`
-      - Express automatically serves the static files from the `dist` folder, because express is the default server
       - We serve Vite's static `dist` path from express port 3003! So `vite build` output is accessible locally here for testing, and is served as the default from the cloud
+      - DigitalOcean needs a specific rollup tool, so`package.json` has a prebuild step: `"prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",`
       - Temp data path for dashboard and persistent state is set in the server.mjs file and reroutes where Vite find things, and where the prod server looks
       - Ports are removed on the cloud. our express app becomes the default server
       - TODO: Dashboard image paths need to be adjusted here???

@@ -1,16 +1,14 @@
 ## Info: 
 
-- Cloud ws host: `wss://hc-socket-server-v6taf.ondigitalocean.app/ws`;
+- Cloud ws host: `wss://oversite-t9f7i.ondigitalocean.app/ws`;
+- Cloud ws host: `https://oversite-t9f7i.ondigitalocean.app/`;
 
 # TODO
 
 ## Get to launch
 
 - ASAP: ws:// auth key in URL & server side
-- Cloudflare: point oversite.hovercraftstudio.com to point to the new server
-- Build tiny Big Mother app - can it live on Vercel with serverless functions?
-  - Forward all post data to `/` and send it along to oversite.hovercraftstudio.com 
-  - Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
+- Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
 - ASAP: Persistent state updates
 
 ## ATL CMS
