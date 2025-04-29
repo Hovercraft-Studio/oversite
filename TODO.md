@@ -8,8 +8,21 @@
 ## Get to launch
 
 - ASAP: ws:// auth key in URL & server side
-- Cloudflare: point bigmother.hovercraftstudio.com at mini json-forwarding app
+- Authenticate entire site (web component that checks auth cookie?)
+- Kill bigmother.hovercraftstudio.com once we switch to new endpoint
 - ASAP: Persistent state updates
+
+App Updates w/new dashboard endpoint
+
+- AT&T Connected Canvas @ Mimi Heat stadium
+- AmFam Protect the Plate @ Brewers stadium (forwarded)
+  - Check dashboard code
+- ✅ AmFam Protect the Net/Field games (All of them)
+- ✅ Golden1 Skills Challenge @ Sacramento Kings stadium
+- ✅ Google PDX window in Portland
+- H&M Wall in NYC (forwarded)
+- AmFam Fan Cam ATL
+- AmFam protect Games Launcher ATL
 
 ## ATL CMS
 
@@ -33,6 +46,10 @@
   - Auth should come from either post headers (public devices) or querystring (local devices)
     - Put these into querystring for now, for later implementation
   - Add auth key that only the server knows, via querystring or post header. this should only apply on production, and not on localhost/dev
+- Config cleanup
+  - if not production mode, add "default" to allowed ws channels array
+  - Move to .env file from config.json
+    - *only* production info shoud be in .env - everything local should work out of the box
 
 
 ## Persistent state updates
@@ -80,16 +97,19 @@
 
 ## Dashboard:
 
+- Style index.html to not put <dashboard-view> in a container, but only put header & footer in container
+- Clean up info header 
+  - show apiURL as link to json
+  - Add reload button for manual fetch()
+- Make nodejs demo for dashboardposter with a project that uses npm install. How to do this? Should be super easy to initialize a new project and install the dashboardposter package. 
 - Update cacheflowe.com with latest api & view classes
 - Nodejs DashboardPoster improvements:
+  - Show example of just using it to send screenshots. These should be taken out of Java implementation because they're unreliable
   - Resize screenshots if too large? https://www.npmjs.com/package/canvas
   - Screenshot tmp dir should share with main temp paths?
-  - Toggle mode: `"no-cors"` and other settings for the fetch() call. Need to test this
-- [WIP] Build examples dir for Dashboard poster
-  - Unity script
-  - Java
+  - What's up with the `"no-cors"` and other settings for the fetch() call? Need to test this
+- Add examples dir for Dashboard poster (Java)
 - <dashboard-view>
-  - Add reload button for manual fetch()
   - Add image size to renderImage() - pull from click listener and remove that
 - Look at connecting to AppStoreDistributed
   - Potential Dashboard (w/ optional instance of) AppStoreDistributed features:
@@ -100,6 +120,7 @@
       - Slack integration (this doesn't need websockets - could just be a check-in timeout, but probably better to use the websocket connection)
   - Run commands like a BA tablet app
   - Show real-time logs
+- Do we need authentication to post to the dashboard? Probably not, but good to note that this is unprotected
 
 Nice-to-haves:
 

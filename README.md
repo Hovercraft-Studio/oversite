@@ -240,6 +240,10 @@ Others have tackled similar problems in different ways. Here are some projects t
 - Components
   - Dashboard
     - Write up client specs/requirements for a Dashboard client
+      - Required keys
+      - Image keys
+      - Custom keys
+        - We should always implement session count and persist on disk!
     - Write up how the dashboard works - backend api & frontend
     - `dashboard-view` - Frontend component that loads dashboard data
       - `api-url` - where does the api live? allows for a dashboard on a remote frontend, but also helps us find the api (:3003) from Vite (:3002)
@@ -272,6 +276,7 @@ Others have tackled similar problems in different ways. Here are some projects t
     - Create new App Platform app
     - Connect to GitHub repo
     - Leave all the defaults!, but set the build command to `npm run build` and the run command to `npm start`
+      - You can set .env variables noted in .example.env
   - How build process works:
     - `vite build` creates `dist` folder, which is served by express
       - Express automatically serves the static files from the `dist` folder, because express is the default server
