@@ -544,7 +544,8 @@ class DashboardView extends HTMLElement {
 
     // draw custom props
     let checkIn = project;
-    let customProps = Object.keys(checkIn).filter((key) => !this.ignoreKeys.includes(key));
+    let customProps = Object.keys(checkIn).filter((key) => !this.ignoreKeys.includes(key)); // filter ignore keys
+    customProps = customProps.sort((a, b) => a.localeCompare(b)); // sort by key name
     let customPropsHTML = customProps.map((key) => {
       let val = checkIn[key];
       return /*html*/ `
