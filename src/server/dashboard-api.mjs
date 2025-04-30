@@ -115,7 +115,7 @@ class DashboardApi {
       this.isWriting = true;
       try {
         fs.writeFileSync(this.pathDbFile, JSON.stringify(this.dashboardData, null, 2));
-        logMagenta("✅ Dashboard data written to disk:", this.pathDbFile);
+        // logMagenta("✅ Dashboard data written to disk:", this.pathDbFile);
       } catch (error) {
         logMagenta("⚠️ Error writing dashboard data:", error);
       }
@@ -211,7 +211,7 @@ class DashboardApi {
     this.saveImages(postedData, timestamp, appId, lastSeen);
     this.saveCheckinData(postedData, appId, lastSeen);
     this.updateHistory(postedData, appId);
-    logMagenta(`received post data for ${appId} at ${lastSeen}`);
+    // logMagenta(`received post data for ${appId} at ${lastSeen}`);
 
     // write database file to disk
     this.writeDbFile();
