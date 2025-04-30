@@ -281,6 +281,9 @@ class DashboardView extends HTMLElement {
         .dashboard-val {
           font-size: 12px;
           line-height: 1.2;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
         }
 
         .dashboard-card-delete {
@@ -509,8 +512,8 @@ class DashboardView extends HTMLElement {
     let customPropsHTML = customProps.map((key) => {
       let val = checkIn[key];
       return /*html*/ `
-        <div class="dashboard-key">${key}</div>
-        <div class="dashboard-val">${val}</div>
+        <div class="dashboard-key" title="key">${key}</div>
+        <div class="dashboard-val" title="val">${val}</div>
       `;
     });
 
