@@ -176,14 +176,31 @@ class DashboardView extends HTMLElement {
 
       article {
         padding: var(--pico-spacing);
+        margin-bottom: var(--pico-spacing);
         background-color: var(--pico-contrast-inverse);
+        border-radius: var(--pico-border-radius);
       }
 
-      progress {
-        width: 100%;
-        height: 8px;
-        margin: 0.5rem 0;
-      }
+      #progress-timer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        button {
+          flex-shrink: 0;
+          width: 20px;
+          height: 20px;
+          padding: 0;
+          cursor: pointer;
+        }
+  
+        progress {
+          flex-grow: 1; /* Makes the progress bar take up the remaining space */
+          width: auto; /* Ensures it adjusts dynamically */
+          height: 8px;
+          margin: 0.5rem 0;
+        }
+      }  
 
       .dashboard-cards {
         display: grid;
@@ -364,15 +381,18 @@ class DashboardView extends HTMLElement {
 
     let dashboardTitle = this.detailID ? `<a href="#home">All Projects</a>` : "All Projects";
     let apiLinkProject = this.detailID ? `/${this.detailID}` : "";
+    let jsonURL = `${this.apiURL}/json${apiLinkProject}`;
 
     return /*html*/ `
       <h1>${dashboardTitle} ${this.breadcrumb()}</h1>
       <article>
-        <div><small>apiURL: <code>${this.apiURL}</code></small></div>
+        <div><small>apiURL: <code><a href="${jsonURL}" target="_blank" class="api-data-link">${jsonURL}</a></code></small></div>
         <div><small>serverBase: <code>${this.serverBase}</code></small></div>
-        <a href="${this.apiURL}/json${apiLinkProject}" target="_blank" class="api-data-link">API Data</a>
+        <div id="progress-timer">
+          <progress id="file" max="60" value="0">70%</progress>
+          <button data-action="reload-data">⟳</button>
+        </div>
       </article>
-      <progress id="file" max="60" value="0">70%</progress>
       <div class="dashboard-cards">
         ${projectsCards}
       </div>
@@ -467,11 +487,27 @@ class DashboardView extends HTMLElement {
     if (!imageURL) {
       return "";
     }
+    // adjust imageURL for local server static file serving
     imageURL = imageURL.replace("data/projects", "/data/dashboard/projects"); // convert old data format - not needed moving forward
     imageURL = this.serverBase + imageURL;
+
+    // load image and report dimensions
+    let imageId = "image-" + Math.floor(Math.random() * 1000000);
+    let imageElement = this.el.querySelector(`#${imageId}`);
+    let img = new Image();
+    img.src = imageURL;
+    img.crossOrigin = "anonymous"; // allow cross-origin image loading
+    img.onload = () => {
+      let imgW = img.naturalWidth;
+      let imgH = img.naturalHeight;
+      let imgSizeDisplay = this.el.querySelector(`#${imageId}`);
+      if (imgSizeDisplay) imgSizeDisplay.innerHTML = `${imgW}x${imgH}px`;
+    };
+
+    // render image HTML
     let imgHTML = /*html*/ `
       <div class="dashboard-img-outer">
-        ${title}: ${this.timeElapsedString(this.getMsSince1970(lastSeen))}
+        ${title} - <code id="${imageId}"></code> - ${this.timeElapsedString(this.getMsSince1970(lastSeen))}
         <span class="dashboard-img-container">
           <img zoomable src="${imageURL}" crossorigin="anonymous">
         </span>
@@ -569,6 +605,12 @@ class DashboardView extends HTMLElement {
     if (e.target.nodeName === "IMG") {
       let img = e.target;
       console.log(img.naturalWidth, img.naturalHeight);
+    }
+    if (e.target.nodeName === "BUTTON") {
+      let action = e.target.getAttribute("data-action");
+      if (action === "reload-data") {
+        this.getData();
+      }
     }
   }
 

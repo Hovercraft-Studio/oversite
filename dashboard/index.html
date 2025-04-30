@@ -14,28 +14,35 @@
     <meta name="apple-mobile-web-app-title" content="AppStore" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="format-detection" content="email=no">
-    <title>AppStore UI demo</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="../shared/css/pico.css" />
     <link rel="stylesheet" href="../shared/css/styles.css" />
     <script type="module" src="../src/components/_register-components.js"></script>
+    <style>
+      main {
+        padding: var(--pico-spacing);
+        main {
+          padding: calc(2 * var(--pico-spacing));
+        }
+      }
+    </style>
   </head>
   <body>
     <home-button></home-button>
     <app-store-init sender="dashboard" init-keys="*" debug side-debug></app-store-init>
     <app-store-heartbeat key="dashboard_heartbeat" value="n/a" interval="30000" show="false"></app-store-heartbeat>
     <custom-app>
-      <main class="container">
+      <main>
         <section>
-          <h1>Dashboard</h1>
           <div id="dashboard-container">
             <!-- Check ./js/app.js for dynamic creation of dashboard view, due to configuration needs on dev vs prod -->
             <!-- <dashboard-view api-url="http://localhost:3003/api/dashboard" refresh-interval="60"></dashboard-view> -->
           </div>
+          <footer>
+            <small>Built by us 👋</small>
+          </footer>
         </section>
       </main>
-      <footer class="container">
-        <small>Built by us 👋</small>
-      </footer>
     </custom-app>
     <script type="module" src="./js/app.js"></script>
   </body>

@@ -155,7 +155,7 @@ class DashboardApi {
     let postedData = req.body;
     // logMagenta("Posted data:", postedData);
     if (!postedData || !postedData.appId) {
-      console.error("No valid data posted");
+      console.error("No valid data posted: ", postedData);
       res.status(400).json({ error: "No valid data posted" });
     } else {
       this.processCheckIn(postedData);

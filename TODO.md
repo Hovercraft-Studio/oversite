@@ -14,13 +14,6 @@
 
 App Updates w/new dashboard endpoint
 
-- AT&T Connected Canvas @ Mimi Heat stadium
-- AmFam Protect the Plate @ Brewers stadium (forwarded)
-  - Check dashboard code
-- ✅ AmFam Protect the Net/Field games (All of them)
-- ✅ Golden1 Skills Challenge @ Sacramento Kings stadium
-- ✅ Google PDX window in Portland
-- H&M Wall in NYC (forwarded)
 - AmFam Fan Cam ATL
 - AmFam protect Games Launcher ATL
 
@@ -97,10 +90,6 @@ App Updates w/new dashboard endpoint
 
 ## Dashboard:
 
-- Style index.html to not put <dashboard-view> in a container, but only put header & footer in container
-- Clean up info header 
-  - show apiURL as link to json
-  - Add reload button for manual fetch()
 - Make nodejs demo for dashboardposter with a project that uses npm install. How to do this? Should be super easy to initialize a new project and install the dashboardposter package. 
 - Update cacheflowe.com with latest api & view classes
 - Nodejs DashboardPoster improvements:
@@ -108,9 +97,6 @@ App Updates w/new dashboard endpoint
   - Resize screenshots if too large? https://www.npmjs.com/package/canvas
   - Screenshot tmp dir should share with main temp paths?
   - What's up with the `"no-cors"` and other settings for the fetch() call? Need to test this
-- Add examples dir for Dashboard poster (Java)
-- <dashboard-view>
-  - Add image size to renderImage() - pull from click listener and remove that
 - Look at connecting to AppStoreDistributed
   - Potential Dashboard (w/ optional instance of) AppStoreDistributed features:
     - Accept checkins via appStore update w/receiver = "dashboard"!!!!
