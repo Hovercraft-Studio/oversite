@@ -7,7 +7,8 @@
 
 ## Get to launch
 
-- ASAP: ws:// auth key in URL & server side
+- DO WE NEED AUTH IF IT'S NOT PUBLIC?
+  - : ws:// auth key in URL & server side
 - Authenticate entire site (web component that checks auth cookie?)
 - Kill bigmother.hovercraftstudio.com once we switch to new endpoint
 - ASAP: Persistent state updates
@@ -19,21 +20,22 @@ App Updates w/new dashboard endpoint
 
 ## ATL CMS
 
-- Web updates
-  - Pull latest from `oversite` module
-  - Add frontend auth-form to main page
-    - Password: `admin` / `r3v0lut10n!`
-    - Password: `jasmine` / `amfam`
 - Launch to prod
-  - CMS: `https://aficms.hovercraftstudio.com/`
+  - CMS: Point DNS to Vercel app `https://aficms.hovercraftstudio.com/` -> 
+    - https://afi-stadium-cms.vercel.app/
+    - https://vercel.com/hovercraft/afi-stadium-cms
+    - Type	Name	 Value
+    - CNAME	aficms cname.vercel-dns.com
   - Java: Need to check the run scripts since jars were updated. probably can just update the run script, but also probably need to re-cache the app from an eclipse build
   - [TEST!] Add serial key commands - on / off
   - [TEST!] Add team switch commands - team = falcons / united
+  - MORE TESTING
   - Tell Michael @ rEv about the change w/instructions
   - Tell Jasmine about the update
 
 ## ws:// auth 
 
+- When connecting from the production domain, we don't need to auth!
 - Implement some version of ws:// auth
   - Check `wsAuthTokens` in config.json
   - Auth should come from either post headers (public devices) or querystring (local devices)

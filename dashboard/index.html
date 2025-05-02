@@ -21,6 +21,8 @@
     <style>
       main {
         padding: var(--pico-spacing);
+      }
+      @media screen and (min-width: 768px) {
         main {
           padding: calc(2 * var(--pico-spacing));
         }
@@ -29,7 +31,7 @@
   </head>
   <body>
     <home-button></home-button>
-    <app-store-init sender="dashboard" init-keys="*" debug side-debug></app-store-init>
+    <app-store-init sender="dashboard" channel="dashboard" init-keys="*" debug side-debug></app-store-init>
     <app-store-heartbeat key="dashboard_heartbeat" value="n/a" interval="30000" show="false"></app-store-heartbeat>
     <custom-app>
       <main>

@@ -42,10 +42,11 @@ class AppStoreInit extends HTMLElement {
     // get config from web component attributes
     let sender = this.getAttribute("sender");
     let channel = this.getAttribute("channel");
+    let auth = this.getAttribute("auth");
     let initKeys = this.getAttribute("init-keys");
 
     // connect to websocket server
-    this.appStore = new AppStoreDistributed(this.webSocketURL, sender, channel);
+    this.appStore = new AppStoreDistributed(this.webSocketURL, sender, channel, auth);
 
     // hydrate with specified keys
     this.hydrateOnInit(initKeys);

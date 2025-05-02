@@ -39,7 +39,8 @@
                 <code>auth-form</code> element. Even if it's a web component, as long as the
                 <code>auth-form</code> component initializes first, there shouldn't be any issues with the inner
                 components running first. Use <code>btoa('admin')</code> and <code>btoa('password')</code> to generate
-                the encoded frontend-only username and password (or comma-separated lists of usernames and passwords). Then set the attributes on the component like this:
+                the encoded frontend-only username and password (or comma-separated lists of usernames and passwords like 
+                <code>btoa('password1,password2')</code>). Then set the attributes on the component like this:
                 <code>&lt;auth-form user="YWRtaW4sanVzdGlu" pass="cGFzc3dvcmQscGFzcw=="&gt;&lt;/auth-form&gt;</code>
               </small>
             </p>

@@ -7,6 +7,7 @@ import { promises as fs } from "fs";
 import { dirname, join, resolve } from "path";
 import path from "path";
 import { getCliArg, ipAddr, eventLog, logBlue } from "./src/server/util.mjs";
+import { config as dotenvConfig } from "dotenv";
 
 /////////////////////////////////////////////////////////
 // Get relative path to this script
@@ -26,20 +27,26 @@ const PORT = process.env.PORT ?? getCliArg("--port", 3003); // prod uses process
 const debug = args.indexOf("--debug") != -1;
 
 /////////////////////////////////////////////////////////
-// Get config from json file
+// Get config from .env
 /////////////////////////////////////////////////////////
 
-logBlue("Loading config.json: ------");
-let configData = {
-  allowedWsChannels: ["default"], // leave off "default" if you want to require specifying a channelId when connection
-  authUsers: [], // ex: [{ username: "admin", password: "password" }]
-};
-const configFilePath = join(__dirname, "config.json");
-try {
-  let configFile = await fs.readFile(configFilePath, "utf-8");
-  configData = JSON.parse(configFile);
-} catch (error) {
-  logBlue(`Config file not found or invalid: ${configFilePath}. Using default configuration.`);
+dotenvConfig();
+
+// get allowed ws:// channels from .env
+// - this is a comma separated list of channels that are allowed to connect to the websocket server
+let allowedWsChannels = process.env.ALLOWED_WS_CHANNELS || "default"; // comma separated list of channels
+if (allowedWsChannels) {
+  allowedWsChannels = allowedWsChannels.split(",").map((channel) => channel.trim());
+}
+// get auth users from .env
+// - this is a comma separated list of users that are allowed to connect to the websocket server
+// - format: username:password,username2:password2
+let authUsers = process.env.AUTH_USERS || "admin:password"; // comma separated list of users
+if (authUsers) {
+  authUsers = authUsers.split(",").map((user) => {
+    const [username, password] = user.split(":").map((item) => item.trim());
+    return { username, password };
+  });
 }
 
 /////////////////////////////////////////////////////////
@@ -48,7 +55,8 @@ try {
 
 const config = {
   stateDataPath: join(baseDataPath, "state"),
-  allowedWsChannels: configData.allowedWsChannels,
+  allowedWsChannels: allowedWsChannels,
+  authUsers: authUsers,
   dashboardDataPath: join(baseDataPath, "dashboard"),
   dashboardApiRoute: "/api/dashboard",
   dashboardPostRouteAlt: "/",
@@ -68,7 +76,9 @@ if (config.isProduction) {
 logBlue("===================================");
 logBlue("Starting server with config: ------");
 console.table([
-  [`Node env`, `${process.env.NODE_ENV}`],
+  [`.env.ALLOWED_WS_CHANNELS`, `${process.env.ALLOWED_WS_CHANNELS}`],
+  [`.env.AUTH_USERS`, `${process.env.AUTH_USERS}`],
+  [`.env.NODE_ENV`, `${process.env.NODE_ENV}`],
   [`config.isProduction`, `${config.isProduction}`],
   [`Local ip address`, `${ipAddr}`],
   [`WebSocket server`, `ws://localhost:${PORT}/ws`],
@@ -128,7 +138,7 @@ import AuthApi from "./src/server/auth-api.mjs";
 import SocketServer from "./src/server/socket-server.mjs";
 import DashboardApi from "./src/server/dashboard-api.mjs";
 DashboardApi.addJsonMiddleware(app, express, cors);
-const authApi = new AuthApi(app, express, configData.authUsers);
+const authApi = new AuthApi(app, express, config.authUsers);
 const socketServer = new SocketServer(wsServer, app, config.stateDataPath, config.allowedWsChannels, debug);
 const dashboardApi = new DashboardApi(
   app,
