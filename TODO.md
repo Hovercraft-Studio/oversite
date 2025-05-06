@@ -1,9 +1,12 @@
 ## Info: 
 
 - Cloud ws host: `wss://oversite-t9f7i.ondigitalocean.app/ws`;
-- Cloud ws host: `https://oversite-t9f7i.ondigitalocean.app/`;
+- Cloud http host: `https://oversite-t9f7i.ondigitalocean.app/`;
 
 # TODO
+
+ATL CMS:
+- Needs to reload on login - the initial appstore connected event is firing before login, so we need to either reload the page of respond to a login event from the auth-form component
 
 ## Get to launch
 
@@ -12,11 +15,6 @@
 - Authenticate entire site (web component that checks auth cookie?)
 - Kill bigmother.hovercraftstudio.com once we switch to new endpoint
 - ASAP: Persistent state updates
-
-App Updates w/new dashboard endpoint
-
-- AmFam Fan Cam ATL
-- AmFam protect Games Launcher ATL
 
 ## ATL CMS
 
@@ -102,7 +100,7 @@ App Updates w/new dashboard endpoint
 - Look at connecting to AppStoreDistributed
   - Potential Dashboard (w/ optional instance of) AppStoreDistributed features:
     - Accept checkins via appStore update w/receiver = "dashboard"!!!!
-      - But would this need a separate AppStoreDistributed instance for each app to be on the Dashboard channel? Or can the DashboardApi have a websocket listener to pull in the specific checkin messages? This seems like the right way to route traffic
+      - But would this need a separate AppStoreDistributed instance for each app to be on the Dashboard channel? Or can the DashboardApi have a websocket server `onmessage` listener to pull in the specific checkin messages? This seems like the right way to route traffic
       - We could also have realtime connection/disconnection status via the dashboard. But how to identify the client associated? We'd probably need to send an extra initial connection message to identify as a machine that should be tracked on the dashboard with `app-id`
     - Real-time connection status
       - Slack integration (this doesn't need websockets - could just be a check-in timeout, but probably better to use the websocket connection)
