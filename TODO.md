@@ -5,8 +5,9 @@
 
 # TODO
 
-ATL CMS:
-- Needs to reload on login - the initial appstore connected event is firing before login, so we need to either reload the page of respond to a login event from the auth-form component
+- Slack integration (this doesn't need websockets - could just be a check-in timeout, but probably better to use the websocket connection)
+  - Build a link to the project on the dashboard so you can click into the latest checkins
+  - Add a webhook config option, and only init if it exists
 
 ## Get to launch
 
@@ -14,7 +15,6 @@ ATL CMS:
   - : ws:// auth key in URL & server side
 - Authenticate entire site (web component that checks auth cookie?)
 - Kill bigmother.hovercraftstudio.com once we switch to new endpoint
-- ASAP: Persistent state updates
 
 ## ws:// auth 
 
@@ -41,12 +41,14 @@ ATL CMS:
 
 ## AuthApi
 
-- Can `api-url` be a remote server? Surely, but let's test
-- Basic auth should be on entire site *if it's on production, or if specifically enabled for dev*
-  - Bypass by checking for ip address, localhost, or .local/.dev domain
+- auth-form
+  - should have a reload on success, or a redirect to the original page
 - Should auth apply to entire site when on production???
   - We should check cookie anywhere and redirect to /login if not logged in
   - Need to build a tiny page for this login, with a redirect to the original page? Or just `/` for simplicity
+- Can `api-url` be a remote server? Surely, but let's test
+- Basic auth should be on entire site *if it's on production, or if specifically enabled for dev*
+  - Bypass by checking for ip address, localhost, or .local/.dev domain
 - Add optional redirect attribute on successful login
 
 ## General
@@ -88,7 +90,6 @@ ATL CMS:
       - But would this need a separate AppStoreDistributed instance for each app to be on the Dashboard channel? Or can the DashboardApi have a websocket server `onmessage` listener to pull in the specific checkin messages? This seems like the right way to route traffic
       - We could also have realtime connection/disconnection status via the dashboard. But how to identify the client associated? We'd probably need to send an extra initial connection message to identify as a machine that should be tracked on the dashboard with `app-id`
     - Real-time connection status
-      - Slack integration (this doesn't need websockets - could just be a check-in timeout, but probably better to use the websocket connection)
   - Run commands like a BA tablet app
   - Show real-time logs
 - Do we need authentication to post to the dashboard? Probably not, but good to note that this is unprotected

@@ -45,3 +45,21 @@ small {
 .container {
   padding: 4rem 2rem;
 }
+
+/* Flash animation */
+
+@keyframes flash-anim {
+  0% {
+    background-color: rgba(0, 255, 0, 0.5);
+  }
+  30% {
+    background-color: rgba(0, 255, 0, 0.5);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.flash {
+  animation: flash-anim 2s 1;
+}

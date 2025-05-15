@@ -16,6 +16,7 @@ class AppStoreElement extends HTMLElement {
     this.initialHTML = this.innerHTML;
     this.storeKey = String(this.getAttribute("key")) || "key";
     this.storeValue = String(this.getAttribute("value")) || "value";
+    this.flashOnUpdate = this.hasAttribute("flash-on-update");
 
     // handle special values to coerce datatypes
     if (this.storeValue == "true") this.storeValue = true;
@@ -50,11 +51,24 @@ class AppStoreElement extends HTMLElement {
     if (value != this.valueFromStore) {
       this.valueFromStore = value;
       this.setStoreValue(value);
+      if (this.flashOnUpdate) this.flashBg();
     }
   }
 
   setStoreValue(value) {
     this.el ? (this.el.innerHTML = value) : this.render();
+  }
+
+  flashBg() {
+    window.clearTimeout(this.timeout1);
+    window.clearTimeout(this.timeout2);
+    this.el.classList.remove("flash");
+    this.timeout1 = setTimeout(() => {
+      this.el.classList.add("flash");
+    }, 50);
+    this.timeout2 = setTimeout(() => {
+      this.el.classList.remove("flash");
+    }, 1010);
   }
 
   css() {
