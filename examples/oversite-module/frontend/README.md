@@ -32,3 +32,4 @@ Pull the latest from `oversite`:
 
 - `npm update oversite`
 - Restart dev server to see changes
+- Make sure to delete package-lock.json, as this will prevent the update from working
