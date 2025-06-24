@@ -78,6 +78,7 @@
 ## Dashboard:
 
 - Make nodejs demo for dashboardposter with a project that uses npm install. How to do this? Should be super easy to initialize a new project and install the dashboardposter package. 
+  - This kind of overlaps with the .exe option but would be lighter weight
 - Update cacheflowe.com with latest api & view classes
 - Nodejs DashboardPoster improvements:
   - Show example of just using it to send screenshots. These should be taken out of Java implementation because they're unreliable
@@ -121,7 +122,7 @@ Nice-to-haves & ideas
 
 - old rooms should currently shut down, but could rogue websocket connections not properly allow this? connected canvas had something to protect against this
 - Monitor:
-  - Monitor should be able to switch between channels w/a dropdown
+  - Monitor should be able to switch between channels w/a dropdown - right now it only shows the default channel
   - Monitor's client list should be rebuilt with websockets instead of http polling
 - Build an admin page with lists of special admin commands (appstore key-value messages) available for each app deployment. ATL is a good example
 - Hydration updates:
@@ -156,18 +157,17 @@ Nice-to-haves?
   - Restart computer
   - Key commands
 - Java/Haxademic updates 
-  - Add heartbeat to Java client
+  - Add heartbeat to Java client - Not needed now that the server sends a heartbeat
   - [DONE] Add sender to Java client
-  - Add receiver to Java client
+  - Add `receiver` to Java client
   - Add ws?sender= queryparam to Java client
   - Store sender in AppStoreDistributed for incoming messages
 - Monitor/frontend
-  - Filter event log by client/sender w/a dropdown from client list!
+  - Filter event log/table by client/sender w/a dropdown from client list!
   - Click to resend a key/value from Monitor. anything else useful here?
   - add "expected_clients" list to app-store-clients, and show a red row if a client is missing
   - QR code somewhere to launch BA app (or any link for a client app)
   - Client list last message sent time?
-  - Filter event table by client?
   - Add these to the client storage? or maybe just keep these in the Monitor?
     - Add `sender` to JS table (added to AppStoreDistributed via `getData()`)
     - Add `sender` to TD table
