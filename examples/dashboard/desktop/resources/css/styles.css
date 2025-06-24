@@ -1,0 +1,14 @@
+body {
+  /* background-color: white; */
+}
+
+#neutralinoapp {
+  text-align: left;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+main-application {
+  margin-top: 5rem;
+}

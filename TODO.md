@@ -1,7 +1,11 @@
 ## Info: 
 
-- Cloud ws host: `wss://oversite-t9f7i.ondigitalocean.app/ws`;
-- Cloud http host: `https://oversite-t9f7i.ondigitalocean.app/`;
+Vanity URLs
+- `wss://oversite.hovercraftstudio.com/ws`
+- `https://oversite.hovercraftstudio.com/`
+Vercel URLs
+- `wss://oversite-t9f7i.ondigitalocean.app/ws`
+- `https://oversite-t9f7i.ondigitalocean.app/`
 
 # TODO
 
