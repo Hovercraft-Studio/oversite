@@ -9,7 +9,7 @@ using System.IO;
 
 public class DashboardPoster : MonoBehaviour
 {
-    public string dashboardURL = "http://localhost:3003/api/dashboard"; // Replace with your actual URL
+    public string dashboardURL = "http://localhost:3002/api/dashboard"; // Replace with your actual URL
     public bool showDebugLogs = false;
     public float interval = 600; // every 10 minutes (60s * 10)
     public float intervalScreenshot = 1800; // every 30 minutes (60s * 30)
