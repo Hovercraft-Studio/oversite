@@ -290,3 +290,10 @@ Others have tackled similar problems in different ways. Here are some projects t
   - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
   - https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
 
+## Keeping packages updated
+
+```bash
+npm outdated # Check for outdated packages
+npm update ws @latest # Update ws to latest version if it was in the list
+```
+
