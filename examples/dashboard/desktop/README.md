@@ -17,7 +17,6 @@ neu run
 - Webcam updates
   - add webcam toggle button - it's weird to have it running always during dev
   - Add a webcam picker to select which webcam to use (make it index-based so .env file can set it)
-  - 
 - Add main modes
   - Main mode - report everything w/screenshot & all checkins every 10 minutes
   - Companion mode - report screenshot and minimal info every hour, so we'll see failures of main app, and not overlap much data

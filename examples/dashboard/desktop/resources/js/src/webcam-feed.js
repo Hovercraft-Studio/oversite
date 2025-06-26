@@ -1,54 +1,89 @@
 class WebcamFeed extends HTMLElement {
   constructor() {
     super();
-    // You can choose to use Shadow DOM for encapsulation if desired
-    // this.attachShadow({ mode: 'open' });
-    // For simplicity, this example will render directly into the component's light DOM
-  }
-
-  async initWebcam() {
-    const videoElement = this.querySelector("#webcam-video");
-    try {
-      // Check if the browser supports getUserMedia
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        videoElement.srcObject = stream;
-      } else {
-        console.error("getUserMedia is not supported in this browser.");
-      }
-    } catch (err) {
-      // replace video element with error message
-      let errorMessage = document.createElement("p");
-      errorMessage.textContent = `Error accessing webcam: ${err.message}`;
-      errorMessage.style.color = "red";
-      videoElement.replaceWith(errorMessage);
-      console.error("Error accessing webcam:", err);
-      // Neutralino.os.showMessageBox("Error", `Failed to access webcam: ${err.message}`);
-    }
+    this.currentStream = null;
   }
 
   async connectedCallback() {
     this.render();
-    this.initWebcam();
+    await this.populateCameraList();
+    this.querySelector("#webcam-select").addEventListener("change", (e) => this.onCameraChange(e.target.value));
   }
 
-  async render() {
-    let html = `
+  async populateCameraList() {
+    const select = this.querySelector("#webcam-select");
+    // clear & add “None” option
+    select.innerHTML = `<option value="">None</option>`;
+    // request permission once to populate device labels
+    try {
+      const permStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      permStream.getTracks().forEach((t) => t.stop());
+    } catch (permErr) {
+      console.warn("Could not get permission to access camera labels:", permErr);
+    }
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      devices
+        .filter((d) => d.kind === "videoinput")
+        .forEach((device) => {
+          const opt = document.createElement("option");
+          opt.value = device.deviceId;
+          opt.text = device.label || `Camera ${select.length}`;
+          select.appendChild(opt);
+        });
+    } catch (err) {
+      console.error("Could not list cameras:", err);
+    }
+  }
+
+  clearOldStream() {
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach((track) => track.stop());
+      this.currentStream = null;
+    }
+    this.videoElement.srcObject = null;
+    this.videoElement.removeAttribute("src");
+  }
+
+  async onCameraChange(deviceId) {
+    this.clearOldStream();
+    if (deviceId) {
+      try {
+        console.log("Accessing camera with deviceId:", deviceId);
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId },
+        });
+        this.currentStream = stream;
+        this.videoElement.srcObject = stream;
+        this.videoElement.src = stream;
+        console.log("Camera stream started successfully");
+      } catch (err) {
+        console.error("Error accessing selected camera:", err);
+      }
+    }
+  }
+
+  render() {
+    this.innerHTML = `
       <style>
+        webcam-feed select,
         webcam-feed video {
           width: 100%;
+          margin-bottom: 8px;
           border-radius: 8px;
+        }
+        video:not([src]) {
+          display: none;
         }
       </style>
       <div>
-        <article>
-          <h3>Webcam</h3>
-          <video id="webcam-video" autoplay playsinline></video>
-        </article>
+        <h3>Webcam</h3>
+        <select id="webcam-select"></select>
+        <video id="webcam-video" autoplay playsinline></video>
       </div>
       <hr>
     `;
-    this.innerHTML = html;
+    this.videoElement = this.querySelector("#webcam-video");
   }
 }
 

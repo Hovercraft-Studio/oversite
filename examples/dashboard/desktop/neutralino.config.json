@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
   "applicationId": "js.neutralino.oversite",
   "version": "1.0.0",
-  "defaultMode": "window",
+  "defaultMode": "chrome",
   "defaultModeExamples": "https://neutralino.js.org/docs/configuration/modes",
   "port": 0,
   "documentRoot": "/resources/",
@@ -40,7 +40,7 @@
     "window": {
       "title": "Dashboard Poster",
       "width": 800,
-      "height": 500,
+      "height": 800,
       "minWidth": 400,
       "minHeight": 200,
       "center": true,
@@ -66,8 +66,8 @@
     },
     "chrome": {
       "width": 800,
-      "height": 500,
-      "args": "--user-agent=\"Neutralinojs chrome mode\"",
+      "height": 800,
+      "args": "--user-agent=\"Neutralinojs chrome mode\" --use-fake-ui-for-media-stream --unsafely-treat-insecure-origin-as-secure=http://127.0.0.1",
       "nativeBlockList": []
     }
   },
