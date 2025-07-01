@@ -60,6 +60,7 @@ Vercel URLs
 - Move config into own class - between defaults, file loading, and production settings, this could be cleaned up
 - We need a big `dist` label on port 3003 if serving static files
 - Build a form in AppStore Demo to broadcast test data into AppStore - could live in `app-store-demo`
+- Add modal example
 
 ## SSL
 
