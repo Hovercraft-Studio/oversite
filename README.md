@@ -197,6 +197,34 @@ Here's a list of web components used in the frontend apps. Each may have optiona
 
 You can also choose a different [pico.css theme](https://picocss.com/docs/version-picker) and replace `shared/css/pico.css`: 
 
+## Launch to DigitalOcean
+  
+Setup Instructions:
+
+- Create new App Platform app
+- Connect to GitHub repo
+- Leave all the defaults!, but set the build command to `npm run build` and the run command to `npm start`
+  - You can set .env variables noted in .example.env
+
+How build process works when the project is pulled down from GitHub:
+
+- `vite build` creates `dist` folder, which is served by express
+- Express automatically serves the static files from the `dist` folder, as express is the default server
+- server.mjs has a few lines to add static paths to `dist` folder
+- `vite.config.js` has a few lines to set the base path for the build: `rollupOptions`
+- We serve Vite's static `dist` path from express port 3003! So `vite build` output is accessible locally here for testing, and is served as the default from the cloud
+- DigitalOcean needs a specific Rollup tool, so `package.json` has a prebuild step: `"prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",`
+- Temp data path for dashboard and persistent state is set in the server.mjs file and reroutes where Vite find things, and where the prod server looks
+- Ports are removed on the cloud. Our express app becomes the default server
+  - Prod uses its own port for Express: `const PORT = process.env.PORT`
+- TODO: Dashboard image paths need to be adjusted here???
+
+Links:
+
+- https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
+- https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
+
+
 ## Using the `oversite` module in your own project
 
 ### Frontend
@@ -206,6 +234,38 @@ Create a new frontend project:
 - `npm create vite@latest`
 - `npm install git@github.com:Hovercraft-Studio/oversite.git#main`
 - `npm run dev`
+
+In your Javascript, make sure to import the `oversite` components and any css/js that you want to use:
+
+```javascript
+import "oversite/src/components/_register-components.js";
+
+import "oversite/shared/css/pico.css";
+import "oversite/shared/css/styles.css";
+
+import MobileUtil from "oversite/src/util/mobile-util.mjs";
+import ErrorUtil from "oversite/src/util/error-util.mjs";
+```
+
+And at least add the <app-store-init> component for easy connection
+
+```html
+<app-store-init
+  sender="cms-admin-ui"
+  init-keys="*"
+  debug
+  side-debug
+  ws-url="wss://oversite.cloudhost.app/ws?channel=app-channel-id&auth=app-auth-token"
+></app-store-init>
+```
+
+Deployment (current) process (and issues):
+
+- `oversite` is a private repo, and this blows up on Vercel during its `npm install` step.
+- This also means that the build step can't work, because it can't get the private repo's code.
+- So for now, we have to run `npm build` when we're ready to push to production, commit the `/dist` folder, and deploy that to Vercel. This also meant commenting out `dist` from `.gitignore`.
+- On the Vercel config, we replace the build command with `npm run skip-build`, since we can't build it there.
+- When `oversite` is made public, we can revert all of this to a normal Vite deployment
 
 To pull the latest from `oversite` if it's already installed and has been updated:
 
@@ -258,7 +318,6 @@ Others have tackled similar problems in different ways. Here are some projects t
 - Note the differences between running locally and on the cloud
   - Persistent files
   - Ports
-    - Prod uses its own port for Express: `const PORT = process.env.PORT`
   - SSL connections
     - TD WebSocket needs to set port as 443
       - wss://example-server.ondigitalocean.app/ws
@@ -271,24 +330,6 @@ Others have tackled similar problems in different ways. Here are some projects t
     - /api/state
     - /api/dashboard
     - /ws for upgrade
-- Launch to DigitalOcean
-  - DigitalOcean setup Instructions:
-    - Create new App Platform app
-    - Connect to GitHub repo
-    - Leave all the defaults!, but set the build command to `npm run build` and the run command to `npm start`
-      - You can set .env variables noted in .example.env
-  - How build process works:
-    - `vite build` creates `dist` folder, which is served by express
-      - Express automatically serves the static files from the `dist` folder, because express is the default server
-      - server.mjs has a few lines to add static paths to `dist` folder
-      - `vite.config.js` has a few lines to set the base path for the build: `rollupOptions`
-      - We serve Vite's static `dist` path from express port 3003! So `vite build` output is accessible locally here for testing, and is served as the default from the cloud
-      - DigitalOcean needs a specific rollup tool, so`package.json` has a prebuild step: `"prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",`
-      - Temp data path for dashboard and persistent state is set in the server.mjs file and reroutes where Vite find things, and where the prod server looks
-      - Ports are removed on the cloud. our express app becomes the default server
-      - TODO: Dashboard image paths need to be adjusted here???
-  - https://docs.digitalocean.com/products/app-platform/getting-started/sample-apps/express.js/
-  - https://github.com/digitalocean/sample-expressjs/blob/main/.do/deploy.template.yaml
 
 ## Keeping packages updated
 
