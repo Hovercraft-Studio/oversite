@@ -12,6 +12,8 @@ Vercel URLs
 - Slack integration (this doesn't need websockets - could just be a check-in timeout, but probably better to use the websocket connection)
   - Build a link to the project on the dashboard so you can click into the latest checkins
   - Add a webhook config option, and only init if it exists
+  - Add ignore list for project ids, so we don't alert when temporary projects go offline. Pull list from Protect Unity project
+- Server dashboard module example 
 
 ## Get to launch
 

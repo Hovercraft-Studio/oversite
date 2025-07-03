@@ -30,7 +30,7 @@ class AppStoreDemo {
     // hydrate with specified keys, and if found in the server state
     // set on local _store without broadcasting
     try {
-      const response = await fetch(`${this.serverURL}state`);
+      const response = await fetch(`${this.serverURL}api/state/all`);
       if (!response.ok) {
         throw new Error(`Server error: ${response.status} ${response.statusText}`);
       }
