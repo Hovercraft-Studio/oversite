@@ -8,6 +8,7 @@ class AuthForm extends HTMLElement {
     this.expiryDays = this.getAttribute("expiry-days") ?? 30; // default to 30 days
     this.apiURL = this.getAttribute("api-url") || null;
     if (this.apiURL && this.apiURL.startsWith("/")) this.apiURL = this.apiURL.substring(1); // remove leading slash
+    this.loginReloads = this.getAttribute("login-reloads") || false;
     this.logoutReloads = this.getAttribute("logout-reloads") || false;
 
     // prep markup for rendering
@@ -105,9 +106,13 @@ class AuthForm extends HTMLElement {
 
   authSuccess() {
     this.setAuthCookie();
-    _store.set(AuthForm.AUTHENTICATED, true); // internal auth state in case content isn't wrapped in <auth-form>
-    this.innerHTML = this.innerContent; // reset innerHTML to original protected content
-    _store.set("toast", "✅ Login Successful");
+    if (this.loginReloads) {
+      window.location.reload(); // reload page if attribute is set
+    } else {
+      _store.set(AuthForm.AUTHENTICATED, true); // internal auth state in case content isn't wrapped in <auth-form>
+      this.innerHTML = this.innerContent; // reset innerHTML to original protected content
+      _store.set("toast", "✅ Login Successful");
+    }
   }
 
   //////////////////////////////////
@@ -120,11 +125,18 @@ class AuthForm extends HTMLElement {
     document.cookie = `auth=true; max-age=${expirySeconds}; path=/`;
   }
 
-  logOut() {
+  removeAuthCookie() {
     document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    _store.set(AuthForm.AUTHENTICATED, false);
-    this.render();
-    if (this.logoutReloads) window.location.reload();
+  }
+
+  logOut() {
+    this.removeAuthCookie();
+    if (this.logoutReloads) {
+      window.location.reload();
+    } else {
+      _store.set(AuthForm.AUTHENTICATED, false);
+      this.render();
+    }
   }
 
   checkAuthCookie() {
