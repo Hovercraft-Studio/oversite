@@ -2,6 +2,7 @@ import "./app-config.js";
 import "./system-info-display.js";
 import "./dashboard-poster-view.js";
 import "./webcam-feed.js";
+import "./app-info.js";
 
 class MainApplication extends HTMLElement {
   constructor() {
@@ -13,8 +14,6 @@ class MainApplication extends HTMLElement {
   }
 
   render() {
-    let electronVersions = _store.get("main_config").versions;
-    // Define the HTML structure for the main application
     this.innerHTML = `
       <header>
         <h1>
@@ -27,9 +26,10 @@ class MainApplication extends HTMLElement {
         <dashboard-poster></dashboard-poster>
         <webcam-feed></webcam-feed>
         <!--<system-info-display></system-info-display>-->
+        <app-info></app-info>
       </main>
       <footer>
-        <p>Electron: ${electronVersions.electron} | Chromium: ${electronVersions.chrome} | Node: ${electronVersions.node}</p>
+        <p></p>
       </footer>
     `;
   }
