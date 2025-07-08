@@ -1,6 +1,7 @@
 // import { app, BrowserWindow, Menu, ipcMain, dialog } from "electron";
 import { app, BrowserWindow, ipcMain, Menu } from "electron";
 import path from "node:path";
+import fs from "node:fs/promises";
 import started from "electron-squirrel-startup";
 import Store from "electron-store";
 
@@ -68,6 +69,15 @@ function init() {
 
 function buildBridgeToFrontend() {
   ipcMain.on("message-to-main", handleMessageToMain);
+  ipcMain.handle("read-file", async (event, filePath) => {
+    try {
+      const fullPath = path.resolve(filePath);
+      const data = await fs.readFile(fullPath, "utf8");
+      return data;
+    } catch (error) {
+      throw new Error(`Failed to read file: ${error.message}`);
+    }
+  });
 }
 
 function sendMessageToFrontend(data) {
@@ -77,8 +87,6 @@ function sendMessageToFrontend(data) {
 function handleMessageToMain(event, data) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents);
-  console.log(`Message from renderer in window: ${win.getTitle()}`);
-  console.log(`Frontend Data: ${JSON.stringify(data)}`);
   event.reply("message-to-frontend", Object.assign({ pong: true }, data)); // pong the sent data back to the renderer
 
   // handle specific commands

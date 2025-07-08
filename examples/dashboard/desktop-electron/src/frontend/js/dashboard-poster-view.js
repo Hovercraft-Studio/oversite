@@ -31,18 +31,6 @@ class DashboardPosterView extends HTMLElement {
     return mins * 60 * 1000; // Convert minutes to milliseconds
   }
 
-  loadEnvFile() {
-    console.log("window.envProps", window.envProps);
-    if (window.envProps) {
-      if (window.envProps["app-id"]) this.appId = window.envProps["app-id"];
-      if (window.envProps["app-title"]) this.appTitle = window.envProps["app-title"];
-      if (window.envProps["api-url"]) this.apiUrl = window.envProps["api-url"];
-      if (window.envProps["post-interval"]) this.postInterval = parseInt(window.envProps["post-interval"]);
-      if (window.envProps["webcam-interval"]) this.webcamInterval = parseInt(window.envProps["webcam-interval"]);
-      this.saveSettings();
-    }
-  }
-
   loadSettings() {
     this.appId = window.electronStore.get(APP_ID_KEY) || DEFAULT_APP_ID;
     this.appTitle = window.electronStore.get(APP_TITLE_KEY) || DEFAULT_APP_TITLE;
@@ -51,13 +39,26 @@ class DashboardPosterView extends HTMLElement {
     this.webcamInterval = window.electronStore.get(WEBCAM_INTERVAL_KEY) || DEFAULT_WEBCAM_INTERVAL;
   }
 
+  loadEnvFile() {
+    let envProps = _store.get("envProps") || {};
+    if (envProps) {
+      if (envProps["app_id"]) this.appId = envProps["app_id"];
+      if (envProps["app_title"]) this.appTitle = envProps["app_title"];
+      if (envProps["api_url"]) this.apiUrl = envProps["api_url"];
+      if (envProps["post_interval"]) this.postInterval = parseInt(envProps["post_interval"]);
+      if (envProps["webcam_interval"]) this.webcamInterval = parseInt(envProps["webcam_interval"]);
+      this.saveSettings();
+      console.log("DashboardPoster settings overridden by .env");
+    }
+  }
+
   saveSettings() {
     window.electronStore.set(APP_ID_KEY, this.appId);
     window.electronStore.set(APP_TITLE_KEY, this.appTitle);
     window.electronStore.set(API_URL_KEY, this.apiUrl);
     window.electronStore.set(POST_INTERVAL_KEY, this.postInterval);
     window.electronStore.set(WEBCAM_INTERVAL_KEY, this.webcamInterval);
-    console.log("DashboardPoster settings saved.");
+    console.log("DashboardPoster settings saved");
   }
 
   initializePoster() {
@@ -116,6 +117,7 @@ class DashboardPosterView extends HTMLElement {
                 <input type="text" id="${API_URL_KEY}" name="apiURL" value="${this.apiUrl}" required>
               </div>
               <button type="submit">Save and Apply Settings</button>
+              <small>Note: Settings will be overridden on next launch by any .env vars</small>
             </form>
           </article>
         </details>
@@ -153,7 +155,13 @@ class DashboardPosterView extends HTMLElement {
       console.error("Webcam video element not found. Not posting to Dashboard.");
       return;
     }
-    if (!this.canvas) {
+    // create reusable canvas, but resize it if needed
+    let canvsSizeChanged = false;
+    if (this.canvas) {
+      if (this.canvas.width !== webcamVideo.videoWidth) canvsSizeChanged = true;
+      if (this.canvas.height !== webcamVideo.videoHeight) canvsSizeChanged = true;
+    }
+    if (!this.canvas || canvsSizeChanged) {
       this.canvas = document.createElement("canvas");
       this.canvas.width = webcamVideo.videoWidth;
       this.canvas.height = webcamVideo.videoHeight;

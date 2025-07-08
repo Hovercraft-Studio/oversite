@@ -12,9 +12,9 @@ class AppInfo extends HTMLElement {
     let infoHTML = /* html */ `
       <div>
         <details openXX="">
-          <summary><b>App Info</b></summary>
+          <summary><b>Info</b></summary>
           <article>
-            <h3>App Versions</h3>
+            <h4>App Versions</h4>
             <ul>
               <li>Electron: ${electronVersions.electron}</li>
               <li>Chromium: ${electronVersions.chrome}</li>

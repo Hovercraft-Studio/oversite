@@ -1,13 +1,14 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
-import { contextBridge, ipcRenderer } from "electron";
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   // to main
   messageToBackend: (data) => ipcRenderer.send("message-to-main", data),
   // from main
   onMessageToFrontend: (callback) => ipcRenderer.on("message-to-frontend", (_event, value) => callback(value)),
+  readFile: (filePath) => ipcRenderer.invoke("read-file", filePath),
 });
 
 // Store API for persistent storage

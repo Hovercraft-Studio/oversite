@@ -10,12 +10,37 @@ class MainApplication extends HTMLElement {
     super();
   }
 
-  connectedCallback() {
+  async connectedCallback() {
+    await this.loadEnvFile();
     this.render();
+    // _store.addListener(this, "envProps");
+  }
+
+  async loadEnvFile() {
+    this.envProps = {};
+    try {
+      // Use Electron's IPC to read the .env file
+      let data = await window.electronAPI.readFile("./.env");
+      if (data) {
+        console.log("INFO: .env file loaded successfully.");
+        // Parse the .env file content and set global variables
+        data.split("\n").forEach((line) => {
+          if (line && !line.startsWith("#")) {
+            let [key, value] = line.split("=");
+            if (key && value) {
+              this.envProps[key.trim()] = value.trim();
+            }
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error reading .env file:", error);
+    }
+    _store.set("envProps", this.envProps); // Store in the global store
   }
 
   render() {
-    this.innerHTML = `
+    this.innerHTML = /* html */ `
       <header>
         <h1>
           Dashboard Poster
@@ -23,16 +48,14 @@ class MainApplication extends HTMLElement {
         </h1>
       </header>
       <main>
+        <hr>
         <app-config></app-config>
         <dashboard-poster></dashboard-poster>
         <webcam-feed></webcam-feed>
         <!--<system-info-display></system-info-display>-->
         <app-help></app-help>
-        <app-info></app-info>
+        <app-info></app-info>  
       </main>
-      <footer>
-        <p></p>
-      </footer>
     `;
   }
 

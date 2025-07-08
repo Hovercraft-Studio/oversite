@@ -10,7 +10,7 @@ window._store = new AppStore();
 
 // send/receive messages w/the main process
 window.electronAPI.messageToBackend({ key: "frontend_active", value: true });
-window.electronAPI.messageToBackend({ key: "set_title", value: "New Title!" });
+window.electronAPI.messageToBackend({ key: "set_title", value: "Dashboard Poster" });
 window.electronAPI.onMessageToFrontend((data) => {
   if (data.pong) {
     console.log(`Received pong from main: ${data.key}`);
@@ -19,10 +19,6 @@ window.electronAPI.onMessageToFrontend((data) => {
     if (data.key === "main_config") {
       _store.set("main_config", data.value);
       initApp();
-      // _store.set("versions", versions);
-      // const versions = data.data.versions;
-      // console.log("Main config received:", versions);
-      // console.log(`Electron: ${versions.electron}, Chromium: ${versions.chrome}, Node: ${versions.node}`);
     }
     if (data.key === "system_info") {
       // console.log(`System Info: ${JSON.stringify(data.value)}`);
