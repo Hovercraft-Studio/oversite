@@ -8,16 +8,19 @@ npx create-electron-app@latest desktop-electron --template=vite
 
 ## TODO:
 
-- Shut down DashboardPoster (or just reload the page?)
-- Add notyf for checkin success/failure, webcam errors, etc.
 - Test builds on Windows and Linux
+- Add notyf for checkin success/failure, webcam errors, etc.
 - Read app config from env
-- Merge DashboardPoster.mjs back into Oversite repo w/latest changes
+  - Dashboard settings
+  - Webcam index
 
 ## TODO (continued):
 
+- Webcam
+  - doesn't work on built mac app, but works in dev. Check Windows
+  - Make sure it only posts a new image if it's activated - clear old canvas if webcam has been shut off
 - Unify config between env file, textfields, and Electron storage
-  - Re-init dashboard poster on config change
+  - Is there a util we could make for this across web components? Or is the dashboard pattern good enough?
 - [WIP] system info & env config should be set on appStore or window
   - https://www.electronjs.org/docs/latest/api/screen
 - Webcam updates
@@ -36,4 +39,3 @@ npx create-electron-app@latest desktop-electron --template=vite
   - webcam index
 - Re-render vitals on an interval and add the data to the dashboard
   - Display resolutions/hz as custom props on check-in - need to add to DashboardPoster [WIP]
-    - Also make them li elements in vitals section
