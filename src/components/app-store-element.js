@@ -14,8 +14,12 @@ class AppStoreElement extends HTMLElement {
 
   initComponent() {
     this.initialHTML = this.innerHTML;
-    this.storeKey = String(this.getAttribute("key")) || "key";
-    this.storeValue = String(this.getAttribute("value")) || "value";
+    this.storeKey =
+      String(this.getAttribute("key") || this.getAttribute("store-key")) ||
+      "key";
+    this.storeValue =
+      String(this.getAttribute("value") || this.getAttribute("store-value")) ||
+      "value";
     this.flashOnUpdate = this.hasAttribute("flash-on-update");
 
     // handle special values to coerce datatypes
