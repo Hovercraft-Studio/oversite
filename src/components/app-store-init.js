@@ -130,7 +130,6 @@ class AppStoreInit extends HTMLElement {
       `;
     } else {
       this.shadow.innerHTML = /*html*/ `
-        ${shouldShowFaviconStatus ? "<favicon-status></favicon-status>" : ""}
         <app-store-debug></app-store-debug>
       `;
     }
