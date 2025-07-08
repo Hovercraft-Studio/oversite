@@ -49,7 +49,7 @@ class SystemInfoDisplay extends HTMLElement {
         displays = `N/A`;
       }
 
-      infoHTML = `
+      infoHTML = /* html */ `
         <div>
           <article>
             <h3>Computer Vitals</h3>

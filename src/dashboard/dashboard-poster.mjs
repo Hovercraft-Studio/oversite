@@ -1,5 +1,6 @@
 class DashboardPoster {
-  constructor(dashboardURL, appId, appTitle, interval) {
+  constructor(dashboardURL, appId, appTitle, interval = 10 * 60 * 1000) {
+    // Default interval is 10 minutes
     this.dashboardURL = dashboardURL;
     this.appId = appId;
     this.appTitle = appTitle;
@@ -10,18 +11,24 @@ class DashboardPoster {
     this.isBrowser = typeof window !== "undefined";
     if (this.isBrowser) this.checkFPS();
     if (!this.isBrowser) this.prepBackend();
-    this.restartPostInterval(this.interval);
+    this.restartPostInterval();
     this.postJson(); // check in on init
     console.log("DashboardPoster initialized with URL:", this.dashboardURL);
   }
 
-  restartPostInterval(interval) {
-    let checkinInterval = interval;
-    if (checkinInterval > 1) {
-      clearInterval(this.interval);
-      this.interval = setInterval(() => {
+  restartPostInterval() {
+    if (this.interval > 1) {
+      clearInterval(this.fetchInterval);
+      this.fetchInterval = setInterval(() => {
         this.postJson();
-      }, checkinInterval);
+      }, this.interval);
+    }
+  }
+
+  dispose() {
+    if (this.fetchInterval) {
+      clearInterval(this.fetchInterval);
+      this.fetchInterval = null;
     }
   }
 
@@ -117,7 +124,7 @@ class DashboardPoster {
       this.frameCount++;
       // keep track of frames
       this.fpsLastTime = performance.now();
-      this.checkFPS();
+      if (this.fetchInterval) this.checkFPS(); // only if we have an interval running, otherwise, we're disposed
     });
   }
 

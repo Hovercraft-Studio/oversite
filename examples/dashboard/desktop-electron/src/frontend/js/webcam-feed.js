@@ -64,7 +64,7 @@ class WebcamFeed extends HTMLElement {
   }
 
   render() {
-    this.innerHTML = `
+    this.innerHTML = /* html */ `
       <style>
         webcam-feed select,
         webcam-feed video {

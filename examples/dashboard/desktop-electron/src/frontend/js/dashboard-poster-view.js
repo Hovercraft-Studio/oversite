@@ -1,116 +1,119 @@
-import DashboardPoster from "./dashboard-poster.mjs";
+// import DashboardPoster from "./dashboard-poster.mjs";
+import DashboardPoster from "../../../../../../src/dashboard/dashboard-poster.mjs";
 
-const APP_ID_STORAGE_KEY = "dashboardPosterAppId";
-const APP_TITLE_STORAGE_KEY = "dashboardPosterAppTitle";
-const API_URL_STORAGE_KEY = "dashboardPosterApiUrl";
+const APP_ID_KEY = "appId";
+const APP_TITLE_KEY = "appTitle";
+const API_URL_KEY = "apiUrl";
+const POST_INTERVAL_KEY = "postInterval";
+const WEBCAM_INTERVAL_KEY = "webcamInterval";
+
 const DEFAULT_APP_ID = "test-app";
 const DEFAULT_APP_TITLE = "Test App";
 const DEFAULT_DASHBOARD_API = "http://localhost:3002/api/dashboard/";
+const DEFAULT_POST_INTERVAL = 10; // 10 minutes
+const DEFAULT_WEBCAM_INTERVAL = 5; // 5 minutes
 
 class DashboardPosterView extends HTMLElement {
   async connectedCallback() {
-    setTimeout(async () => this.setup(), 100); // Delay to ensure env file has been read
+    setTimeout(() => this.setup(), 100); // Delay to ensure env file has been read
   }
 
-  async setup() {
-    this.config();
-    await this.loadSettings();
-    await this.render();
+  setup() {
+    this.loadSettings();
+    this.loadEnvFile();
+    this.render();
     this.attachEventListeners();
     this.initializePoster();
     this.startWebcamCapture();
   }
 
-  config() {
-    // set defaults
-    this.appId = DEFAULT_APP_ID;
-    this.appTitle = DEFAULT_APP_TITLE;
-    this.apiUrl = DEFAULT_DASHBOARD_API;
-    // load from env
+  minutesToMs(mins) {
+    return mins * 60 * 1000; // Convert minutes to milliseconds
+  }
+
+  loadEnvFile() {
     console.log("window.envProps", window.envProps);
     if (window.envProps) {
       if (window.envProps["app-id"]) this.appId = window.envProps["app-id"];
       if (window.envProps["app-title"]) this.appTitle = window.envProps["app-title"];
       if (window.envProps["api-url"]) this.apiUrl = window.envProps["api-url"];
+      if (window.envProps["post-interval"]) this.postInterval = parseInt(window.envProps["post-interval"]);
+      if (window.envProps["webcam-interval"]) this.webcamInterval = parseInt(window.envProps["webcam-interval"]);
       this.saveSettings();
     }
-    this.poster = null;
-    // API URL and interval are kept constant as per current scope
-    this.postInterval = 1 * 60 * 1000; // 10 minutes
-    this.webcamInterval = 1 * 60 * 1000; // 5 minutes
   }
 
-  async loadSettings() {
-    try {
-      const storedAppId = window.electronStore.get(APP_ID_STORAGE_KEY, this.appId);
-      const storedAppTitle = window.electronStore.get(APP_TITLE_STORAGE_KEY, this.appTitle);
-      const storedApiUrl = window.electronStore.get(API_URL_STORAGE_KEY, this.apiUrl);
-      if (storedAppId) this.appId = storedAppId;
-      if (storedAppTitle) this.appTitle = storedAppTitle;
-      if (storedApiUrl) this.apiUrl = storedApiUrl;
-    } catch (error) {
-      console.error("Error loading settings from electron-store:", error);
-    }
+  loadSettings() {
+    this.appId = window.electronStore.get(APP_ID_KEY) || DEFAULT_APP_ID;
+    this.appTitle = window.electronStore.get(APP_TITLE_KEY) || DEFAULT_APP_TITLE;
+    this.apiUrl = window.electronStore.get(API_URL_KEY) || DEFAULT_DASHBOARD_API;
+    this.postInterval = window.electronStore.get(POST_INTERVAL_KEY) || DEFAULT_POST_INTERVAL;
+    this.webcamInterval = window.electronStore.get(WEBCAM_INTERVAL_KEY) || DEFAULT_WEBCAM_INTERVAL;
   }
 
   saveSettings() {
-    try {
-      window.electronStore.set(APP_ID_STORAGE_KEY, this.appId);
-      window.electronStore.set(APP_TITLE_STORAGE_KEY, this.appTitle);
-      window.electronStore.set(API_URL_STORAGE_KEY, this.apiUrl);
-      console.log("DashboardPoster settings saved.");
-    } catch (error) {
-      console.error("Error saving settings to electron-store:", error);
-    }
+    window.electronStore.set(APP_ID_KEY, this.appId);
+    window.electronStore.set(APP_TITLE_KEY, this.appTitle);
+    window.electronStore.set(API_URL_KEY, this.apiUrl);
+    window.electronStore.set(POST_INTERVAL_KEY, this.postInterval);
+    window.electronStore.set(WEBCAM_INTERVAL_KEY, this.webcamInterval);
+    console.log("DashboardPoster settings saved.");
   }
 
   initializePoster() {
-    if (this.poster) {
-      // If you have a stop or cleanup method in DashboardPoster, call it here
-      // e.g., this.poster.stop();
-    }
-    this.poster = new DashboardPoster(this.apiUrl, this.appId, this.appTitle, this.postInterval);
-    console.log(
-      `DashboardPoster initialized at ${this.apiUrl} with App ID: ${this.appId}, App Title: ${this.appTitle}`
-    );
+    if (this.poster) this.poster.dispose();
+    this.poster = new DashboardPoster(this.apiUrl, this.appId, this.appTitle, this.minutesToMs(this.postInterval));
+    console.table({
+      "DashboardPoster initialized": {
+        "API URL": this.apiUrl,
+        "App ID": this.appId,
+        "App Title": this.appTitle,
+      },
+    });
   }
 
   startWebcamCapture() {
     this.webcamCaptureInterval = setInterval(() => {
       this.captureWebcam();
-    }, this.webcamInterval); // Start the webcam screenshot interval
+    }, this.minutesToMs(this.webcamInterval)); // Start the webcam screenshot interval
     setTimeout(() => {
       this.captureWebcam();
       this.poster.postJson();
-    }, 5000); // Do initial capture after 5 seconds
+    }, 5000); // Do initial webcam capture after 5 seconds
   }
 
-  async render() {
-    // Ensure Neutralino global variables are available if used directly in template strings
-    // For example, if NL_APPID was used, it should be defined.
-    // Here, we are using component's properties this.appId and this.appTitle
-
-    let infoHTML = `
+  render() {
+    let infoHTML = /* html */ `
       <div>
         <details openXX="">
           <summary>
-            <b>Dashboard Config</b>
-            <!--<br><small>App ID: ${this.appId}<br>App Title: ${this.appTitle}<br>API URL: ${this.apiUrl}</small>-->
+            <b>Config</b>
           </summary>
           <article>
             <form id="posterSettingsForm">
-              <p>If <code>app-id</code> or <code>app-title</code> is is set in .env, that will always override these user settings when app is restarted.</p>
-              <div>
-                <label for="appIdInput">App ID:</label>
-                <input type="text" id="appIdInput" name="appId" value="${this.appId}" required>
+              <div class="grid">
+                <div>
+                  <label for="${APP_ID_KEY}">App ID:</label>
+                  <input type="text" id="${APP_ID_KEY}" name="appId" value="${this.appId}" required>
+                </div>
+                <div>
+                  <label for="${APP_TITLE_KEY}">App Title:</label>
+                  <input type="text" id="${APP_TITLE_KEY}" name="appTitle" value="${this.appTitle}" required>
+                </div>
+              </div>
+              <div class="grid">
+                <div>
+                  <label for="${POST_INTERVAL_KEY}">Post Interval (minutes):</label>
+                  <input type="number" id="${POST_INTERVAL_KEY}" name="postInterval" value="${this.postInterval}" required>
+                </div>
+                <div>
+                  <label for="${WEBCAM_INTERVAL_KEY}">Webcam Interval (minutes):</label>
+                  <input type="number" id="${WEBCAM_INTERVAL_KEY}" name="webcamInterval" value="${this.webcamInterval}" required>
+                </div>
               </div>
               <div>
-                <label for="appTitleInput">App Title:</label>
-                <input type="text" id="appTitleInput" name="appTitle" value="${this.appTitle}" required>
-              </div>
-              <div>
-                <label for="apiURLInput">API URL:</label>
-                <input type="text" id="apiURLInput" name="apiURL" value="${this.apiUrl}" required>
+                <label for="${API_URL_KEY}">API URL:</label>
+                <input type="text" id="${API_URL_KEY}" name="apiURL" value="${this.apiUrl}" required>
               </div>
               <button type="submit">Save and Apply Settings</button>
             </form>
@@ -128,20 +131,18 @@ class DashboardPosterView extends HTMLElement {
     if (form) {
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const appIdInput = this.querySelector("#appIdInput");
-        const appTitleInput = this.querySelector("#appTitleInput");
-        const apiURLInput = this.querySelector("#apiURLInput");
 
-        if (appIdInput && appTitleInput && apiURLInput) {
-          this.appId = appIdInput.value;
-          this.appTitle = appTitleInput.value;
-          this.apiUrl = apiURLInput.value;
+        // Store values from the form inputs
+        this.appId = this.querySelector(`#${APP_ID_KEY}`).value;
+        this.appTitle = this.querySelector(`#${APP_TITLE_KEY}`).value;
+        this.apiUrl = this.querySelector(`#${API_URL_KEY}`).value;
+        this.postInterval = this.querySelector(`#${POST_INTERVAL_KEY}`).value;
+        this.webcamInterval = this.querySelector(`#${WEBCAM_INTERVAL_KEY}`).value;
 
-          this.saveSettings();
-          this.initializePoster(); // Re-initialize with new settings
-          // Optionally, provide user feedback
-          alert("Settings saved and applied!");
-        }
+        this.saveSettings();
+        this.initializePoster(); // Re-initialize with new settings
+
+        alert("Settings saved and applied!");
       });
     }
   }
@@ -149,7 +150,7 @@ class DashboardPosterView extends HTMLElement {
   captureWebcam() {
     let webcamVideo = document.querySelector("webcam-feed video");
     if (!webcamVideo) {
-      console.error("Webcam video element not found.");
+      console.error("Webcam video element not found. Not posting to Dashboard.");
       return;
     }
     if (!this.canvas) {
@@ -165,10 +166,11 @@ class DashboardPosterView extends HTMLElement {
   }
 
   disconnectedCallback() {
-    // Clean up if necessary
-    // if (this.poster && typeof this.poster.stop === 'function') {
-    //   this.poster.stop();
-    // }
+    if (this.poster) this.poster.dispose();
+    if (this.webcamCaptureInterval) {
+      clearInterval(this.webcamCaptureInterval);
+      this.webcamCaptureInterval = null;
+    }
     console.log("DashboardPosterView component removed from DOM.");
   }
 }

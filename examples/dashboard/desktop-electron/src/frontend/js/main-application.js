@@ -3,6 +3,7 @@ import "./system-info-display.js";
 import "./dashboard-poster-view.js";
 import "./webcam-feed.js";
 import "./app-info.js";
+import "./app-help.js";
 
 class MainApplication extends HTMLElement {
   constructor() {
@@ -26,6 +27,7 @@ class MainApplication extends HTMLElement {
         <dashboard-poster></dashboard-poster>
         <webcam-feed></webcam-feed>
         <!--<system-info-display></system-info-display>-->
+        <app-help></app-help>
         <app-info></app-info>
       </main>
       <footer>

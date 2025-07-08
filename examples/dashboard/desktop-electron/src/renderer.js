@@ -4,7 +4,8 @@ import "./frontend/css/pico.min.css";
 import "./frontend/css/index.css";
 
 // Initialize the app store
-import AppStore from "./frontend/js/app-store-.mjs";
+// import AppStore from "./frontend/js/app-store-.mjs";
+import AppStore from "../../../../src/app-store/app-store-.mjs";
 window._store = new AppStore();
 
 // send/receive messages w/the main process
@@ -17,8 +18,8 @@ window.electronAPI.onMessageToFrontend((data) => {
     console.log(`Messaged from main:`, data);
     if (data.key === "main_config") {
       _store.set("main_config", data.value);
+      initApp();
       // _store.set("versions", versions);
-      document.body.innerHTML += `<main-application></main-application>`;
       // const versions = data.data.versions;
       // console.log("Main config received:", versions);
       // console.log(`Electron: ${versions.electron}, Chromium: ${versions.chrome}, Node: ${versions.node}`);
@@ -28,3 +29,9 @@ window.electronAPI.onMessageToFrontend((data) => {
     }
   }
 });
+
+function initApp() {
+  // Initialize the main application component
+  const mainApp = document.createElement("main-application");
+  document.body.appendChild(mainApp);
+}

@@ -9,7 +9,7 @@ class AppInfo extends HTMLElement {
 
   render() {
     let electronVersions = _store.get("main_config").versions;
-    let infoHTML = `
+    let infoHTML = /* html */ `
       <div>
         <details openXX="">
           <summary><b>App Info</b></summary>
