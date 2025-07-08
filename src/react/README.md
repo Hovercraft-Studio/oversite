@@ -41,6 +41,7 @@ To use AppStoreDistributed in a React app, you’ll need to add the AppStore-rel
   - `init-keys` — a space-separated string list of the keys that you want to retrieve from the store upon connection. If set to `"*"`, it will initialize with all keys in the store. If not set it will initialize with no keys.
   - `debug` — if set, the component will show a debug interface in the browser.
   - `side-debug` — if set, the debug interface will be shown on the side of the screen instead of the bottom.
+  - `disable-favicon-status` — if set, disables automatic favicon updates that show WebSocket connection status (red=disconnected, green=connected). Useful when you want to provide your own favicon handling.
 
 - The `app-store-heartbeat` component is optional and can be used to send a heartbeat message to the server at a regular interval. This can be useful for monitoring the health of your app. It takes a few arguments:
 
