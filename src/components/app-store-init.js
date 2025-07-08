@@ -1,11 +1,6 @@
 import AppStoreDistributed from "../app-store/app-store-distributed.mjs";
 import URLUtil from "../util/url-util.mjs";
 
-// self-registering child components
-import "./websocket-indicator.js";
-import "./app-store-debug.js";
-import "./favicon-status.js";
-
 /**
  * AppStoreInit - Web component that initializes AppStore distributed connection
  *
