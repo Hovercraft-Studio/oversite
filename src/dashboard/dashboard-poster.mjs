@@ -6,11 +6,13 @@ class DashboardPoster {
     this.interval = interval;
     this.startTime = Date.now();
     this.postCount = 0;
+    this.customProps = {};
     this.isBrowser = typeof window !== "undefined";
     if (this.isBrowser) this.checkFPS();
     if (!this.isBrowser) this.prepBackend();
     this.restartPostInterval(this.interval);
     this.postJson(); // check in on init
+    console.log("DashboardPoster initialized with URL:", this.dashboardURL);
   }
 
   restartPostInterval(interval) {
@@ -36,6 +38,14 @@ class DashboardPoster {
     return null;
   }
 
+  setCustomProp(key, value) {
+    if (typeof key === "string" && key.length > 0) {
+      this.customProps[key] = value;
+    } else {
+      console.warn("Invalid key for custom property. Key must be a non-empty string.");
+    }
+  }
+
   postJson() {
     let resolutionData = this.isBrowser ? `${window.innerWidth}x${window.innerHeight}` : "headless";
     let checkinData = {
@@ -48,6 +58,12 @@ class DashboardPoster {
       // imageScreenshot: null,
       // imageExtra: imageExtraData,
     };
+
+    // Add custom properties if available
+    if (Object.keys(this.customProps).length > 0) {
+      Object.assign(checkinData, this.customProps);
+      this.customProps = {}; // reset custom props after posting
+    }
 
     // Add image data if available
     if (this.postCount % 3 == 0) {
