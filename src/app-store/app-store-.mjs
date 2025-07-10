@@ -49,7 +49,7 @@ class AppStore {
   }
 
   get(key, defaultValue = null) {
-    return this.state[key] || defaultValue;
+    return this.state[key] ?? defaultValue;
   }
 
   toString() {
