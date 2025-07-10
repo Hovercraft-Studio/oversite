@@ -5,6 +5,7 @@ import "./app-store-init.js";
 // UI components
 import "./app-store-element.js";
 import "./app-store-button.js";
+import "./app-store-checkbox.js";
 import "./app-store-debug.js";
 import "./app-store-health.js";
 import "./app-store-number.js";
