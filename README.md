@@ -11,31 +11,31 @@ Apps include:
 
 Default locations & ports are:
 
-- http://localhost:3002 - Vite frontend
-- http://localhost:3003 - http server
-- ws://localhost:3003/ws - WebSocket server
+- http://localhost:3002 
+  - Vite frontend development server (localhost/dev only)
+- http://localhost:3003 
+  - /api server 
+  - static frontend server on production (serves Vite /dist)
+- ws://localhost:3003/ws 
+  - WebSocket server
 
-## Quickstart
-
-- `npm i`
-- `npm run dev`
-- Open `http://localhost:3002` in a browser and view the UI demo or the Monitor
-- Open `app-store-demo.toe` in TouchDesigner
-
-## Install
+## Install / Quickstart
 
 ```bash
 git clone https://github.com/Hovercraft-Studio/oversite.git
 cd oversite
 npm install
+npm run dev
 ```
+
+- Open `http://localhost:3002` in a browser and view the UI demo or the Monitor
 
 ## Run
 
-**Recommended use**: Use `npm run dev` to run the robust tooling including: 
+Use `npm run dev` to run: 
 
-- Frontend server (`dev`) on port 3002
-- Server app (http:// & ws://) (`server`) on port 3003
+- The Vite frontend server on port 3002
+- The server app (http:// & ws://) on port 3003
 
 **Customizing the run commands**:
 
@@ -55,9 +55,7 @@ Packages used:
 - `vite` - Frontend server for the demo UI and monitor
 
 
-**Legacy use**: Use `npm run ws` to only start the simple websocket relay server. This is useful for testing the websocket connection without the frontend.
-
-On the frontend, you should use the `<app-store-init>` web component to connect to the websocket server and send messages. See `app-store-demo` for an example.
+**Legacy use**: Use `npm run ws` to only start the simple websocket relay server. This is useful for testing a websocket connection without the frontend or full server app.
 
 
 ## WebSocket & Server app

@@ -26,13 +26,13 @@ Vercel URLs
 
 - When connecting from the production domain, we don't need to auth!
 - Implement some version of ws:// auth
-  - Check `wsAuthTokens` in config.json
+  - Check `AUTH_USERS` in .env
   - Auth should come from either post headers (public devices) or querystring (local devices)
     - Put these into querystring for now, for later implementation
   - Add auth key that only the server knows, via querystring or post header. this should only apply on production, and not on localhost/dev
 - Config cleanup
   - if not production mode, add "default" to allowed ws channels array
-  - Move to .env file from config.json
+  - [DONE?] Move to .env file from config.json
     - *only* production info shoud be in .env - everything local should work out of the box
 
 

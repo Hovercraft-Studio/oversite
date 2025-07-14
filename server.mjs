@@ -14,9 +14,12 @@ import { config as dotenvConfig } from "dotenv";
 /////////////////////////////////////////////////////////
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const baseDataPath = join(__dirname, "./", "public", "_tmp_data"); // Go up one level from server/ to project root
-const prodDataPath = join(__dirname, "./", "dist", "_tmp_data"); // Go up one level from server/ to project root
+const appRoot = dirname(__filename);
+const distPath = join(appRoot, "dist");
+const publicPath = join(appRoot, "public");
+const baseDataPath = join(appRoot, "public", "_tmp_data");
+const prodDataPath = join(appRoot, "dist", "_tmp_data");
+const envPath = join(appRoot, ".env");
 
 /////////////////////////////////////////////////////////
 // Get config from cli args
@@ -30,7 +33,7 @@ const debug = args.indexOf("--debug") != -1;
 // Get config from .env
 /////////////////////////////////////////////////////////
 
-dotenvConfig();
+dotenvConfig({ path: envPath }); // Explicitly set path for .env relative to appRoot
 
 // get allowed ws:// channels from .env
 // - this is a comma separated list of channels that are allowed to connect to the websocket server
@@ -123,10 +126,9 @@ app.use((req, res, next) => {
 
 // Serve Vite frontend files from the dist folder
 // We can test prod behavior by going to `localhost:3003`, which is what's served in production
-const DIST_PATH = path.join(path.resolve(), "dist");
-app.use("/", express.static(DIST_PATH));
-app.use("/public", express.static(path.join(__dirname, "../public")));
-app.use("/_tmp_data", express.static(baseDataPath));
+app.use("/", express.static(distPath));
+app.use("/public", express.static(publicPath));
+app.use("/_tmp_data", express.static(baseDataPath)); // This uses the initial baseDataPath: appRoot/public/_tmp_data
 
 /////////////////////////////////////////////////////////
 // Build main app components:
