@@ -12,7 +12,6 @@ class AppStoreCheckbox extends AppStoreElement {
   initStoreListener() {
     this.input = this.el.querySelector("input");
 
-    // Set initial checked state from attribute value; will be overridden by store value if it exists
     this.input.checked =
       this.storeValue === true || parseInt(this.storeValue) === 1;
 

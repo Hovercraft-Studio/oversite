@@ -3,10 +3,12 @@ import AppStoreElement from "./app-store-element.js";
 class AppStoreTextfield extends AppStoreElement {
   initStoreListener() {
     this.input = this.el.querySelector("input");
+
+    this.input.value = this.storeValue || "";
+
     this.input.addEventListener("input", (e) => {
       _store.set(this.storeKey, e.target.value, true);
     });
-    this.input.value = _store.get(this.storeKey) || "";
 
     super.initStoreListener();
   }
