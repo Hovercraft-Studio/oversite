@@ -8,7 +8,6 @@ class AppStoreElement extends HTMLElement {
     this.el = this.shadow ? this.shadow : this;
     this.initComponent();
     this.render();
-    this.initObservedAttributes();
   }
 
   disconnectedCallback() {
@@ -85,8 +84,8 @@ class AppStoreElement extends HTMLElement {
     if (name === "disabled") this.handleDisabledChange(newValue !== null);
   }
 
-  // Add attribute handlers for the initial render
-  initObservedAttributes() {
+  // Manually handle observed attributes after any render
+  handleObservedAttributes() {
     this.handleDisabledChange(this.hasAttribute("disabled"));
   }
 
@@ -124,6 +123,7 @@ class AppStoreElement extends HTMLElement {
         ${this.css()}
       </style>
     `;
+    this.handleObservedAttributes();
   }
 
   static register() {
