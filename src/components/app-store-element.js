@@ -87,7 +87,7 @@ class AppStoreElement extends HTMLElement {
 
   // Add attribute handlers for the initial render
   initObservedAttributes() {
-    this.handleDisabledChange(this.hasAttribute("disabled") || false);
+    this.handleDisabledChange(this.hasAttribute("disabled"));
   }
 
   handleDisabledChange(isDisabled) {
