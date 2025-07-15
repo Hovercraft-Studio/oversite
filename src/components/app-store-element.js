@@ -23,7 +23,7 @@ class AppStoreElement extends HTMLElement {
 
     const rawValue =
       this.getAttribute("value") ?? this.getAttribute("store-value");
-    this.storeValue = rawValue ? String(rawValue) : "value";
+    this.storeValue = rawValue ? String(rawValue) : null;
 
     this.flashOnUpdate = this.hasAttribute("flash-on-update");
 
