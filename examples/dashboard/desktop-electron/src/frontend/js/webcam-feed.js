@@ -128,7 +128,6 @@ class WebcamFeed extends HTMLElement {
         <details openXX="">
           <summary><b>Webcam</b></summary>
           <article>
-            <h4>Webcam</h4>
             <select id="webcam-select"></select>
             <video id="webcam-video" autoplay playsinline></video>
           </article>

@@ -2,6 +2,7 @@ import "./app-config.js";
 import "./system-info-display.js";
 import "./dashboard-poster-view.js";
 import "./webcam-feed.js";
+import "./screen-capture.js";
 import "./app-info.js";
 import "./app-help.js";
 
@@ -52,6 +53,7 @@ class MainApplication extends HTMLElement {
         <app-config></app-config>
         <dashboard-poster></dashboard-poster>
         <webcam-feed></webcam-feed>
+        <screen-capture></screen-capture>
         <!--<system-info-display></system-info-display>-->
         <app-help></app-help>
         <app-info></app-info>  
