@@ -1,6 +1,8 @@
 import ObjectUtil from "../util/object-util.mjs";
 
 class AppStoreElement extends HTMLElement {
+  static observedAttributes = ["disabled"];
+
   connectedCallback() {
     // this.shadow = this.attachShadow({ mode: "open" }); // "open" allows querying and probably lots more
     this.el = this.shadow ? this.shadow : this;
@@ -77,6 +79,32 @@ class AppStoreElement extends HTMLElement {
     }, 1010);
   }
 
+  // Add attribute listeners and handlers here
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "disabled") this.handleDisabledChange(newValue !== null);
+  }
+
+  // Manually handle observed attributes after any render
+  handleObservedAttributes() {
+    this.handleDisabledChange(this.hasAttribute("disabled"));
+  }
+
+  handleDisabledChange(isDisabled) {
+    if (!this.el) return;
+
+    // update the disabled state of all interactive child elements
+    this.el
+      .querySelectorAll("input, button, select, textarea")
+      .forEach((element) => {
+        element.disabled = isDisabled;
+      });
+
+    // update the aria-disabled attribute on child labels
+    this.el.querySelectorAll("label").forEach((label) => {
+      label.setAttribute("aria-disabled", isDisabled);
+    });
+  }
+
   css() {
     return /*css*/ `
     `;
@@ -95,6 +123,7 @@ class AppStoreElement extends HTMLElement {
         ${this.css()}
       </style>
     `;
+    this.handleObservedAttributes();
   }
 
   static register() {
