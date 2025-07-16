@@ -23,8 +23,8 @@ class MainApplication extends HTMLElement {
       // Use Electron's IPC to read the .env file
       let data = await window.electronAPI.readFile("./.env");
       if (data) {
-        console.log("INFO: .env file loaded successfully.");
         // Parse the .env file content and set global variables
+        // console.log("INFO: .env file loaded successfully.");
         data.split("\n").forEach((line) => {
           if (line && !line.startsWith("#")) {
             let [key, value] = line.split("=");

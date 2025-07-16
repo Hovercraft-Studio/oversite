@@ -25,13 +25,12 @@ class WebcamFeed extends HTMLElement {
     if (envProps) {
       if (envProps["webcam_index"]) this.webcamIndex = parseInt(envProps["webcam_index"]);
       this.saveSettings();
-      console.log("Webcam index overridden by .env");
+      // console.log("Webcam index overridden by .env");
     }
   }
 
   saveSettings() {
     window.electronStore.set(WEBCAM_INDEX_KEY, this.webcamIndex);
-    console.log("Webcam settings saved");
   }
 
   activateWebcam() {
@@ -81,7 +80,7 @@ class WebcamFeed extends HTMLElement {
     this.saveSettings();
     if (deviceId) {
       try {
-        console.log("Accessing camera with deviceId:", deviceId);
+        // console.log("Accessing camera with deviceId:", deviceId);
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { deviceId },
         });
@@ -89,7 +88,6 @@ class WebcamFeed extends HTMLElement {
         this.videoElement.srcObject = stream;
         this.videoElement.src = stream;
         this.videoElement.play();
-        console.log("Camera stream started successfully");
         this.setAttribute("streaming", "true");
       } catch (err) {
         console.error("Error accessing selected camera:", err);
@@ -99,7 +97,6 @@ class WebcamFeed extends HTMLElement {
 
   setCameraByIndex(index) {
     // emit <select> change event to trigger camera change
-    console.log("Setting camera by index:", index);
     this.selectElement.selectedIndex = index;
     this.selectElement.dispatchEvent(new Event("change"));
   }

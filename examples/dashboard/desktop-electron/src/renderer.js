@@ -4,7 +4,6 @@ import "./frontend/css/pico.min.css";
 import "./frontend/css/index.css";
 
 // Initialize the app store
-// import AppStore from "./frontend/js/app-store-.mjs";
 import AppStore from "../../../../src/app-store/app-store-.mjs";
 window._store = new AppStore();
 
@@ -13,9 +12,9 @@ window.electronAPI.messageToBackend({ key: "frontend_active", value: true });
 window.electronAPI.messageToBackend({ key: "set_title", value: "Dashboard Poster" });
 window.electronAPI.onMessageToFrontend((data) => {
   if (data.pong) {
-    console.log(`Received pong from main: ${data.key}`);
+    // console.log(`Received pong from main: ${data.key}`);
   } else {
-    console.log(`Messaged from main:`, data);
+    // console.log(`Messaged from main:`, data);
     if (data.key === "main_config") {
       _store.set("main_config", data.value);
       initApp();

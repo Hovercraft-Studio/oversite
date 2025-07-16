@@ -48,7 +48,7 @@ class DashboardPosterView extends HTMLElement {
       if (envProps["post_interval"]) this.postInterval = parseInt(envProps["post_interval"]);
       if (envProps["webcam_interval"]) this.webcamInterval = parseInt(envProps["webcam_interval"]);
       this.saveSettings();
-      console.log("DashboardPoster settings overridden by .env");
+      // console.log("DashboardPoster settings overridden by .env");
     }
   }
 
@@ -58,19 +58,11 @@ class DashboardPosterView extends HTMLElement {
     window.electronStore.set(API_URL_KEY, this.apiUrl);
     window.electronStore.set(POST_INTERVAL_KEY, this.postInterval);
     window.electronStore.set(WEBCAM_INTERVAL_KEY, this.webcamInterval);
-    console.log("DashboardPoster settings saved");
   }
 
   initializePoster() {
     if (this.poster) this.poster.dispose();
     this.poster = new DashboardPoster(this.apiUrl, this.appId, this.appTitle, this.minutesToMs(this.postInterval));
-    console.table({
-      "DashboardPoster initialized": {
-        "API URL": this.apiUrl,
-        "App ID": this.appId,
-        "App Title": this.appTitle,
-      },
-    });
   }
 
   startWebcamCapture() {
@@ -152,7 +144,7 @@ class DashboardPosterView extends HTMLElement {
   captureWebcam() {
     let webcamVideo = document.querySelector("webcam-feed video");
     if (!webcamVideo) {
-      console.error("Webcam video element not found. Not posting to Dashboard.");
+      // console.error("Webcam video element not found. Not posting to Dashboard.");
       return;
     }
     // create reusable canvas, but resize it if needed

@@ -19,7 +19,6 @@ class ScreenCapture extends HTMLElement {
   loadSettings() {
     this.captureActive = window.electronStore.get(SCREEN_CAPTURE_ACTIVE_KEY) || DEFAULT_SCREEN_CAPTURE_ACTIVE;
     this.captureIntervalMinutes = DEFAULT_SCREEN_CAPTURE_INTERVAL;
-    console.log("this.captureActive", this.captureActive);
   }
 
   loadEnvFile() {
@@ -27,13 +26,12 @@ class ScreenCapture extends HTMLElement {
     if (envProps) {
       if (envProps["capture_active"]) this.captureActive = envProps["capture_active"] == "true";
       this.saveSettings();
-      console.log("captureActive overridden by .env");
+      // console.log("captureActive overridden by .env");
     }
   }
 
   saveSettings() {
     window.electronStore.set(SCREEN_CAPTURE_ACTIVE_KEY, this.captureActive);
-    console.log("captureActive settings saved");
   }
 
   onStreamToggled(active) {
@@ -85,7 +83,6 @@ class ScreenCapture extends HTMLElement {
           this.videoElement.src = stream;
           // this.videoElement.play();
           this.videoElement.onloadedmetadata = (e) => this.videoElement.play();
-          console.log("Screen capture stream started successfully");
           this.setAttribute("streaming", "true");
         })
         .catch((e) => console.log(e));
