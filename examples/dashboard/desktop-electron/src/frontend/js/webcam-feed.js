@@ -82,7 +82,7 @@ class WebcamFeed extends HTMLElement {
       try {
         // console.log("Accessing camera with deviceId:", deviceId);
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { deviceId },
+          video: { deviceId: deviceId, width: { ideal: 1920 }, height: { ideal: 1080 } },
         });
         this.currentStream = stream;
         this.videoElement.srcObject = stream;

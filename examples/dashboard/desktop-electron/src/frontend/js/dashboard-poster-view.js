@@ -66,13 +66,18 @@ class DashboardPosterView extends HTMLElement {
   }
 
   startWebcamCapture() {
+    // Start the webcam screenshot interval
     this.webcamCaptureInterval = setInterval(() => {
       this.captureWebcam();
-    }, this.minutesToMs(this.webcamInterval)); // Start the webcam screenshot interval
+      this.captureScreenshot();
+    }, this.minutesToMs(this.webcamInterval));
+
+    // Do initial webcam capture after 5 seconds
     setTimeout(() => {
       this.captureWebcam();
-      this.poster.postJson();
-    }, 5000); // Do initial webcam capture after 5 seconds
+      this.captureScreenshot();
+      this.poster.postJson(true); // Force post initial images
+    }, 8000);
   }
 
   render() {
@@ -141,29 +146,50 @@ class DashboardPosterView extends HTMLElement {
     }
   }
 
-  captureWebcam() {
-    let webcamVideo = document.querySelector("webcam-feed video");
-    if (!webcamVideo) {
-      // console.error("Webcam video element not found. Not posting to Dashboard.");
-      return;
-    }
+  // Video capture utility methods ------------------------
+
+  createOrUpdateCanvas(video, existingCanvas) {
     // create reusable canvas, but resize it if needed
     let canvsSizeChanged = false;
-    if (this.canvas) {
-      if (this.canvas.width !== webcamVideo.videoWidth) canvsSizeChanged = true;
-      if (this.canvas.height !== webcamVideo.videoHeight) canvsSizeChanged = true;
+    if (existingCanvas) {
+      if (existingCanvas.width !== video.videoWidth) canvsSizeChanged = true;
+      if (existingCanvas.height !== video.videoHeight) canvsSizeChanged = true;
     }
-    if (!this.canvas || canvsSizeChanged) {
-      this.canvas = document.createElement("canvas");
-      this.canvas.width = webcamVideo.videoWidth;
-      this.canvas.height = webcamVideo.videoHeight;
+
+    let canvas = existingCanvas;
+    if (!canvas || canvsSizeChanged) {
+      canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
     }
-    // capture the webcam video frame
-    const context = this.canvas.getContext("2d");
-    context.drawImage(webcamVideo, 0, 0, this.canvas.width, this.canvas.height);
-    // set on poster
-    this.poster.setImageCustom(this.canvas);
+
+    // capture the video frame
+    const context = canvas.getContext("2d");
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // this.appendChild(canvas); // append canvas to the DOM for debugging
+
+    return canvas;
   }
+
+  captureWebcam() {
+    let webcamVideo = document.querySelector("webcam-feed video");
+    if (webcamVideo) {
+      this.canvas = this.createOrUpdateCanvas(webcamVideo, this.canvas);
+      this.poster.setImageCustom(this.canvas);
+      // console.log("Captured webcam frame and set on poster.");
+    }
+  }
+
+  captureScreenshot() {
+    let screenVideo = document.querySelector("screen-capture video");
+    if (screenVideo) {
+      this.canvScreenshot = this.createOrUpdateCanvas(screenVideo, this.canvScreenshot);
+      this.poster.setImageScreenshot(this.canvScreenshot);
+      // console.log("Captured screen frame and set on poster.");
+    }
+  }
+
+  // disposal methods ------------------------
 
   disconnectedCallback() {
     if (this.poster) this.poster.dispose();

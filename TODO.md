@@ -9,6 +9,8 @@ Vercel URLs
 
 # TODO
 
+- Modal example
+- Break up app store demo into accordions
 - Slack integration (this doesn't need websockets - could just be a check-in timeout, but probably better to use the websocket connection)
   - Build a link to the project on the dashboard so you can click into the latest checkins
   - Add a webhook config option, and only init if it exists

@@ -70,7 +70,7 @@ class ScreenCapture extends HTMLElement {
         .getDisplayMedia({
           audio: false,
           video: {
-            width: 1920,
+            width: 1920, // Set desired width that's reasonable. If we leave it off, it defaults to the screen's width, which might be 4k, and a little big
             height: 1080,
             frameRate: 1 / (this.captureIntervalMinutes * 60), // Convert minutes to seconds for frame rate
             // cursor: "always", // always show cursor
@@ -82,7 +82,10 @@ class ScreenCapture extends HTMLElement {
           this.videoElement.srcObject = stream;
           this.videoElement.src = stream;
           // this.videoElement.play();
-          this.videoElement.onloadedmetadata = (e) => this.videoElement.play();
+          this.videoElement.onloadedmetadata = (e) => {
+            this.videoElement.play();
+            console.log("Screen capture started", this.videoElement.videoWidth, this.videoElement.videoHeight);
+          };
           this.setAttribute("streaming", "true");
         })
         .catch((e) => console.log(e));

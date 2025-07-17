@@ -33,12 +33,25 @@ class DashboardPoster {
   }
 
   setImageCustom(canvas) {
-    this.imageCustom = canvas;
+    this.imageCustomCanvas = canvas;
+  }
+
+  setImageScreenshot(canvas) {
+    this.imageScreenshotCanvas = canvas;
   }
 
   getImageCustomData() {
-    if (this.imageCustom) {
-      let data = this.imageCustom.toDataURL("image/png");
+    if (this.imageCustomCanvas) {
+      let data = this.imageCustomCanvas.toDataURL("image/png");
+      data = data.replace(/^data:image\/(png|jpg);base64,/, ""); // remove the data url prefix (data:image/png;base64,)
+      return data;
+    }
+    return null;
+  }
+
+  getImageScreenshotData() {
+    if (this.imageScreenshotCanvas) {
+      let data = this.imageScreenshotCanvas.toDataURL("image/png");
       data = data.replace(/^data:image\/(png|jpg);base64,/, ""); // remove the data url prefix (data:image/png;base64,)
       return data;
     }
@@ -53,7 +66,7 @@ class DashboardPoster {
     }
   }
 
-  postJson() {
+  postJson(forceImages = false) {
     let resolutionData = this.isBrowser ? `${window.innerWidth}x${window.innerHeight}` : "headless";
     let checkinData = {
       appId: this.appId,
@@ -62,7 +75,7 @@ class DashboardPoster {
       resolution: resolutionData,
       frameCount: this.frameCount,
       frameRate: this.fps,
-      // imageScreenshot: null,
+      // imageScreenshot: null, // will be set later if available
       // imageExtra: imageExtraData,
     };
 
@@ -73,14 +86,21 @@ class DashboardPoster {
     }
 
     // Add image data if available
-    if (this.postCount % 3 == 0) {
-      // only post an image every 3 posts. don't post null
+    // only post an image every 3 posts
+    if (this.postCount % 3 == 0 || forceImages) {
       checkinData.imageExtra = this.getImageCustomData();
     }
-    if (this.imageScreenshot) {
+    // offset screenshot from webcam to alternate for smaller payloads
+    if (this.postCount % 3 == 1 || forceImages) {
+      if (this.imageScreenshotCanvas) {
+        checkinData.imageScreenshot = this.getImageScreenshotData();
+        this.imageScreenshotCanvas = null; // reset the screenshot canvas after posting
+      }
+    }
+    if (this.imageScreenshotFile) {
       // if a screenshot has been taken, send it!
-      checkinData.imageScreenshot = this.imageScreenshot;
-      this.imageScreenshot = null; // reset the image after posting
+      checkinData.imageScreenshot = this.imageScreenshotFile;
+      this.imageScreenshotFile = null; // reset the image after posting
       // this.deleteScreenshot(); // delete the screenshot after posting
     }
 
@@ -168,8 +188,8 @@ class DashboardPoster {
     this.screenshot({ format: "png", filename: this.screenshotFilePath })
       .then((img) => {
         this.fs.readFile(this.screenshotFilePath, (err, data) => {
-          this.imageScreenshot = Buffer.from(data).toString("base64");
-          console.log("this.imageScreenshot", this.imageScreenshot.substring(0, 20));
+          this.imageScreenshotFile = Buffer.from(data).toString("base64");
+          // console.log("this.imageScreenshotFile", this.imageScreenshotFile.substring(0, 20));
         });
       })
       .catch((err) => {
