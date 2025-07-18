@@ -1,12 +1,72 @@
-# React + Vite
+# Oversite: React + Vite Example
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This example demonstrates how to use Oversite with a React application built using Vite.
 
-Currently, two official plugins are available:
+To run _this_ example, follow these steps:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+cd examples/react
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
+Then open your browser and navigate to `http://localhost:5173` to see the application in action.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## To start a React project using Oversite
+
+```bash
+npm create vite@latest --template react
+cd <your-project-name>
+npm install
+```
+
+Then install `oversite`:
+
+```bash
+npm install git@github.com:Hovercraft-Studio/oversite.git#main
+npm run dev
+```
+
+In your Javascript (likely main.jsx), import the `oversite` components and any css/js that you want to use:
+
+```javascript
+// src/main.jsx
+import "oversite/src/components/_register-components.js"; // required
+
+// optional, but will give you nice base styling
+import "oversite/shared/css/pico.css";
+import "oversite/shared/css/styles.css";
+```
+
+In your index.html, add the `<app-store-init>` component to initialize Oversite:
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oversite + React</title>
+  </head>
+  <body>
+    <!-- required: add app-store-init above the #root div -->
+    <app-store-init
+      sender="custom-app"
+      init-keys="*"
+      debug
+      side-debug
+    ></app-store-init>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+```
+
+## To Update Oversite
+
+Pull the latest from `oversite`:
+
+- Make sure to delete package-lock.json, as this will prevent the update from working
+- `npm update oversite`
+- Restart dev server to see changes
