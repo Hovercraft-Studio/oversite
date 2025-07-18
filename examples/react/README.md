@@ -14,6 +14,8 @@ Then open your browser and navigate to `http://localhost:5173` to see the applic
 
 ## To start a React project using Oversite
 
+If you want to create a new React project with Oversite, you can use the following commands:
+
 ```bash
 npm create vite@latest --template react
 cd <your-project-name>
@@ -62,6 +64,19 @@ In your index.html, add the `<app-store-init>` component to initialize Oversite:
   </body>
 </html>
 ```
+
+See also [`oversite-module/frontend/README.md`](../oversite-module/frontend/README.md).
+
+## To run the AppStore servers
+
+To run Oversite’s frontend server and the server app:
+
+```bash
+cd node_modules/oversite
+npm run dev
+```
+
+Learn more in the [Oversite README](../../README.md).
 
 ## To Update Oversite
 
