@@ -1,6 +1,6 @@
 {
   "name": "oversite",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "Oversite - App Store and Dashboard Monitor",
   "main": "server.mjs",
   "files": [
