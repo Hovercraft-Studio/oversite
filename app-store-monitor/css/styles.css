@@ -1,0 +1,61 @@
+custom-app {
+  display: block;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+header,
+h4 {
+  background: var(--pico-card-background-color);
+  padding: 0vw 2vw;
+  border-radius: 6px;
+  margin-bottom: 2vw;
+}
+article > label {
+  background-color: var(--pico-progress-background-color);
+  padding: 0.5rem 1rem;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* monitor columns */
+
+#hud {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 2rem;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+#hud > * {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+
+#hud app-store-table {
+  flex: 0.6;
+}
+#hud app-store-event-table {
+  flex: 0.4;
+}
+
+@media screen and (max-width: 959px) {
+  #hud {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  article > label {
+    font-size: 2vw;
+  }
+
+  #hud table {
+    max-width: 100%;
+    font-size: calc(1.7 * var(--table-font-size));
+  }
+}

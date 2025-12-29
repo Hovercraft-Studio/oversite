@@ -1,0 +1,44 @@
+# Source control
+.git
+.gitignore
+.github
+
+# Build artifacts
+dist/
+out/
+build/
+
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# IDE settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temporary files
+tmp/
+temp/
+public/_tmp_data/
+_tmp_data/
+
+# Examples (optional - uncomment if you want to exclude examples from the package)
+# examples/
+
+# Scripts (optional)
+# scripts/
+
+# Documentation
+TODO.md
+CONTRIBUTING.md

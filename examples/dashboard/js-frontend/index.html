@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="apple-touch-icon-precomposed" href="/icon.png" />
+    <link rel="apple-touch-startup-image" href="/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="AppStore" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <title>Dashboard Poster Demo</title>
+    <link rel="stylesheet" href="../../../shared/css/pico.css" />
+    <link rel="stylesheet" href="../../../shared/css/styles.css" />
+    <script type="module" src="../../../src/components/_register-components.js"></script>
+  </head>
+  <body>
+    <oversite-header id="dashboard_poster"></oversite-header>
+    <custom-app>
+      <main class="container">
+        <section>
+          <h1>Dashboard Poster Demo</h1>
+          <p>Multiple pretend apps posting to the dashboard, using both available POST routes.</p>
+          <div id="examples-container" class="grid">
+            <!-- Check ./js/app.js for dynamic creation of dashboard view, due to configuration needs on dev vs prod -->
+            <!-- Ultimately this `post-url` endpoint will likely be your cloud/production instance of `oversite` -->
+            <!-- <dashboard-client-example
+              post-url="http://localhost:3003"
+              app-id="test-app-1"
+              app-title="Example App 1"
+              post-interval="10"
+            ></dashboard-client-example>
+            <dashboard-client-example
+              post-url="http://localhost:3003/api/dashboard"
+              app-id="test-app-2"
+              app-title="Example App 2"
+              post-interval="5"
+            ></dashboard-client-example> -->
+          </div>
+        </section>
+        <section>
+          <h4>Import dashboard-view web component for easy testing:</h4>
+          <div id="dashboard-container">
+            <!-- Check ./js/app.js for dynamic creation of dashboard view, due to configuration needs on dev vs prod -->
+            <!-- <dashboard-view api-url="http://localhost:3003/api/dashboard" refresh-interval="60"></dashboard-view> -->
+          </div>
+        </section>
+        <details>
+          <summary>Event Log</summary>
+          <!-- <event-log-view max-length="10"></event-log-view> -->
+          <app-store-event-table max-length="10" hide-filters></app-store-event-table>
+        </details>
+      </main>
+      <footer class="container">
+        <small>Built by us 👋</small>
+      </footer>
+    </custom-app>
+    <script type="module">
+      import ErrorUtil from "../../../src/util/error-util.mjs";
+
+      class CustomApp extends HTMLElement {
+        connectedCallback() {
+          ErrorUtil.initErrorCatching();
+          this.initExampleViews();
+          this.initDashboardView();
+        }
+
+        initExampleViews() {
+          let postURL1 = _store.get("server_url") + ""; // root of the server (to support old style)
+          let postURL2 = _store.get("server_url") + "api/dashboard";
+          this.querySelector("#examples-container").innerHTML = /*html*/ `
+            <dashboard-client-example post-url="${postURL1}" app-id="test-app-1" app-title="Example App 1" post-interval="10"></dashboard-client-example>
+            <dashboard-client-example post-url="${postURL2}" app-id="test-app-2" app-title="Example App 2" post-interval="5"></dashboard-client-example>
+          `;
+        }
+
+        initDashboardView() {
+          let apiServerURL = _store.get("server_url") + "api/dashboard";
+          let serverBase = _store.get("server_url").substring(0, _store.get("server_url").length - 1); // remove trailing slash
+          this.querySelector("#dashboard-container").innerHTML = /*html*/ `
+            <dashboard-view api-url="${apiServerURL}" server-base="${serverBase}" refresh-interval="5"></dashboard-view>
+          `;
+        }
+      }
+
+      customElements.define("custom-app", CustomApp);
+    </script>
+  </body>
+</html>

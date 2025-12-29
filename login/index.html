@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="apple-touch-icon-precomposed" href="/icon.png" />
+    <link rel="apple-touch-startup-image" href="/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="AppStore" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no">
+    <title>Login</title>
+    <link rel="stylesheet" href="../shared/css/pico.css" />
+    <link rel="stylesheet" href="../shared/css/styles.css" />
+    <script type="module" src="../src/components/_register-components.js"></script>
+  </head>
+  <body>
+    <oversite-header id="login"></oversite-header>
+    <main class="container">
+      <section>
+        <auth-form style="display: none" api-url="/api/auth" expiry-days="30" logout-reloads="true">
+          <p>Redirecting...</p>
+        </auth-form>
+        <footer>
+          <small>Built by us 👋</small>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>

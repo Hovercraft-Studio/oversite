@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="apple-touch-icon-precomposed" href="/icon.png" />
+    <link rel="apple-touch-startup-image" href="/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="AppTitle" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>AppStore & Dashboard Utilities</title>
+    <link rel="stylesheet" href="shared/css/pico.css" />
+    <link rel="stylesheet" href="shared/css/styles.css" />
+    <script type="module" src="./src/components/_register-components.js"></script>
+    <style>
+      div.grid {
+        ul,
+        li {
+          list-style: none;
+          padding: 0;
+        }
+        a {
+          width: 100%;
+        }
+        li {
+          margin-bottom: var(--pico-spacing);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <oversite-header id="index"></oversite-header>
+    <custom-app>
+      <main class="container">
+        <section>
+          <header>
+            <img src="/oversite-logo.png" alt="Oversite Logo" />
+          </header>
+          <auth-redirect style="display: none">
+            <div class="grid">
+              <div>
+                <h2>Apps</h2>
+                <ul>
+                  <li><a href="app-store-demo/" role="button">AppStore Demo</a></li>
+                  <li><a href="app-store-monitor/" role="button">AppStore Monitor</a></li>
+                  <li><a href="dashboard/" role="button">Dashboard</a></li>
+                </ul>
+              </div>
+              <div>
+                <h2>Examples</h2>
+                <ul>
+                  <li><a href="examples/dashboard/js-frontend/" role="button">Dashboard POST Example</a></li>
+                  <li><a href="examples/auth-form/" role="button">&lt;auth-form&gt;</a></li>
+                </ul>
+                <ul></ul>
+              </div>
+            </div>
+          </auth-redirect>
+        </section>
+      </main>
+      <footer class="container">
+        <small>Built by us 👋</small>
+      </footer>
+    </custom-app>
+  </body>
+</html>

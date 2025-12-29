@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="apple-touch-icon-precomposed" href="/icon.png" />
+    <link rel="apple-touch-startup-image" href="/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="AppStore" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <title>Auth Form Demo</title>
+    <link rel="stylesheet" href="../../shared/css/pico.css" />
+    <link rel="stylesheet" href="../../shared/css/styles.css" />
+    <script type="module" src="../../src/components/_register-components.js"></script>
+  </head>
+  <body>
+    <oversite-header id="auth_form"></oversite-header>
+    <custom-app>
+      <main class="container">
+        <section>
+          <h1>Auth Form Demo</h1>
+          <p>Two different ways of doing auth for oversite apps.</p>
+        </section>
+        <section>
+          <article>
+            <h4>Basic frontend-only auth</h4>
+            <p>
+              <small>
+                This is not actually secure, but good enough to protect non-public resources. Wrap your content in an
+                <code>auth-form</code> element. Even if it's a web component, as long as the
+                <code>auth-form</code> component initializes first, there shouldn't be any issues with the inner
+                components running first. Use <code>btoa('admin')</code> and <code>btoa('password')</code> to generate
+                the encoded frontend-only username and password (or comma-separated lists of usernames and passwords like 
+                <code>btoa('password1,password2')</code>). Then set the attributes on the component like this:
+                <code>&lt;auth-form user="YWRtaW4sanVzdGlu" pass="cGFzc3dvcmQscGFzcw=="&gt;&lt;/auth-form&gt;</code>
+              </small>
+            </p>
+            <auth-form style="display:none" user="YWRtaW4sanVzdGlu" pass="cGFzc3dvcmQscGFzcw==" expiry-days="30">
+              <div>
+                <p>
+                  <blockquote>
+                    Content here is only visible to logged in users. You can use the <code>auth-form</code> component to
+                    wrap any content you want to protect. It will show a login form if the user is not logged in, and will
+                    show the content if they are logged in.
+                  </blockquote>
+                  <auth-logout-button></auth-logout-button>
+                </p>
+                date-year: <date-year></date-year>
+              </div>
+            </auth-form>
+          </article>
+          <article>
+            <h4>Backend auth</h4>
+            <p>
+              <small>
+                This is secure, but you need to have the full backend server running, and users need to be configured in the root <code>.env</code> file:
+                <code>&lt;auth-form api-url="/api/auth" logout-reloads="true"&gt;&lt;/auth-form&gt;</code>
+              </small>
+            </p>
+            <auth-form style="display:none" api-url="/api/auth" expiry-days="30" logout-reloads="true">
+              <div>
+                <p>
+                  <blockquote>
+                    Content here is only visible to logged in users. 
+                  </blockquote>
+                  <auth-logout-button></auth-logout-button>
+                </p>
+              </div>
+            </auth-form>
+          </article>
+        </section>
+        <details>
+          <summary>Event Log</summary>
+          <app-store-event-table max-length="10" hide-filters></app-store-event-table>
+        </details>
+      </main>
+      <footer class="container">
+        <small>Built by us 👋</small>
+      </footer>
+    </custom-app>
+  </body>
+</html>

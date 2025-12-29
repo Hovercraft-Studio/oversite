@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="apple-touch-icon-precomposed" href="/icon.png" />
+    <link rel="apple-touch-startup-image" href="/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="AppStore" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no">
+    <title>AppStore Demo</title>
+    <link rel="stylesheet" href="../shared/css/pico.css" />
+    <link rel="stylesheet" href="../shared/css/styles.css" />
+    <script type="module" src="../src/components/_register-components.js"></script>
+  </head>
+  <body>
+    <!-- 
+    <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input camera_1_health camera_2_health camera_3_health" debug side-debug></app-store-init> 
+    <app-store-init sender="tablet" channel="default" auth-key="auth-key" init-keys="*" debug side-debug></app-store-init>
+    <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="30000" show="false"></app-store-heartbeat>
+    -->
+    <oversite-header id="tablet"></oversite-header>
+    <custom-app>
+      <auth-redirect style="display: none">
+        <main class="container">
+          <home-button></home-button>
+          <section>
+            <h1>AppStore Demo</h1>
+            <p>A nice way to communicate between apps</p>
+            <h4>Buttons with shared key: app_state = <code><app-store-element key="app_state"></app-store-element></code></h4>
+            <nav>
+              <app-store-button key="app_state" value="attract">Attract</app-store-button>
+              <app-store-button key="app_state" value="gameplay">Gameplay</app-store-button>
+              <app-store-button key="app_state" value="game_over">Game Over</app-store-button>
+            </nav>
+            <h4>Special Buttons</h4>
+            <nav style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+              <app-store-button key="btn_pulse" value="1" momentary>Momentary / Pulse</app-store-button>
+              <app-store-button key="btn_toggle" value="0" toggle>Toggle</app-store-button>
+              <app-store-button key="btn_confirm" value="true" confirm>Confirm</app-store-button>
+              <app-store-button key="btn_disabled" value="true" disabled>Disabled</app-store-button>
+              <app-store-button store-key="test_key" store-value="test_value">Alternate Attributes</app-store-button>
+            </nav>
+            <h4>Input Fields</h4>
+            <p>
+              <label>app-store-textfield</label>
+              <app-store-textfield key="text_input" value=""></app-store-textfield>
+            </p>
+            <p>
+              <label>app-store-number</label>
+              <app-store-number key="numeric_input" value=""></app-store-number>
+            </p>
+            <p>
+              <label>app-store-slider</label>
+              <label>slider_1: <code><app-store-element key="slider_1" flash-on-update></app-store-element></code></label>
+              <app-store-slider key="slider_1" value="0" max="1"></app-store-slider>
+              MOUSE_X: <code><app-store-element key="MOUSE_X"></app-store-element></code>
+              <app-store-slider key="MOUSE_X" value="0" max="1"></app-store-slider>
+              MOUSE_Y: <code><app-store-element key="MOUSE_Y"></app-store-element></code>
+              <app-store-slider key="MOUSE_Y" value="0" max="1"></app-store-slider>
+            </p>
+            <p>
+              <label>app-store-checkbox</label>
+              <app-store-checkbox key="checkbox_1" >Checkbox 1</app-store-checkbox>
+              <app-store-checkbox key="checkbox_2" value="true">Checkbox 2</app-store-checkbox>
+              <app-store-checkbox key="checkbox_3" disabled>Checkbox 3</app-store-checkbox>
+              <app-store-checkbox key="checkbox_toggle" toggle>Checkbox Toggle</app-store-checkbox>
+            </p>
+            <h4>Monitoring</h4>
+            <p class="grid">
+              <app-store-health key="camera_1_health" value=""></app-store-health>
+              <app-store-health key="camera_2_health" value=""></app-store-health>
+            </p>
+            <p class="grid">
+              <app-store-health key="camera_3_health" value=""></app-store-health>
+            </p>
+          </section>
+          <details>
+            <summary>Event Log</summary>
+            <app-store-event-table max-length="10" hide-filters></app-store-event-table>
+          </details>
+        </main>
+        <footer class="container">
+          <small>Built by us 👋</small>
+        </footer>
+      </auth-redirect>
+    </custom-app>
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
