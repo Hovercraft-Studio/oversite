@@ -5,9 +5,17 @@
   "main": "server.mjs",
   "files": [
     "server.mjs",
+    "index.html",
+    "vite.config.js",
     "src",
     "public",
-    "shared"
+    "shared",
+    "login",
+    "examples",
+    "scripts",
+    "dashboard",
+    "app-store-demo",
+    "app-store-monitor"
   ],
   "keywords": [
     "dashboard",
