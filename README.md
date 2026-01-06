@@ -266,7 +266,7 @@ And at least add the <app-store-init> component for easy connection
   init-keys="*"
   debug
   side-debug
-  ws-url="wss://oversite.cloudhost.app/ws?channel=app-channel-id&auth=app-auth-token"
+  ws-url="wss://cloudhost.app/ws?channel=app-channel-id&auth=app-auth-token"
 ></app-store-init>
 ```
 
@@ -303,6 +303,15 @@ npm update ws @latest # Update ws to latest version if it was in the list
 
 npx npm-check-updates -u # Update package.json with latest versions
 npm install # Install the latest versions
+```
+
+Publish package (when public):
+
+```bash
+npm login
+npm version patch # or minor/major
+npm publish
+npm unpublish oversite@1.0.4
 ```
 
 ## More to come!
