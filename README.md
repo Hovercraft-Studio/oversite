@@ -309,8 +309,12 @@ Publish package (when public):
 
 ```bash
 npm login
+
+# switch to main, keep any extra files out of the mix
+# then back to dev after publishing
 npm version patch # or minor/major
 npm publish
+
 npm unpublish oversite@1.0.4
 ```
 

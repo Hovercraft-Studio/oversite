@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const appRoot = dirname(__filename);
 const distPath = join(appRoot, "dist");
 const publicPath = join(appRoot, "public");
-const baseDataPath = join(appRoot, "public", "_tmp_data");
+const baseDataPath = join(appRoot, "_tmp_data");
 const prodDataPath = join(appRoot, "dist", "_tmp_data");
 const envPath = join(appRoot, ".env");
 
