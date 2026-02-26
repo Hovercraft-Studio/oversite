@@ -42,7 +42,7 @@ temp/
 
 # Server-generated files
 server/data/
-public/_tmp_data/
+_tmp_data/
 
 # TD
 app-store-demo.*.toe
