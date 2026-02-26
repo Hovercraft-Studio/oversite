@@ -315,6 +315,7 @@ npm login
 npm version patch # or minor/major
 npm publish
 
+# to unpublish older versions if needed - be careful with this command, as it can cause issues for anyone using the package
 npm unpublish oversite@1.0.4
 ```
 
