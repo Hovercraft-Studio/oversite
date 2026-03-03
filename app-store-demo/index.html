@@ -21,8 +21,9 @@
   </head>
   <body>
     <!-- 
-    <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input camera_1_health camera_2_health camera_3_health" debug side-debug></app-store-init> 
     <app-store-init sender="tablet" channel="default" auth-key="auth-key" init-keys="*" debug side-debug></app-store-init>
+    <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input camera_1_health camera_2_health camera_3_health" debug side-debug></app-store-init> 
+    <app-store-init sender="tablet" init-keys="*" debug side-debug></app-store-init> 
     <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="30000" show="false"></app-store-heartbeat>
     -->
     <oversite-header id="tablet"></oversite-header>
@@ -50,7 +51,7 @@
             <h4>Input Fields</h4>
             <p>
               <label>app-store-textfield</label>
-              <app-store-textfield key="text_input" value=""></app-store-textfield>
+              <app-store-textfield key="text_input" value="" placeholder="Enter text here"></app-store-textfield>
             </p>
             <p>
               <label>app-store-number</label>

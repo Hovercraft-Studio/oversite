@@ -3,7 +3,6 @@ import AppStoreElement from "./app-store-element.js";
 class AppStoreTextfield extends AppStoreElement {
   initStoreListener() {
     this.input = this.el.querySelector("input");
-
     this.input.value = this.storeValue || "";
 
     this.input.addEventListener("input", (e) => {
@@ -23,7 +22,7 @@ class AppStoreTextfield extends AppStoreElement {
 
   html() {
     return /*html*/ `
-      <input type="text" placeholder="Text here" >
+      <input type="text" placeholder="${this.getAttribute("placeholder") || "Text here"}" >
     `;
   }
 

@@ -86,7 +86,7 @@ Key components:
 - `app-store-button` — button with `toggle` and `momentary` modes
 - `app-store-table` — live table of all keys/values (**known memory leak**: likely unbounded listener/DOM accumulation)
 - `dashboard-view` — full dashboard UI, ~640 lines (polling, hash-based routing, detail views) — candidate for decomposition
-- `oversite-header` — per-page header that auto-boots `app-store-init` + heartbeat + auth
+- `oversite-header` — per-page header for Oversite demo pages that auto-boots `app-store-init` + heartbeat + auth
 
 All components registered in `_register-components.js`. Each file calls its own `MyComponent.register()` at the bottom.
 

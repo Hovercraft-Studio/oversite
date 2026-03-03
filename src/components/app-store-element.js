@@ -4,7 +4,7 @@ class AppStoreElement extends HTMLElement {
   static observedAttributes = ["disabled"];
 
   connectedCallback() {
-    // this.shadow = this.attachShadow({ mode: "open" }); // "open" allows querying and probably lots more
+    // this.shadow = this.attachShadow({ mode: "open" }); // "open" allows querying and lots more
     this.el = this.shadow ? this.shadow : this;
     this.initComponent();
     this.render();
@@ -20,8 +20,7 @@ class AppStoreElement extends HTMLElement {
     const rawKey = this.getAttribute("key") ?? this.getAttribute("store-key");
     this.storeKey = rawKey ? String(rawKey) : "key";
 
-    const rawValue =
-      this.getAttribute("value") ?? this.getAttribute("store-value");
+    const rawValue = this.getAttribute("value") ?? this.getAttribute("store-value");
     this.storeValue = rawValue ? String(rawValue) : null;
 
     this.flashOnUpdate = this.hasAttribute("flash-on-update");
@@ -93,11 +92,9 @@ class AppStoreElement extends HTMLElement {
     if (!this.el) return;
 
     // update the disabled state of all interactive child elements
-    this.el
-      .querySelectorAll("input, button, select, textarea")
-      .forEach((element) => {
-        element.disabled = isDisabled;
-      });
+    this.el.querySelectorAll("input, button, select, textarea").forEach((element) => {
+      element.disabled = isDisabled;
+    });
 
     // update the aria-disabled attribute on child labels
     this.el.querySelectorAll("label").forEach((label) => {
