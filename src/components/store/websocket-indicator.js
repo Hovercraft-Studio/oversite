@@ -1,4 +1,4 @@
-import DOMUtil from "../util/dom-util.mjs";
+import DOMUtil from "../../util/dom-util.mjs";
 
 class WebsocketIndicator extends HTMLElement {
   connectedCallback() {

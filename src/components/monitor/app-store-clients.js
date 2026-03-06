@@ -1,9 +1,14 @@
-import DateUtil from "../util/date-util.mjs";
+import AppStore from "../../app-store/app-store-.mjs";
+import DateUtil from "../../util/date-util.mjs";
 import css from "./app-store-table-css.js";
 
 class AppStoreClients extends HTMLElement {
   async connectedCallback() {
     this.markup = this.innerHTML;
+    AppStore.checkStoreReady(this);
+  }
+
+  async storeIsReady() {
     this.serverURL = _store.get("server_url");
     await this.getDataFromServer();
     this.render();

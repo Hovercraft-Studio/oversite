@@ -1,4 +1,4 @@
-import MobileUtil from "../util/mobile-util.mjs";
+import MobileUtil from "../../util/mobile-util.mjs";
 import AppStoreElement from "./app-store-element.js";
 
 class AppStoreButton extends AppStoreElement {
@@ -6,7 +6,7 @@ class AppStoreButton extends AppStoreElement {
     return MobileUtil.isMobileBrowser() ? "touchstart" : "click";
   }
 
-  initStoreListener() {
+  subclassInit() {
     this.button = this.el.querySelector("button");
     this.isToggle = this.hasAttribute("toggle");
     this.isMomentary = this.hasAttribute("momentary");
@@ -49,8 +49,6 @@ class AppStoreButton extends AppStoreElement {
       this.button.innerHTML += '<input type="checkbox" role="switch" />';
       this.setStoreValue(this.storeValue);
     }
-
-    super.initStoreListener();
   }
 
   setStoreValue(value) {
@@ -72,10 +70,12 @@ class AppStoreButton extends AppStoreElement {
 
   css() {
     return /*css*/ `
-      button input[type="checkbox"] {
-        margin-left: 0.5rem;
-        margin-right: 0;
-        pointer-events: none;
+      app-store-button {
+        button input[type="checkbox"] {
+          margin-left: 0.5rem;
+          margin-right: 0;
+          pointer-events: none;
+        }
       }
     `;
   }

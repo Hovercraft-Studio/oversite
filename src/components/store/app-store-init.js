@@ -1,5 +1,4 @@
-import AppStoreDistributed from "../app-store/app-store-distributed.mjs";
-import URLUtil from "../util/url-util.mjs";
+import AppStoreDistributed from "../../app-store/app-store-distributed.mjs";
 
 /**
  * AppStoreInit - Web component that initializes AppStore distributed connection
@@ -22,9 +21,17 @@ class AppStoreInit extends HTMLElement {
     this.addChildren();
   }
 
+  hashParamConfig(key, defaultVal) {
+    // use value from the URL hash if it exists, otherwise use default value and write to hash for the next reload
+    let hashParams = new URLSearchParams(document.location.hash);
+    let val = hashParams.has(key) ? hashParams.get(key) : defaultVal;
+    if (!hashParams.has(key)) document.location.hash += `&${key}=${val}`;
+    return val;
+  }
+
   initServerURL() {
     // get ws:// URL from attribute if available and
-    // override hash `URLUtil.hashParamConfig()` methods below if exists
+    // override hash `this.hashParamConfig()` methods below if exists
     let wsURL = this.getAttribute("ws-url");
 
     // check dev port to detect if we're running locally or on a production server
@@ -35,7 +42,7 @@ class AppStoreInit extends HTMLElement {
     // and show in URL for easy sharing
     let defaultWsURL = "ws://" + document.location.hostname + ":3003/ws";
     if (isProd) defaultWsURL = "wss://" + document.location.hostname + "/ws"; // production server
-    this.webSocketURL = wsURL ? wsURL : URLUtil.hashParamConfig("wsURL", defaultWsURL);
+    this.webSocketURL = wsURL ? wsURL : this.hashParamConfig("wsURL", defaultWsURL);
 
     // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
     // we just need to check for a custom http port in the URL and otherwise use the ws:// address
@@ -47,7 +54,7 @@ class AppStoreInit extends HTMLElement {
     this.serverURL = socketToServerURL.href;
   }
 
-  async initSharedState() {
+  initSharedState() {
     // get config from web component attributes
     let sender = this.getAttribute("sender");
     let channel = this.getAttribute("channel");

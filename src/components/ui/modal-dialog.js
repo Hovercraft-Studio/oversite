@@ -1,21 +1,53 @@
-import ObjectUtil from "../util/object-util.mjs";
+import AppStore from "../../app-store/app-store-.mjs";
+/**
+ * ModalDialog - Web component for a modal dialog that can be opened and closed with animations
+ *
+ * Listens for "OPEN_MODAL" and "CLOSE_MODAL" events from the AppStore to control the modal.
+ * When "OPEN_MODAL" is received, it expects a config object with the following properties:
+ * - title: The title text of the modal
+ * - content: The HTML content to display in the modal body
+ * - cancelValue: The value to set in the store when the cancel button is clicked (optional)
+ * - confirmValue: The value to set in the store when the confirm button is clicked (optional)
+ * - cancelBtnText: Custom text for the cancel button (optional, defaults to "Cancel")
+ * - confirmBtnText: Custom text for the confirm button (optional, defaults to "Confirm")
+ * The modal can also be closed by clicking outside of it or pressing the Escape key.
+ * When the cancel or confirm buttons are clicked, the modal will close and set "MODAL_CANCEL" or "MODAL_CONFIRM" in the store with the respective values.
+ * The component uses the native <dialog> element for the modal, and applies CSS classes to the <html> element to control the opening and closing animations.
+ * The scrollbar width is calculated and set as a CSS variable to prevent layout shift when the modal opens.
+ *
+ * Example usage:
+ * _store.set("OPEN_MODAL", {
+ *   title: "Confirm Action",
+ *   content: "<p>Are you sure you want to proceed?</p>",
+ *   cancelValue: "cancelled",
+ *   confirmValue: "confirmed",
+ *   cancelBtnText: "CANCEL",
+ *   confirmBtnText: "CONFIRM"
+ * });
+ *
+ * To close the modal programmatically:
+ * _store.set("CLOSE_MODAL", true);
+ */
 
 class ModalDialog extends HTMLElement {
+  static OPEN_MODAL = "OPEN_MODAL";
+  static CLOSE_MODAL = "CLOSE_MODAL";
+  static MODAL_CONFIRM = "MODAL_CONFIRM";
+  static MODAL_CANCEL = "MODAL_CANCEL";
+  static MODAL_CLOSED = "MODAL_CLOSED";
+
   connectedCallback() {
     // this.shadow = this.attachShadow({ mode: "open" });
     this.el = this.shadow ? this.shadow : this;
     this.config();
     this.addDocumentListeners();
     this.render();
-
-    ObjectUtil.callbackWhenPropertyExists(window, "_store", () => {
-      this.initStoreListener();
-    });
+    AppStore.checkStoreReady(this);
   }
 
-  initStoreListener() {
-    _store.addListener(this, "OPEN_MODAL");
-    _store.addListener(this, "CLOSE_MODAL");
+  storeIsReady() {
+    _store.addListener(this, ModalDialog.OPEN_MODAL);
+    _store.addListener(this, ModalDialog.CLOSE_MODAL);
   }
 
   config() {
@@ -57,14 +89,10 @@ class ModalDialog extends HTMLElement {
       let actionClose = e.target.dataset.actionClose;
       if (actionClose) {
         this.closeModal();
-        if (actionClose == "confirm") _store.set("MODAL_CONFIRM", this.confirmValue);
-        if (actionClose == "cancel") _store.set("MODAL_CANCEL", this.cancelValue);
+        if (actionClose == "confirm") _store.set(ModalDialog.MODAL_CONFIRM, this.confirmValue);
+        if (actionClose == "cancel") _store.set(ModalDialog.MODAL_CANCEL, this.cancelValue);
       }
     });
-  }
-
-  storeUpdated(key, value) {
-    this.eventLog.log(`<pre>[${Date.now()}] ${key}: ${value}</pre>`);
   }
 
   // Open modal
@@ -111,6 +139,7 @@ class ModalDialog extends HTMLElement {
       this.content = "";
       this.render();
     }, this.animationDuration);
+    _store.set(ModalDialog.MODAL_CLOSED, true);
   }
 
   // Get scrollbar width
@@ -137,6 +166,15 @@ class ModalDialog extends HTMLElement {
   }
 
   html() {
+    let hasFooter = this.cancelValue || this.confirmValue;
+    let footer = hasFooter
+      ? `
+      <footer>
+        ${this.cancelValue ? this.cancelButton() : ""}
+        ${this.confirmValue ? this.confirmButton() : ""}
+      </footer>
+    `
+      : "";
     return /*html*/ `
       <dialog>
         <article>
@@ -145,10 +183,7 @@ class ModalDialog extends HTMLElement {
             <h3>${this.title}</h3>
           </header>
           <div data-content>${this.content}</div>
-          <footer>
-            ${this.cancelValue ? this.cancelButton() : ""}
-            ${this.confirmValue ? this.confirmButton() : ""}
-          </footer>
+          ${footer}
         </article>
       </dialog>
     `;

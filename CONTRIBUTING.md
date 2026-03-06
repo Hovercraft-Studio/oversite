@@ -55,14 +55,14 @@ class MyServerModule {
 The frontend uses **Vanilla Web Components** (Custom Elements) without a heavy framework.
 
 ### Component Architecture
-- **Base Class**: Most components should extend `AppStoreElement` (from `./app-store-element.js`).
+- **Base Class**: Most UI components should extend `AppStoreElement` (from `./app-store-element.js`).
 - **Registration**:
   - Include a static `register()` method.
   - Call `register()` at the end of the file.
   - Register components in `_register-components.js`.
 - **State Management**:
   - Components interact with a global `_store` object.
-  - Implement `initStoreListener()` to subscribe to store updates.
+  - Implement `subclassInit()` to initialize a component once AppStore is available.
   - Implement `storeUpdated(key, value)` to react to changes.
   - Use `setStoreValue(value)` to update the DOM when data changes.
 - **Templates & Styles**:
@@ -78,10 +78,9 @@ class MyComponent extends AppStoreElement {
   // Define attributes to watch
   static observedAttributes = ["my-attr"];
 
-  // Initialize store listeners
-  initStoreListener() {
-    super.initStoreListener();
-    // Custom initialization logic
+  // Custom initialization logic
+  subclassInit() {
+    // add listeners, initialize state, etc.
   }
 
   // Handle store updates
@@ -99,7 +98,7 @@ class MyComponent extends AppStoreElement {
 
   // Component Styles
   css() {
-    return /*css*/`
+    return /*css*/ `
       :host {
         display: block;
       }
@@ -111,7 +110,7 @@ class MyComponent extends AppStoreElement {
 
   // Component HTML
   html() {
-    return /*html*/`
+    return /*html*/ `
       <div class="display">${this.storeValue || ""}</div>
     `;
   }

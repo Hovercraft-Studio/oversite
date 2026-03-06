@@ -76,8 +76,8 @@ Boots config from CLI args + `.env`, then composes four modules:
 All components extend `AppStoreElement` from `app-store-element.js`.
 
 `AppStoreElement` lifecycle:
-1. `connectedCallback` reads `key`/`value` attributes, waits for `window._store` via `ObjectUtil.callbackWhenPropertyExists`
-2. `initStoreListener()` subscribes to the store
+1. `connectedCallback` reads `key`/`value` attributes, waits for `window._store` via `AppStoreElement.checkStoreReady()`
+2. `storeIsReady()` subscribes to the store
 3. `storeUpdated(key, value)` called on every store update — subclasses override this
 4. `render()` injects `<style>` from `css()` + HTML from `html()`
 
@@ -149,7 +149,9 @@ import AppStoreElement from "./app-store-element.js";
 
 class MyComponent extends AppStoreElement {
   static observedAttributes = ["my-attr"];
-  initStoreListener() { super.initStoreListener(); }
+  subclassInit() {
+    // Custom initialization logic
+  }
   storeUpdated(key, value) {
     if (key !== this.storeKey) return;
     this.setStoreValue(value);

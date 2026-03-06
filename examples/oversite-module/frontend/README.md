@@ -4,9 +4,11 @@ This is a starter template to use `oversite` as a module
 
 Install:
 
+~~npm install git@github.com:Hovercraft-Studio/oversite.git#main~~
+
 ```bash
 npm create vite@latest
-npm install git@github.com:Hovercraft-Studio/oversite.git#main
+npm install oversite
 npm run dev
 ```
 

@@ -1,11 +1,26 @@
 class AppStore {
   static LOCALSTORAGE_KEY = "_store";
+  static STORE_READY_EVENT = "appstore-ready";
 
   constructor() {
     this.state = {};
     this.listeners = [];
     this.methods = {};
-    if (typeof window !== "undefined") window._store = this;
+    if (typeof window !== "undefined") {
+      window._store = this;
+      window.dispatchEvent(new CustomEvent(AppStore.STORE_READY_EVENT));
+    }
+  }
+
+  static checkStoreReady(obj) {
+    if (window._store) {
+      obj.storeIsReady();
+    } else {
+      const readyCallback = () => {
+        requestAnimationFrame(() => obj.storeIsReady()); // raf to allow for hydration
+      };
+      window.addEventListener(AppStore.STORE_READY_EVENT, readyCallback, { once: true });
+    }
   }
 
   addListener(obj, key) {

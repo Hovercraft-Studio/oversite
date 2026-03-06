@@ -1,7 +1,7 @@
 import AppStoreElement from "./app-store-element.js";
 
 class AppStoreSlider extends AppStoreElement {
-  initStoreListener() {
+  subclassInit() {
     this.input = this.el.querySelector("input");
 
     this.input.setAttribute("min", this.getAttribute("min") || 0);
@@ -13,8 +13,6 @@ class AppStoreSlider extends AppStoreElement {
     this.input.addEventListener("input", (e) => {
       _store.set(this.storeKey, parseFloat(e.target.value), true);
     });
-
-    super.initStoreListener();
   }
 
   setStoreValue(value) {

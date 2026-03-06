@@ -1,10 +1,6 @@
 import AppStoreElement from "./app-store-element.js";
 
 class AppStoreHealth extends AppStoreElement {
-  initStoreListener() {
-    super.initStoreListener();
-  }
-
   setStoreValue(value) {
     this.render();
   }
@@ -55,12 +51,8 @@ class AppStoreHealth extends AppStoreElement {
   }
 
   render() {
-    this.el.innerHTML = /*html*/ `
-      ${this.html()}
-      <style>
-        ${this.css()}
-      </style>
-    `;
+    this.el.innerHTML = this.html();
+    this.injectHeadStyles();
   }
 
   static register() {

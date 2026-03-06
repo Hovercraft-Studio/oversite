@@ -1,11 +1,10 @@
-import AppStoreElement from "./app-store-element.js";
-import DateUtil from "../util/date-util.mjs";
+import AppStoreElement from "../ui/app-store-element.js";
+import DateUtil from "../../util/date-util.mjs";
 
 class AppStoreHeartbeat extends AppStoreElement {
-  initStoreListener() {
+  subclassInit() {
     this.displays = this.getAttribute("show") == "true";
     this.startInterval();
-    super.initStoreListener();
   }
 
   startInterval() {
