@@ -20,6 +20,14 @@ Default locations & ports are:
 - ws://localhost:3003/ws 
   - WebSocket server
 
+## Documentation
+
+**For developers and AI agents**: start with [`AGENTS.md`](./AGENTS.md) — the root map with links to all systems and references.
+
+**For system architecture**: see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+
+**Full doc tree**: [`docs/`](./docs/README.md) — product specs, references, design decisions, exec plans.
+
 ## Install / Quickstart
 
 ```bash
@@ -88,7 +96,7 @@ Managing SSL certificates is a pain, and this project starts with a focus on sim
 ### API routes for `server.mjs`
 
 - `GET /api/state/all` - Returns the current state of the store
-- `GET /api/state/:key` - Returns the json for a specific key in the store
+- `GET /api/state/get/:key` - Returns the json for a specific key in the store
 - `GET /api/state/wipe` - Clears the store
 - `GET /api/state/wipe/:key` - Clears a specific key in the store
 - `GET /api/state/clients` - Lists all client connections 

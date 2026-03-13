@@ -150,7 +150,7 @@ This project uses GitHub Copilot for AI-assisted development. The workspace inst
 
 | # | Target | What |
 |---|---|---|
-| R1 | `src/server/dashboard-api.mjs` | Replace synchronous `fs` calls with `fs.promises` |
+| ~~R1~~ | ~~`src/server/dashboard-api.mjs`~~ | ~~Replace synchronous `fs` calls with `fs.promises`~~ ✅ Done |
 | R2 | `src/components/app-store-table.js` | Fix unbounded memory leak — audit listener/DOM cleanup |
 | R3 | `src/server/socket-server.mjs` + `persistent-state.mjs` | Introduce `ServerContext` class for shared config/state |
 | R4 | `src/app-store/app-store-.mjs` | Audit `window._store` usages |
