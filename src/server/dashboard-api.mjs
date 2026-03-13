@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import cors from "cors";
 import { logMagenta } from "./util.mjs";
 
@@ -24,15 +24,17 @@ class DashboardApi {
 
     // init
     this.isWriting = false;
-    this.createDir(this.pathImages); // create entire local data path (on disk) recursively by creating the deepest level for images
-    this.loadDB();
+    this.dashboardData = { checkins: {} }; // default until init() loads from disk
     this.addRoutes();
   }
 
-  createDir(dirPath) {
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
+  async init() {
+    await this.createDir(this.pathImages); // create entire local data path (on disk) recursively
+    await this.loadDB();
+  }
+
+  async createDir(dirPath) {
+    await fs.mkdir(dirPath, { recursive: true }); // no-op if already exists
   }
 
   printConfig() {
@@ -68,7 +70,7 @@ class DashboardApi {
         origin: "*", // Allow all origins
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow specific methods
         allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
-      })
+      }),
     );
 
     // Allow posting JSON data and increase default size limit. Posting images was crashing on prod
@@ -96,31 +98,31 @@ class DashboardApi {
   // DB file
   /////////////////////////////////////////////////////////
 
-  loadDB() {
+  async loadDB() {
     try {
-      let dbFile = fs.readFileSync(this.pathDbFile, "utf8");
+      let dbFile = await fs.readFile(this.pathDbFile, "utf8");
       this.dashboardData = JSON.parse(dbFile);
       logMagenta(`✅ Dashboard data loaded with (${Object.keys(this.dashboardData.checkins).length}) projects`);
     } catch (error) {
       logMagenta("⚠️ Error reading dashboard data, creating from scratch. Probably first run, or data was corrupt.");
       this.dashboardData = { checkins: {} };
-      this.writeDbFile();
+      await this.writeDbFile();
     }
   }
 
-  writeDbFile() {
-    if (this.isWriting == true) {
+  async writeDbFile() {
+    if (this.isWriting) {
       logMagenta("Dashboard already writing json, skipping write");
-    } else {
-      this.isWriting = true;
-      try {
-        fs.writeFileSync(this.pathDbFile, JSON.stringify(this.dashboardData, null, 2));
-        // logMagenta("✅ Dashboard data written to disk:", this.pathDbFile);
-      } catch (error) {
-        logMagenta("⚠️ Error writing dashboard data:", error);
-      }
-      this.isWriting = false;
+      return;
     }
+    this.isWriting = true; // set synchronously before first await to block concurrent calls
+    try {
+      await fs.writeFile(this.pathDbFile, JSON.stringify(this.dashboardData, null, 2));
+      // logMagenta("✅ Dashboard data written to disk:", this.pathDbFile);
+    } catch (error) {
+      logMagenta("⚠️ Error writing dashboard data:", error);
+    }
+    this.isWriting = false;
   }
 
   /////////////////////////////////////////////////////////
@@ -150,7 +152,7 @@ class DashboardApi {
     }
   }
 
-  handlePostData(req, res) {
+  async handlePostData(req, res) {
     // process incoming posted data
     let postedData = req.body;
     // logMagenta("Posted data:", postedData);
@@ -158,7 +160,7 @@ class DashboardApi {
       console.error("No valid data posted: ", postedData);
       res.status(400).json({ error: "No valid data posted" });
     } else {
-      this.processCheckIn(postedData);
+      await this.processCheckIn(postedData);
       res.status(200).json({
         status: `Successful check-in for ${postedData.appId}`,
         appData: postedData,
@@ -166,7 +168,7 @@ class DashboardApi {
     }
   }
 
-  deleteCheckin(req, res) {
+  async deleteCheckin(req, res) {
     const appId = req.params.appId;
     if (this.dashboardData.checkins[appId]) {
       let timestamp = Date.now();
@@ -175,17 +177,17 @@ class DashboardApi {
       // delete images from disk
       if (projectData.history) {
         for (let i = 0; i < projectData.history.length; i++) {
-          this.deleteImagesFromCheckin(projectData.history[i]);
+          await this.deleteImagesFromCheckin(projectData.history[i]);
         }
       }
-      this.deleteImagesFromCheckin(projectData);
+      await this.deleteImagesFromCheckin(projectData);
 
       // delete checkin data from memory
       delete this.dashboardData.checkins[appId].history;
       delete this.dashboardData.checkins[appId];
 
       // save to disk
-      this.writeDbFile();
+      await this.writeDbFile();
       res.status(200).json({ status: `Deleted checkin data for ${appId}` });
       logMagenta(`Deleted checkin data for ${appId} in ${Date.now() - timestamp}ms`);
     } else {
@@ -197,7 +199,7 @@ class DashboardApi {
   // Update db and image files
   /////////////////////////////////////////////////////////
 
-  processCheckIn(postedData) {
+  async processCheckIn(postedData) {
     let appId = postedData.appId;
 
     // get cur time and add lastSeen timestamp
@@ -208,13 +210,13 @@ class DashboardApi {
     if (postedData.appUptime) postedData.lastSeenApp = lastSeen; // special secondary lastSeen if it's a web app and not the java app
 
     // save images & store/transform incoming data w/history
-    this.saveImages(postedData, timestamp, appId, lastSeen);
+    await this.saveImages(postedData, timestamp, appId, lastSeen);
     this.saveCheckinData(postedData, appId, lastSeen);
-    this.updateHistory(postedData, appId);
+    await this.updateHistory(postedData, appId);
     // logMagenta(`received post data for ${appId} at ${lastSeen}`);
 
     // write database file to disk
-    this.writeDbFile();
+    await this.writeDbFile();
     // logMagenta(`Dashboard data processed in ${Date.now() - timestamp}ms`);
   }
 
@@ -231,7 +233,7 @@ class DashboardApi {
     }
   }
 
-  updateHistory(postedData, appId) {
+  async updateHistory(postedData, appId) {
     // deepcopy posted data
     let deepCopy = JSON.parse(JSON.stringify(postedData));
     // logMagenta("Updating history for", appId);
@@ -248,52 +250,52 @@ class DashboardApi {
     while (this.dashboardData.checkins[appId].history.length > DashboardApi.maxHistory) {
       // Remove the oldest entry from the end
       let checkin = this.dashboardData.checkins[appId].history.pop();
-      // and delete images from remove checkin
+      // and delete images from removed checkin
       try {
-        if (checkin.imageScreenshotSrc) fs.unlinkSync(checkin.imageScreenshotSrc);
-        if (checkin.imageExtraSrc) fs.unlinkSync(checkin.imageExtraSrc);
+        if (checkin.imageScreenshotSrc) await fs.unlink(checkin.imageScreenshotSrc);
+        if (checkin.imageExtraSrc) await fs.unlink(checkin.imageExtraSrc);
       } catch (error) {
         console.error("Error deleting image files:", error);
       }
     }
   }
 
-  saveImages(postedData, timestamp, appId, lastSeen) {
+  async saveImages(postedData, timestamp, appId, lastSeen) {
     // save images to disk and replace base64 data with www path on postedData object
     if (postedData.imageScreenshot) {
       const imgPathOnDisk = `${this.pathImages}/${appId}-${timestamp}-screenshot.png`;
-      this.base64ToFile(postedData.imageScreenshot, imgPathOnDisk);
+      await this.base64ToFile(postedData.imageScreenshot, imgPathOnDisk);
       postedData.imageScreenshotSrc = imgPathOnDisk;
       postedData.imageScreenshot = `${this.routeImages}/${appId}-${timestamp}-screenshot.png`;
       postedData.lastSeenScreenshot = lastSeen;
     }
     if (postedData.imageExtra) {
       const imgPathOnDisk = `${this.pathImages}/${appId}-${timestamp}-extra.png`;
-      this.base64ToFile(postedData.imageExtra, imgPathOnDisk);
+      await this.base64ToFile(postedData.imageExtra, imgPathOnDisk);
       postedData.imageExtraSrc = imgPathOnDisk;
       postedData.imageExtra = `${this.routeImages}/${appId}-${timestamp}-extra.png`;
       postedData.lastSeenExtra = lastSeen;
     }
   }
 
-  base64ToFile(base64String, outputFile) {
+  async base64ToFile(base64String, outputFile) {
     try {
       const buffer = Buffer.from(base64String, "base64");
-      fs.writeFileSync(outputFile, buffer);
+      await fs.writeFile(outputFile, buffer);
     } catch (error) {
       console.error(`Error writing base64 to file ${outputFile}:`, error);
     }
   }
 
-  deleteImagesFromCheckin(checkIn) {
-    this.deleteImage(checkIn.imageScreenshotSrc);
-    this.deleteImage(checkIn.imageExtraSrc);
+  async deleteImagesFromCheckin(checkIn) {
+    await this.deleteImage(checkIn.imageScreenshotSrc);
+    await this.deleteImage(checkIn.imageExtraSrc);
   }
 
-  deleteImage(imagePath) {
+  async deleteImage(imagePath) {
     if (!imagePath) return;
     try {
-      fs.unlinkSync(imagePath);
+      await fs.unlink(imagePath);
       logMagenta("Deleted image:", imagePath);
     } catch (error) {
       console.error("Error deleting image file:", imagePath);

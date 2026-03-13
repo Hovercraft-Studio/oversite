@@ -155,8 +155,9 @@ const dashboardApi = new DashboardApi(
   express,
   config.dashboardDataPath,
   config.dashboardApiRoute,
-  config.dashboardPostRouteAlt
+  config.dashboardPostRouteAlt,
 );
+await dashboardApi.init();
 const offlineAlerts = new OfflineAlerts(dashboardApi, alertProjectIds, slackApiHookUrl);
 if (debug) dashboardApi.printConfig();
 
