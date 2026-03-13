@@ -123,6 +123,7 @@ class SocketServer {
     this.broadcastMessage(channelId, data); // send only to clients that are not sendonly
   }
 
+  sendStateToClient(connection) {
     // send the full persisted state object to a single newly-connected client
     if (connection.sendonly) return;
     const state = this.persistentState.getAll();
