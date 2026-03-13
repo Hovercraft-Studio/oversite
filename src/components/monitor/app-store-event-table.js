@@ -1,4 +1,5 @@
-import DateUtil from "../util/date-util.mjs";
+import AppStore from "../../app-store/app-store-.mjs";
+import DateUtil from "../../util/date-util.mjs";
 import css from "./app-store-table-css.js";
 
 class AppStoreEventTable extends HTMLElement {
@@ -6,6 +7,10 @@ class AppStoreEventTable extends HTMLElement {
     this.el = this.shadow ? this.shadow : this;
     this.events = [];
     this.render();
+    AppStore.checkStoreReady(this);
+  }
+
+  storeIsReady() {
     _store.addListener(this);
     this.maxLength = parseInt(this.getAttribute("max-length")) || 10;
     this.startTimeUpdates();

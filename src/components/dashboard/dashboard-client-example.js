@@ -1,4 +1,4 @@
-import DashboardPoster from "../dashboard/dashboard-poster.mjs";
+import DashboardPoster from "../../dashboard/dashboard-poster.mjs";
 
 class DashboardClientExample extends HTMLElement {
   constructor() {

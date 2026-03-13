@@ -9,11 +9,10 @@ import AppStoreElement from "./app-store-element.js";
  *   Toggle switch: <app-store-checkbox store-key="myToggle" toggle>Dark mode</app-store-checkbox>
  */
 class AppStoreCheckbox extends AppStoreElement {
-  initStoreListener() {
+  subclassInit() {
     this.input = this.el.querySelector("input");
 
-    this.input.checked =
-      this.storeValue === true || parseInt(this.storeValue) === 1;
+    this.input.checked = this.storeValue === true || parseInt(this.storeValue) === 1;
 
     this.isToggle = this.hasAttribute("toggle");
     if (this.isToggle) this.input.setAttribute("role", "switch");
@@ -21,8 +20,6 @@ class AppStoreCheckbox extends AppStoreElement {
     this.input.addEventListener("change", (e) => {
       _store.set(this.storeKey, e.target.checked, true);
     });
-
-    super.initStoreListener();
   }
 
   setStoreValue(value) {

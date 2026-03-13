@@ -1,12 +1,14 @@
-import ObjectUtil from "../util/object-util.mjs";
+import AppStore from "../../app-store/app-store-.mjs";
 
 class AppStoreElement extends HTMLElement {
   static observedAttributes = ["disabled"];
 
   connectedCallback() {
-    // this.shadow = this.attachShadow({ mode: "open" }); // "open" allows querying and probably lots more
+    // this.shadow = this.attachShadow({ mode: "open" }); // "open" allows querying and lots more
     this.el = this.shadow ? this.shadow : this;
+    this.initialHTML = this.innerHTML;
     this.initComponent();
+    AppStore.checkStoreReady(this);
     this.render();
   }
 
@@ -15,32 +17,31 @@ class AppStoreElement extends HTMLElement {
   }
 
   initComponent() {
-    this.initialHTML = this.innerHTML;
-
+    // determine store key and value from attributes
     const rawKey = this.getAttribute("key") ?? this.getAttribute("store-key");
     this.storeKey = rawKey ? String(rawKey) : "key";
-
-    const rawValue =
-      this.getAttribute("value") ?? this.getAttribute("store-value");
+    const rawValue = this.getAttribute("value") ?? this.getAttribute("store-value");
     this.storeValue = rawValue ? String(rawValue) : null;
+    this.coerceBooleanValues();
+    this.valueFromStore = null; // track the current value from the store to prevent unnecessary updates
 
     this.flashOnUpdate = this.hasAttribute("flash-on-update");
+  }
 
-    // handle special values to coerce datatypes
+  coerceBooleanValues() {
     if (this.storeValue == "true") this.storeValue = true;
     else if (this.storeValue == "false") this.storeValue = false;
     else if (this.storeValue == "0") this.storeValue = 0;
     else if (this.storeValue == "1") this.storeValue = 1;
     else if (this.storeValue == "-1") this.storeValue = -1;
-
-    // AppStore connection when _store is available
-    this.valueFromStore = null;
-    ObjectUtil.callbackWhenPropertyExists(window, "_store", () => {
-      this.initStoreListener();
-    });
   }
 
-  initStoreListener() {
+  subclassInit() {
+    // stub to override with subclass-specific initialization
+  }
+
+  storeIsReady() {
+    this.subclassInit();
     this.valueFromStore = _store.get(this.storeKey) || this.valueFromStore;
     _store.addListener(this);
     this.hydrateOnInit();
@@ -48,7 +49,7 @@ class AppStoreElement extends HTMLElement {
 
   hydrateOnInit() {
     // if the store has a value, set it. if the web component existed as the page loaded,
-    // this most likely is a result of app-store-init checking the server for hyrdation keys
+    // this most likely is a result of app-store-init checking the server for hydration keys
     if (_store.get(this.storeKey) != null) {
       this.setStoreValue(_store.get(this.storeKey));
     }
@@ -93,16 +94,41 @@ class AppStoreElement extends HTMLElement {
     if (!this.el) return;
 
     // update the disabled state of all interactive child elements
-    this.el
-      .querySelectorAll("input, button, select, textarea")
-      .forEach((element) => {
-        element.disabled = isDisabled;
-      });
+    this.el.querySelectorAll("input, button, select, textarea").forEach((element) => {
+      element.disabled = isDisabled;
+    });
 
     // update the aria-disabled attribute on child labels
     this.el.querySelectorAll("label").forEach((label) => {
       label.setAttribute("aria-disabled", isDisabled);
     });
+  }
+
+  /////////////////////////////////////////////////////////
+  // CSS & Rendering
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Injects this component's CSS into a single <style> tag in <head>,
+   * keyed by tag name. Subsequent instances of the same component reuse
+   * the existing <style> — one definition to edit in DevTools for all
+   * instances. Shadow DOM components should skip this and inline styles
+   * in their shadow root instead.
+   *
+   * Subclasses that use an imported shared CSS module can pass it as
+   * `sharedCss` to colocate it in the same <style> tag.
+   */
+  injectHeadStyles(sharedCss = "") {
+    const tagName = this.localName;
+    const styleId = `style-${tagName}`;
+    if (document.getElementById(styleId)) return;
+    const cssText = (sharedCss + "\n" + this.css()).trim();
+    if (!cssText) return;
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.setAttribute("data-component", tagName);
+    style.textContent = cssText;
+    document.head.appendChild(style);
   }
 
   css() {
@@ -117,12 +143,8 @@ class AppStoreElement extends HTMLElement {
   }
 
   render() {
-    this.el.innerHTML = /*html*/ `
-      ${this.html()}
-      <style>
-        ${this.css()}
-      </style>
-    `;
+    this.el.innerHTML = this.html();
+    this.injectHeadStyles();
     this.handleObservedAttributes();
   }
 

@@ -1,4 +1,4 @@
-import DOMUtil from "../util/dom-util.mjs";
+import DOMUtil from "../../util/dom-util.mjs";
 
 class FaviconStatus extends HTMLElement {
   connectedCallback() {
@@ -18,9 +18,7 @@ class FaviconStatus extends HTMLElement {
     this.canvas.width = 16;
     this.canvas.height = 16;
     this.context = this.canvas.getContext("2d");
-    this.observer = DOMUtil.observeCssClassChanges(
-      this.updateFavicon.bind(this)
-    );
+    this.observer = DOMUtil.observeCssClassChanges(this.updateFavicon.bind(this));
   }
 
   disconnectedCallback() {

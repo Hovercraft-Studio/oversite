@@ -2,6 +2,7 @@ class DateYear extends HTMLElement {
   constructor() {
     super();
   }
+
   connectedCallback() {
     const year = new Date().getFullYear();
     if (this.hasAttribute("useShadow")) {

@@ -1,16 +1,13 @@
 import AppStoreElement from "./app-store-element.js";
 
 class AppStoreTextfield extends AppStoreElement {
-  initStoreListener() {
+  subclassInit() {
     this.input = this.el.querySelector("input");
-
     this.input.value = this.storeValue || "";
 
     this.input.addEventListener("input", (e) => {
       _store.set(this.storeKey, e.target.value, true);
     });
-
-    super.initStoreListener();
   }
 
   setStoreValue(value) {
@@ -23,7 +20,7 @@ class AppStoreTextfield extends AppStoreElement {
 
   html() {
     return /*html*/ `
-      <input type="text" placeholder="Text here" >
+      <input type="text" placeholder="${this.getAttribute("placeholder") || "Text here"}" >
     `;
   }
 

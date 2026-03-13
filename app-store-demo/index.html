@@ -21,8 +21,9 @@
   </head>
   <body>
     <!-- 
-    <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input camera_1_health camera_2_health camera_3_health" debug side-debug></app-store-init> 
     <app-store-init sender="tablet" channel="default" auth-key="auth-key" init-keys="*" debug side-debug></app-store-init>
+    <app-store-init sender="tablet" init-keys="app_state btn_toggle slider_1 text_input camera_1_health camera_2_health camera_3_health" debug side-debug></app-store-init> 
+    <app-store-init sender="tablet" init-keys="*" debug side-debug></app-store-init> 
     <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="30000" show="false"></app-store-heartbeat>
     -->
     <oversite-header id="tablet"></oversite-header>
@@ -50,7 +51,7 @@
             <h4>Input Fields</h4>
             <p>
               <label>app-store-textfield</label>
-              <app-store-textfield key="text_input" value=""></app-store-textfield>
+              <app-store-textfield key="text_input" value="" placeholder="Enter text here"></app-store-textfield>
             </p>
             <p>
               <label>app-store-number</label>
@@ -72,6 +73,8 @@
               <app-store-checkbox key="checkbox_3" disabled>Checkbox 3</app-store-checkbox>
               <app-store-checkbox key="checkbox_toggle" toggle>Checkbox Toggle</app-store-checkbox>
             </p>
+            <h4>Modal</h4>
+            <modal-window-demo key="show_modal" value="true" modal-target="example_modal"></modal-window-demo>
             <h4>Monitoring</h4>
             <p class="grid">
               <app-store-health key="camera_1_health" value=""></app-store-health>
@@ -90,6 +93,7 @@
           <small>Built by us 👋</small>
         </footer>
       </auth-redirect>
+      <modal-dialog></modal-dialog>
     </custom-app>
     <script type="module" src="./js/app.js"></script>
   </body>

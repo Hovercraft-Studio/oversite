@@ -1,7 +1,7 @@
 import AppStoreElement from "./app-store-element.js";
 
 class AppStoreNumber extends AppStoreElement {
-  initStoreListener() {
+  subclassInit() {
     this.input = this.el.querySelector("input");
 
     this.input.value = parseFloat(this.storeValue) || 0;
@@ -9,8 +9,6 @@ class AppStoreNumber extends AppStoreElement {
     this.input.addEventListener("input", (e) => {
       _store.set(this.storeKey, parseFloat(e.target.value), true);
     });
-
-    super.initStoreListener();
   }
 
   setStoreValue(value) {

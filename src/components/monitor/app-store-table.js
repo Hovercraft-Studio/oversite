@@ -1,9 +1,14 @@
-import DateUtil from "../util/date-util.mjs";
+import AppStore from "../../app-store/app-store-.mjs";
+import DateUtil from "../../util/date-util.mjs";
 import css from "./app-store-table-css.js";
 
 class AppStoreTable extends HTMLElement {
   async connectedCallback() {
     this.markup = this.innerHTML;
+    AppStore.checkStoreReady(this);
+  }
+
+  async storeIsReady() {
     this.serverURL = _store.get("server_url");
     await this.getDataFromServer();
     this.render();
@@ -19,7 +24,7 @@ class AppStoreTable extends HTMLElement {
         try {
           let res = await fetch(`${this.serverURL}api/state/wipe/${key}`);
           let data = await res.json();
-          this.getDataFromServer();
+          await this.getDataFromServer();
         } catch (error) {
           console.log("Failed to wipe key:", error);
         }
@@ -28,6 +33,11 @@ class AppStoreTable extends HTMLElement {
   }
 
   storeUpdated(key, value) {
+    if (key == "server_url") {
+      this.serverURL = value;
+      console.log("Server URL updated to:", this.serverURL);
+      return;
+    }
     if (!key) return;
     this.addRow(key, value);
     this.flashRow(key);
@@ -203,7 +213,6 @@ class AppStoreTable extends HTMLElement {
   }
 
   sortRows() {
-    // sort by sender then key
     this.rows.sort((a, b) => {
       if (a.sender === b.sender) {
         return a.key.localeCompare(b.key);

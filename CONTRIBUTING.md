@@ -55,14 +55,14 @@ class MyServerModule {
 The frontend uses **Vanilla Web Components** (Custom Elements) without a heavy framework.
 
 ### Component Architecture
-- **Base Class**: Most components should extend `AppStoreElement` (from `./app-store-element.js`).
+- **Base Class**: Most UI components should extend `AppStoreElement` (from `./app-store-element.js`).
 - **Registration**:
   - Include a static `register()` method.
   - Call `register()` at the end of the file.
   - Register components in `_register-components.js`.
 - **State Management**:
   - Components interact with a global `_store` object.
-  - Implement `initStoreListener()` to subscribe to store updates.
+  - Implement `subclassInit()` to initialize a component once AppStore is available.
   - Implement `storeUpdated(key, value)` to react to changes.
   - Use `setStoreValue(value)` to update the DOM when data changes.
 - **Templates & Styles**:
@@ -78,10 +78,9 @@ class MyComponent extends AppStoreElement {
   // Define attributes to watch
   static observedAttributes = ["my-attr"];
 
-  // Initialize store listeners
-  initStoreListener() {
-    super.initStoreListener();
-    // Custom initialization logic
+  // Custom initialization logic
+  subclassInit() {
+    // add listeners, initialize state, etc.
   }
 
   // Handle store updates
@@ -99,7 +98,7 @@ class MyComponent extends AppStoreElement {
 
   // Component Styles
   css() {
-    return /*css*/`
+    return /*css*/ `
       :host {
         display: block;
       }
@@ -111,7 +110,7 @@ class MyComponent extends AppStoreElement {
 
   // Component HTML
   html() {
-    return /*html*/`
+    return /*html*/ `
       <div class="display">${this.storeValue || ""}</div>
     `;
   }
@@ -135,3 +134,23 @@ export default MyComponent;
   /////////////////////////////////////////////////////////
   ```
 - **File Naming**: Use kebab-case for filenames (e.g., `app-store-button.js`, `socket-server.mjs`).
+
+## Working with AI
+
+This project uses GitHub Copilot for AI-assisted development. The workspace instructions are stored in [`.github/copilot-instructions.md`](.github/copilot-instructions.md) and are automatically injected into every Copilot chat session. They cover the project's architecture, conventions, known issues, and standing work areas — read that file before starting a session on a new feature or refactor.
+
+### Session pattern
+
+1. **One scope at a time** — each session should target a single item from the backlog (e.g., one component, one server module). If a change touches more than 3 files, split it.
+2. **Plan before implement** — confirm the approach before writing code, especially for changes to `socket-server.mjs`, `persistent-state.mjs`, or `AppStoreDistributed` (core data-flow files).
+3. **Verify after** — after any change, test the affected page in a browser and check the console for errors. The test suite is a standing TODO item.
+4. **Update TODO.md** — mark items resolved as work is completed.
+
+### Prioritized refactoring backlog
+
+| # | Target | What |
+|---|---|---|
+| R1 | `src/server/dashboard-api.mjs` | Replace synchronous `fs` calls with `fs.promises` |
+| R2 | `src/components/app-store-table.js` | Fix unbounded memory leak — audit listener/DOM cleanup |
+| R3 | `src/server/socket-server.mjs` + `persistent-state.mjs` | Introduce `ServerContext` class for shared config/state |
+| R4 | `src/app-store/app-store-.mjs` | Audit `window._store` usages |
