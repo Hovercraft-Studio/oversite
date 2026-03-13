@@ -62,6 +62,11 @@ class AppStore {
     if (this.persistData) this.saveToLocalStorage(key);
   }
 
+  remove(key) {
+    delete this.state[key];
+    if (this.persistData) this.saveToLocalStorage(key);
+  }
+
   get(key, defaultValue = null) {
     return this.state[key] ?? defaultValue;
   }

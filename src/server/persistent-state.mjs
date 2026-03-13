@@ -78,6 +78,7 @@ class PersistentState {
 
   setStateData(data) {
     if (!data.store) return;
+    if (data.key === "state_delete") return; // handled by SocketServer; don't persist the command itself
 
     // add time to message
     data.time = Date.now();

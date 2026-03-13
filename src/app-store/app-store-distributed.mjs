@@ -80,6 +80,11 @@ class AppStoreDistributed extends AppStore {
     }
   }
 
+  remove(key) {
+    delete this.stateData[key];
+    super.remove(key);
+  }
+
   getData(key) {
     return this.stateData[key];
   }

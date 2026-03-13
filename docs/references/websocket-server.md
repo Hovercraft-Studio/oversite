@@ -116,11 +116,10 @@ Clients connecting with `?sendonly=true` never receive any messages (not even th
 1. Client connects → querystring parsed, added to channel
 2. Channel created if it doesn't exist (and is in the allowed list)
 3. Server broadcasts `client_connected` + updated `clients` list to channel
-4. Client sends messages → relayed to channel peers (respecting `sendonly`, `receiver`, unicast rules)
-5. Client disconnects → removed from channel; server broadcasts `client_disconnected` + updated `clients` list
-6. Channel auto-deleted if it becomes empty
-
-**Note:** New clients do NOT receive the persisted state via WebSocket on connect. State hydration happens over HTTP — `app-store-init` fetches `/api/state/all` on startup.
+4. Server sends full persisted state to the new client (`sendStateToClient`) — one message per key, skipped for `sendonly` clients
+5. Client sends messages → relayed to channel peers (respecting `sendonly`, `receiver`, unicast rules)
+6. Client disconnects → removed from channel; server broadcasts `client_disconnected` + updated `clients` list
+7. Channel auto-deleted if it becomes empty
 
 ### REST Endpoints (socket-server)
 
@@ -178,6 +177,6 @@ Connect to `ws://host:3003/ws?sender=my_app&channel=default`. Send and receive J
 ## Known Issues & Planned Work
 
 - **Channels with per-channel persistence**: All channels share one state file. Planned: separate `state-{channel}.json` per channel, plus channel param on REST endpoints.
-- **WebSocket-based hydration**: Clients currently hydrate via HTTP. Planned: server pushes state over the WebSocket on connect.
+- **WebSocket-based hydration**: ✅ Done. Server sends `persistent_state` message on connect; `app-store-init` listens and hydrates from it. HTTP endpoint remains as a fallback.
 - **WebSocket auth**: `auth` querystring param is parsed but not yet enforced. See [roadmap](./roadmap.md).
 - **Rooms**: A higher-level concept (auto-recycled, auth-gated namespaces) is planned on top of channels. See [roadmap](./roadmap.md).

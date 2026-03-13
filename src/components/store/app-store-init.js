@@ -7,7 +7,7 @@ import AppStoreDistributed from "../../app-store/app-store-distributed.mjs";
  * - sender: Identifies your app in the monitor (use lowercase with underscores)
  * - channel: WebSocket channel to connect to (default: "default")
  * - auth-key: Authentication key for the connection
- * - init-keys: Space-separated list of keys to retrieve on connection, or "*" for all keys
+ * - init-keys: Space-separated list of keys to hydrate from server's persistent_state on connect, or "*" for all keys
  * - debug: Shows debug interface in browser
  * - side-debug: Shows debug interface on side instead of bottom
  * - disable-favicon-status: Disables automatic favicon updates that show WebSocket connection status
@@ -59,56 +59,19 @@ class AppStoreInit extends HTMLElement {
     let sender = this.getAttribute("sender");
     let channel = this.getAttribute("channel");
     let auth = this.getAttribute("auth");
-    let initKeys = this.getAttribute("init-keys");
+    this.initKeys = this.getAttribute("init-keys");
 
     // connect to websocket server
     this.appStore = new AppStoreDistributed(this.webSocketURL, sender, channel, auth);
 
-    // hydrate with specified keys
-    this.hydrateOnInit(initKeys);
-
     // listen for data/events
     _store.addListener(this);
     _store.addListener(this, "appstore_connected"); // emitted by AppStoreDistributed when connected
+    _store.addListener(this, "persistent_state"); // emitted by server on connect; used to hydrate local store
 
     // send out any local config
     _store.set("ws_url", this.webSocketURL);
     _store.set("server_url", this.serverURL);
-  }
-
-  async hydrateOnInit(initKeys) {
-    // hydrate with specified keys, and if found in the server state
-    // set on local _store without broadcasting
-    if (initKeys) {
-      initKeys = initKeys.split(" ");
-      if (initKeys.length > 0) {
-        try {
-          // get data from server
-          const response = await fetch(`${this.serverURL}api/state/all`);
-          if (!response.ok) {
-            throw new Error(`Server error: ${response.status} ${response.statusText}`);
-          }
-          const data = await response.json();
-          // set local _store values based on which were requested
-          // either 1) all keys
-          if (initKeys.includes("*")) {
-            Object.keys(data).forEach((key) => {
-              _store.set(key, data[key].value, false);
-            });
-          }
-          // or 2) specific keys that we've defined, making sure they're in the server store before saving locally
-          else {
-            initKeys.forEach((key) => {
-              if (data[key]) {
-                _store.set(key, data[key].value, false);
-              }
-            });
-          }
-        } catch (error) {
-          console.error("Failed to fetch data:", error);
-        }
-      }
-    }
   }
 
   isDebug() {
@@ -137,6 +100,25 @@ class AppStoreInit extends HTMLElement {
   appstore_connected(val) {
     // _store.set("client_connected", Date.now(), true); // let desktop app know that we're here
     // _store.set("client_connected", this.appStore.senderId, true); // let desktop app know that we're here
+  }
+
+  persistent_state(stateData) {
+    // hydrate local _store from server's persisted state, sent via WebSocket on connect
+    if (!this.initKeys) return;
+    const keys = this.initKeys.split(" ");
+    // either 1) all keys
+    if (keys.includes("*")) {
+      Object.keys(stateData).forEach((key) => {
+        _store.set(key, stateData[key].value, false);
+      });
+    }
+    // or 2) specific keys that we've defined, making sure they're in the server store before saving locally
+    else {
+      keys.forEach((key) => {
+        if (stateData[key]) _store.set(key, stateData[key].value, false);
+      });
+    }
+    console.log("AppStoreInit hydrated local store with server state:", stateData);
   }
 
   storeUpdated(key, val) {}

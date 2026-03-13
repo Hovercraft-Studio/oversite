@@ -98,7 +98,7 @@ class SocketServer {
   ////////////////////////////////////////////
 
   startHeartbeat() {
-    // helps keep certain ws clients alive
+    // helps keep certain ws clients alive that might otherwise timeout w/inactivity
     setInterval(() => {
       this.broadcastAllChannels(this.createAppStoreObject("💓", "💓"));
     }, 30000);
@@ -121,6 +121,16 @@ class SocketServer {
     // format clients list as app-store object
     let data = this.createAppStoreObject("clients", this.jsonClients(channelId), "array");
     this.broadcastMessage(channelId, data); // send only to clients that are not sendonly
+  }
+
+    // send the full persisted state object to a single newly-connected client
+    if (connection.sendonly) return;
+    const state = this.persistentState.getAll();
+    const stateMsg = this.createAppStoreObject("persistent_state", state, "object");
+    if (connection.readyState === WebSocket.OPEN) {
+      connection.send(stateMsg);
+    }
+    if (this.debug) logGreen(`📦 [${connection.senderId}] sent persistent_state (${Object.keys(state).length} keys)`);
   }
 
   broadcastMessage(channelId, message, isBinary = false, sender = null, receiver = null, sendOnly = false) {
@@ -248,6 +258,7 @@ class SocketServer {
       let clientConnectedMsg = this.createAppStoreObject("client_connected", senderId);
       this.broadcastMessage(channelId, clientConnectedMsg);
       this.broadcastClients(channelId);
+      this.sendStateToClient(connection);
       logGreen(`🤗 [${senderId}] joined [${channelId}] from ${fullReqURL} - We have ${clientCount} users`);
     } else {
       let errorMsg = "❌ Client not allowed: no channel, auth or something else";
@@ -292,6 +303,20 @@ class SocketServer {
         if (data.receiver) receiver = data.receiver;
       } catch (e) {
         logGreen("❌ Error parsing JSON message");
+      }
+    }
+
+    // check for state_delete command — remove a key from persistent state and broadcast updated state
+    if (message.indexOf("state_delete") > -1) {
+      try {
+        let data = JSON.parse(message);
+        if (data.key === "state_delete" && data.value) {
+          this.persistentState.removeKey(data.value); // the value is the key we want to delete from persistent state
+          if (this.debug) logGreen(`🗑️ [${connection.senderId}] deleted key: ${data.value}`);
+          return; // don't relay the delete command itself
+        }
+      } catch (e) {
+        logGreen("❌ Error parsing state_delete message");
       }
     }
 

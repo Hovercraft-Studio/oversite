@@ -9,35 +9,30 @@ class AppStoreTable extends HTMLElement {
   }
 
   async storeIsReady() {
-    this.serverURL = _store.get("server_url");
-    await this.getDataFromServer();
-    this.render();
+    this.rows = [];
     _store.addListener(this);
+    _store.addListener(this, "persistent_state");
     this.addClickListeners();
     this.startTimeUpdates();
   }
 
+  persistent_state(stateData) {
+    this.buildTable(stateData);
+    this.render();
+  }
+
   addClickListeners() {
-    this.addEventListener("click", async (e) => {
+    this.addEventListener("click", (e) => {
       if (e.target.classList.contains("delete")) {
         let key = e.target.getAttribute("data-key");
-        try {
-          let res = await fetch(`${this.serverURL}api/state/wipe/${key}`);
-          let data = await res.json();
-          await this.getDataFromServer();
-        } catch (error) {
-          console.log("Failed to wipe key:", error);
-        }
+        _store.set("state_delete", key, true);
+        _store.remove(key);
+        this.removeRow(key);
       }
     });
   }
 
   storeUpdated(key, value) {
-    if (key == "server_url") {
-      this.serverURL = value;
-      console.log("Server URL updated to:", this.serverURL);
-      return;
-    }
     if (!key) return;
     this.addRow(key, value);
     this.flashRow(key);
@@ -69,9 +64,9 @@ class AppStoreTable extends HTMLElement {
     let key = row.key.toLowerCase();
     let value = row.value;
 
-    // check for 20s heartbeat timeout
+    // check for 35s heartbeat timeout
     if (key.includes("_heartbeat")) {
-      if (Date.now() - row.time > 20000) {
+      if (Date.now() - row.time > 35000) {
         rowEl.classList.add("error");
       } else {
         rowEl.classList.remove("error");
@@ -111,6 +106,14 @@ class AppStoreTable extends HTMLElement {
     return this.rows.find((row) => row.key === key);
   }
 
+  removeRow(key) {
+    let row = this.getRowObj(key);
+    if (row) {
+      row.el?.remove();
+      this.rows = this.rows.filter((r) => r.key !== key);
+    }
+  }
+
   flashRow(key) {
     let row = this.getRowObj(key);
     if (row && row.el) {
@@ -126,13 +129,6 @@ class AppStoreTable extends HTMLElement {
     }
   }
 
-  startTablePoll() {
-    setInterval(async () => {
-      this.getDataFromServer();
-      this.render();
-    }, 5000);
-  }
-
   startTimeUpdates() {
     setInterval(() => {
       this.updateTime();
@@ -146,16 +142,6 @@ class AppStoreTable extends HTMLElement {
 
       this.highlightProblems(row);
     });
-  }
-
-  async getDataFromServer() {
-    try {
-      let res = await fetch(`${this.serverURL}api/state/all`);
-      let data = await res.json();
-      this.buildTable(data);
-    } catch (error) {
-      console.log("getDataFromServer() Failed to fetch data:", error);
-    }
   }
 
   stringToElement(str) {
@@ -213,14 +199,7 @@ class AppStoreTable extends HTMLElement {
   }
 
   sortRows() {
-    this.rows.sort((a, b) => {
-      if (a.sender === b.sender) {
-        return a.key.localeCompare(b.key);
-      }
-      if (a.sender) {
-        return a.sender.localeCompare(b.sender);
-      }
-    });
+    this.rows.sort((a, b) => a.key.localeCompare(b.key));
 
     // then re-add to dom in sorted order
     let tbody = this.getTBody();

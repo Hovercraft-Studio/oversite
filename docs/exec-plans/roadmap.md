@@ -38,11 +38,10 @@ Currently all channels share one `state.json` file. Planned behavior:
 - `AppStoreMonitor` needs to support channel selection (dropdown to switch channels)
 - Hydration endpoint (`/api/state/all`) needs a channel parameter
 
-### WebSocket-Based State Hydration
-Currently new clients hydrate via HTTP (`GET /api/state/all`). Planned:
-- Server sends full state over the WebSocket immediately on client connect
-- Remove the HTTP hydration step from `app-store-init`
-- Keep the HTTP endpoint as a fallback for non-WebSocket contexts
+### ~~WebSocket-Based State Hydration~~ ✅ Done
+Server sends full persisted state to each new client on connect via `SocketServer.sendStateToClient()` — one `persistent_state` message containing the full state map object, immediately after `client_connected` and `clients` broadcasts. `sendonly` clients are skipped.
+
+`app-store-init` now listens for `persistent_state` via `_store.addListener(this, "persistent_state")` and hydrates from it, replacing the previous HTTP fetch. The HTTP endpoint (`/api/state/all`) remains available as a fallback for non-WebSocket contexts.
 
 ### Dashboard ↔ AppStore Integration
 Planned: allow apps to post dashboard check-ins via AppStore messages (`receiver: "dashboard"`) instead of a separate HTTP POST. This would:
