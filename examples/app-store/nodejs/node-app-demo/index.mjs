@@ -3,12 +3,9 @@ import { appStoreInit } from "../../../../src/server/util.mjs";
 class AppStoreDemo {
   constructor() {
     // request all hydration keys with "*" or specific keys with an array ["app_state"]
-    this.appStore = appStoreInit("node_app", "*", () => {
-      // by default, it's likely that this.appStore.isConnected() is false
-      // because hydration should finish before the websocket "appstore_connected" event is received
-      // but! to be sure we're aware that the socket connection is ready, we listen to the "appstore_connected" event below
-      // resulting in `onSocketConnected` being called only once when the app starts up
-      if (this.appStore.isConnected()) this.onSocketConnected("hydrated");
+    // callback fires once the server sends persistent_state over the websocket on connect
+    this.appStore = appStoreInit("node_app_demo", "*", () => {
+      this.onSocketConnected();
       this.addListeners(); // wait for hydration to complete so we don't get callbacks for the initial state
       this.startHeartbeat();
       // do something with specific keys to reflect app state?
@@ -17,8 +14,8 @@ class AppStoreDemo {
     });
   }
 
-  onSocketConnected(initSource) {
-    console.log("AppStore connected, ready to broadcast updates:", initSource);
+  onSocketConnected() {
+    console.log("AppStore connected and hydrated, ready to broadcast updates");
   }
 
   addListeners() {
@@ -32,7 +29,7 @@ class AppStoreDemo {
   }
 
   appstore_connected(val) {
-    this.onSocketConnected("socket connected");
+    this.onSocketConnected();
   }
 
   slider_1(value) {

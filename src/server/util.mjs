@@ -37,44 +37,29 @@ function wsUrlToServerUrl(wsURL) {
 
 function appStoreInit(appId, initKeys = null, callback = null) {
   let wsURL = getCliArg("--server", "ws://127.0.0.1:3003/ws"); // need to use 127.0.0.1 instead of localhost!
-  let serverURL = wsUrlToServerUrl(wsURL);
   let appStore = new AppStoreDistributed(`${wsURL}`, appId);
   if (initKeys) {
-    hydrateState(appStore, serverURL, initKeys, callback);
+    // server sends persistent_state on connect — hydrate local store from it, then fire callback
+    const handler = {
+      persistent_state(stateData) {
+        const allKeys = initKeys === "*" || (Array.isArray(initKeys) && initKeys.includes("*"));
+        if (allKeys) {
+          Object.keys(stateData).forEach((key) => appStore.set(key, stateData[key].value, false));
+        } else {
+          const keys = Array.isArray(initKeys) ? initKeys : [initKeys];
+          keys.forEach((key) => {
+            if (stateData[key]) appStore.set(key, stateData[key].value, false);
+          });
+        }
+        appStore.removeListener(handler, "persistent_state");
+        if (callback) callback();
+      },
+    };
+    appStore.addListener(handler, "persistent_state");
   } else {
     if (callback) callback();
   }
   return appStore;
-}
-
-async function hydrateState(appStore, serverURL, initKeys, callback) {
-  // hydrate with specified keys, and if found in the server state
-  // set on local _store without broadcasting
-  try {
-    const response = await fetch(`${serverURL}api/state/all`);
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
-    }
-    const data = await response.json();
-    // store 1) all keys
-    if (initKeys.includes("*")) {
-      Object.keys(data).forEach((key) => {
-        appStore.set(key, data[key].value, false);
-      });
-    }
-    // or 2) specific keys that we've defined, making sure they're in the server store before saving locally
-    else {
-      initKeys.forEach((key) => {
-        if (data[key]) {
-          appStore.set(key, data[key].value, false);
-        }
-      });
-    }
-    if (callback) callback();
-  } catch (error) {
-    console.error("Failed to fetch data:", error);
-    if (callback) callback();
-  }
 }
 
 //////////////////////////////////////
@@ -131,7 +116,6 @@ export {
   ipAddr,
   appStoreInit,
   getCliArg,
-  hydrateState,
   wsUrlToServerUrl,
   eventLog,
   logBlue,

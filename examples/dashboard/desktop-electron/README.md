@@ -29,7 +29,7 @@ npx create-electron-app@latest desktop-electron --template=vite
 Deployment
 
 - Confirm build process & document! Do we have to install via squirrel Setup.exe?
-- Test builds on Windows and Linux
+- Test builds on Windows
 - How to auto-launch app updates?
   - https://www.electronjs.org/docs/latest/tutorial/updates
   - Can the app keep its localStorage settings? .env file might negate this need anyway
