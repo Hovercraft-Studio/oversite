@@ -8,6 +8,13 @@ class AppStoreTable extends HTMLElement {
     AppStore.checkStoreReady(this);
   }
 
+  disconnectedCallback() {
+    clearInterval(this.timeUpdateInterval);
+    _store.removeListener(this);
+    _store.removeListener(this, "persistent_state");
+    this.cleanRows();
+  }
+
   async storeIsReady() {
     this.rows = [];
     _store.addListener(this);
@@ -48,8 +55,9 @@ class AppStoreTable extends HTMLElement {
       this.sortRows();
     } else {
       // create new row
-      row = _store.getData(key); // get full data from AppStoreDistributed to we can populate metadata columns besides key/value
-      if (!!row) {
+      let data = _store.getData(key); // get full data from AppStoreDistributed to populate metadata columns
+      if (data) {
+        row = { ...data }; // copy so we don't attach el to the shared stateData object
         row.el = this.buildRowEl(row);
         this.getTBody().appendChild(row.el);
         this.rows.push(row);
@@ -130,9 +138,7 @@ class AppStoreTable extends HTMLElement {
   }
 
   startTimeUpdates() {
-    setInterval(() => {
-      this.updateTime();
-    }, 1000);
+    this.timeUpdateInterval = setInterval(() => this.updateTime(), 1000);
   }
 
   updateTime() {

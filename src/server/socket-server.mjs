@@ -15,10 +15,8 @@ class SocketServer {
     this.allowedChannels = allowedChannels; // if null, default is allowed, otherwise, can be necessary to pass in a specified channel if "default" isn't in the allowed list
     this.debug = debug;
 
-    // create channels
+    // create channels & persistent state instance
     this.channels = {};
-    this.gcInterval;
-    // Create persistent state instance
     this.persistentState = new PersistentState(wsServer, app, baseDataPath, "state");
 
     // Bind methods to this instance

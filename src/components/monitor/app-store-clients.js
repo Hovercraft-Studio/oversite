@@ -15,6 +15,12 @@ class AppStoreClients extends HTMLElement {
     this.startTimeUpdates();
   }
 
+  disconnectedCallback() {
+    clearInterval(this.timeUpdateInterval);
+    _store.removeListener(this);
+    _store.removeListener(this, "clients");
+  }
+
   clients(data) {
     this.buildTable(data);
     this.render();
@@ -66,7 +72,7 @@ class AppStoreClients extends HTMLElement {
   }
 
   startTimeUpdates() {
-    setInterval(() => this.updateTime(), 1000);
+    this.timeUpdateInterval = setInterval(() => this.updateTime(), 1000);
   }
 
   updateTime() {

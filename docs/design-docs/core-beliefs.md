@@ -67,7 +67,7 @@ Oversite is deployed at physical interactive installations that run for 1–5 ye
 1. Shadow DOM — true encapsulation, no style leakage
 2. Light DOM — global CSS applies directly
 
-**Decision**: Light DOM for new components. `app-store-init` already uses Shadow DOM and is grandfathered.
+**Decision**: Light DOM for new components. `app-store-init` uses Shadow DOM but isn't a visual component.
 
 **Reasoning**: Shadow DOM blocks global CSS from applying inside components. This means PicoCSS styles don't reach component internals without `::part()` selectors or CSS custom properties — defeating the purpose of the classless approach. Light DOM lets global styles flow naturally.
 

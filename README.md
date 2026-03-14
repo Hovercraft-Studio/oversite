@@ -2,7 +2,7 @@
 
 ![](public/oversite-logo.png)
 
-**Oversite** is a collection of apps and libraries that connect and monitor site-specific apps and their web extensions.
+**Oversite** is a collection of apps and libraries that synchronize and monitor site-specific apps and their web extensions.
 
 Apps include:
 
