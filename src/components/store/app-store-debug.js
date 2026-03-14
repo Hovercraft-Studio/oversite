@@ -9,28 +9,23 @@ class AppStoreDebug extends HTMLElement {
     _store.set("SHOW_DEBUG", false);
   }
 
-  html() {
-    let htmlStr = "<table>";
-    for (let storeKey in _store.state) {
-      let val = _store.state[storeKey];
-      if (val && typeof val == "object" && val.length && val.length > 0) {
-        if (storeKey == "clients") {
-          val = val
-            .map((client) => {
-              let uptime = Math.round((Date.now() - client.connectedTime) / 1000); // uptime in seconds
-              // return `${client.sender} - ${uptime}s`;
-              return `${client.sender}`;
-            })
-            .join("<br>");
-        } else {
-          val = `Array(${val.length})`; // special display for arrays
-        }
-      }
-      if (val && typeof val == "string" && val.length && val.length > 100) {
-        val = `${val.substring(0, 100)}...`; // special display for long strings
-      }
-      htmlStr += `<tr><td>${storeKey}</td><td>${val}</td></tr>`;
+  formatValue(key, val) {
+    if (val === null || val === undefined) return String(val);
+    if (Array.isArray(val)) {
+      if (key === "clients") return val.map((client) => client.sender).join("<br>");
+      return `Array(${val.length})`;
     }
+    if (typeof val === "object") return `Object(${Object.keys(val).length} keys)`;
+    if (typeof val === "string" && val.length > 100) return `${val.substring(0, 100)}...`;
+    return val;
+  }
+
+  html() {
+    let keys = Object.keys(_store.state).sort();
+    let htmlStr = "<table>";
+    keys.forEach((key) => {
+      htmlStr += `<tr><td>${key}</td><td>${this.formatValue(key, _store.state[key])}</td></tr>`;
+    });
     htmlStr += "</table>";
     return htmlStr;
   }
@@ -38,7 +33,7 @@ class AppStoreDebug extends HTMLElement {
   css() {
     let isSideDisplay = this.hasAttribute("side-debug");
     let sideCSS = isSideDisplay
-      ? `
+      ? /*css*/ `
         top: 0; 
         left: 0;
         width: auto; 
@@ -107,14 +102,16 @@ class AppStoreDebug extends HTMLElement {
   storeUpdated(key, value) {
     if (key == "SHOW_DEBUG") {
       value ? this.show() : this.hide();
+      return;
     }
-    if (this.showing) this.render();
+    if (!this.showing) return;
+    clearTimeout(this.renderDebounce);
+    this.renderDebounce = setTimeout(() => this.render(), 50);
   }
 
   show() {
     this.render();
     this.style.display = "block";
-    this.showing = true;
   }
 
   hide() {
