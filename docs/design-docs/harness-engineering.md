@@ -4,6 +4,8 @@ Reusable foundation for building a repository docs system that works for both hu
 
 Use repository docs as the source of truth, with a short root entry file (`AGENTS.md` or `CLAUDE.md`) as a map. This gives agents progressive disclosure: start small, then follow links into deeper docs only when needed.
 
+This concept was adapted from this article: https://openai.com/index/harness-engineering/
+
 ## Core Rules
 
 1. Keep the root agent doc short (target: 80-140 lines).
