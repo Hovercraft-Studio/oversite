@@ -21,6 +21,12 @@ class AppStoreTable extends HTMLElement {
     _store.addListener(this, "persistent_state");
     this.addClickListeners();
     this.startTimeUpdates();
+    this.checkPersistentState();
+  }
+
+  checkPersistentState() {
+    const existingState = _store.get("persistent_state");
+    if (existingState) this.persistent_state(existingState);
   }
 
   persistent_state(stateData) {

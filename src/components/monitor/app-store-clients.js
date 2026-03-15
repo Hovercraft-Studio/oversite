@@ -13,6 +13,12 @@ class AppStoreClients extends HTMLElement {
     _store.addListener(this);
     _store.addListener(this, "clients");
     this.startTimeUpdates();
+    this.checkPersistentState();
+  }
+
+  checkPersistentState() {
+    const existingState = _store.get("clients");
+    if (existingState) this.clients(existingState);
   }
 
   disconnectedCallback() {
@@ -40,14 +46,15 @@ class AppStoreClients extends HTMLElement {
   }
 
   buildTable(data) {
-    this.rows = Object.keys(data).map((key) => {
-      let obj = data[key];
-      return {
-        sender: obj.sender,
-        startTime: Date.now() - obj.connectedTime, // compute absolute start time from elapsed ms
-      };
-    })
-    .sort((a, b) => a.sender.localeCompare(b.sender));
+    this.rows = Object.keys(data)
+      .map((key) => {
+        let obj = data[key];
+        return {
+          sender: obj.sender,
+          startTime: Date.now() - obj.connectedTime, // compute absolute start time from elapsed ms
+        };
+      })
+      .sort((a, b) => a.sender.localeCompare(b.sender));
 
     this.markup = /*html*/ `<table>
         <thead>
@@ -64,7 +71,7 @@ class AppStoreClients extends HTMLElement {
             <td>${row.sender}</td>
             <td data-time></td>
             <td class="heartbeat"><span>${this.getHeartIcon()}</span></td>
-          </tr>`
+          </tr>`,
             )
             .join("")}
         </tbody>
