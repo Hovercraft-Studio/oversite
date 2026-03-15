@@ -51,6 +51,7 @@ class ModalDialog extends HTMLElement {
   }
 
   config() {
+    // dynamic content config
     this.title = "Confirm your selection";
     this.content = `Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus pellentesque. Nullam finibus risus non semper euismod.`;
     this.cancelValue = "Cancel example";
@@ -60,6 +61,7 @@ class ModalDialog extends HTMLElement {
     this.confirmBtnTextDef = "Confirm";
     this.confirmBtnText = this.confirmBtnTextDef;
 
+    // animation & state
     this.isOpenClass = "modal-is-open";
     this.openingClass = "modal-is-opening";
     this.closingClass = "modal-is-closing";

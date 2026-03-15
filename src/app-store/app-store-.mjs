@@ -12,6 +12,7 @@ class AppStore {
     }
   }
 
+  // for web components to check if store is ready or listen for when it is ready
   static checkStoreReady(obj) {
     if (window._store) {
       obj.storeIsReady();
