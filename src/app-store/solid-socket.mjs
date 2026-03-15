@@ -55,6 +55,7 @@ class SolidSocket {
   }
 
   isConnecting() {
+    if (!this.socket) return false;
     return this.socket.readyState === this.WebSocketClient.CONNECTING;
   }
 
@@ -107,6 +108,7 @@ class SolidSocket {
   onError(e) {
     this.setClassesDisconnected();
     if (this.errorCallback) this.errorCallback(e);
+    if (this.connectionActiveCallback) this.connectionActiveCallback(false);
   }
 
   setErrorCallback(callback) {
@@ -117,6 +119,7 @@ class SolidSocket {
     this.setClassesDisconnected();
     this.resetConnectionAttemptTime();
     if (this.closeCallback) this.closeCallback(e);
+    if (this.connectionActiveCallback) this.connectionActiveCallback(false);
   }
 
   setCloseCallback(callback) {
@@ -141,7 +144,6 @@ class SolidSocket {
   }
 
   sendJSON(data) {
-    console.log(data);
     this.sendMessage(JSON.stringify(data));
   }
 
