@@ -8,8 +8,8 @@ class AppStoreElement extends HTMLElement {
     this.el = this.shadow ? this.shadow : this;
     this.initialHTML = this.innerHTML;
     this.initComponent();
-    AppStore.checkStoreReady(this);
     this.render();
+    AppStore.checkStoreReady(this);
   }
 
   disconnectedCallback() {
