@@ -11,6 +11,7 @@ import "./store/favicon-status.js";
 import "./ui/app-store-element.js";
 import "./ui/app-store-button.js";
 import "./ui/app-store-checkbox.js";
+import "./ui/app-store-dropdown.js";
 import "./ui/app-store-health.js";
 import "./ui/app-store-number.js";
 import "./ui/app-store-slider.js";
