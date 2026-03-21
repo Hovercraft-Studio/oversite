@@ -18,6 +18,17 @@
   </head>
   <body>
     <app-store-init sender="tablet" init-keys="*" debug side-debug></app-store-init>
+    <!-- Remote AppStoreDistributed instance for testing connection to the Dashboard channel 
+    <app-store-init
+      sender="cms_admin_ui"
+      channel="dashboard"
+      auth="client-app-key"
+      init-keys="*"
+      debug
+      side-debug
+      ws-url="wss://example-url.com/ws"
+    ></app-store-init>
+    -->
     <app-store-heartbeat key="tablet_heartbeat" value="n/a" interval="30000" show="false"></app-store-heartbeat>
     <custom-app>
       <main class="container">
