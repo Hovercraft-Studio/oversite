@@ -35,9 +35,10 @@ function wsUrlToServerUrl(wsURL) {
 // AppStore
 //////////////////////////////////////
 
-function appStoreInit(appId, initKeys = null, callback = null) {
+function appStoreInit(appId, initKeys = null, callback = null, channelId = null, authKey = null) {
   let wsURL = getCliArg("--server", "ws://127.0.0.1:3003/ws"); // need to use 127.0.0.1 instead of localhost!
-  let appStore = new AppStoreDistributed(`${wsURL}`, appId);
+  authKey = authKey || getCliArg("--auth", null); // also accept --auth from CLI
+  let appStore = new AppStoreDistributed(`${wsURL}`, appId, channelId, authKey);
   if (initKeys) {
     // server sends persistent_state on connect — hydrate local store from it, then fire callback
     const handler = {
