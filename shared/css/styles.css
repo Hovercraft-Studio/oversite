@@ -46,6 +46,19 @@ small {
   padding: 4rem 2rem;
 }
 
+/* Small inputs */
+[small] {
+  input,
+  select,
+  button {
+    font-size: 0.7rem !important;
+    padding: 0.5rem !important;
+    height: 2rem !important;
+  }
+}
+
+
+
 /* Flash animation */
 
 @keyframes flash-anim {
