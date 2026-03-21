@@ -11,6 +11,7 @@ class AppStoreButton extends AppStoreElement {
     this.isToggle = this.hasAttribute("toggle");
     this.isMomentary = this.hasAttribute("momentary");
     this.isConfirm = this.hasAttribute("confirm");
+    this.receiver = this.getAttribute("receiver") || null;
     if (this.isMomentary) this.storeValue = 1; // if the storeValue is "momentary", always use 1/0 to send a pulse
     this.button.addEventListener(this.clickEvent(), (e) => {
       if (!this.storeKey) return;
@@ -36,11 +37,11 @@ class AppStoreButton extends AppStoreElement {
       }
 
       // broadcast current value
-      _store.set(this.storeKey, curVal, true);
+      _store.set(this.storeKey, curVal, true, this.receiver);
       // if the storeValue is "momentary", send 1 and immediately 0
       if (this.isMomentary) {
         setTimeout(() => {
-          _store.set(this.storeKey, 0, true);
+          _store.set(this.storeKey, 0, true, this.receiver);
         }, 50);
       }
     });

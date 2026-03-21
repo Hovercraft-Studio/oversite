@@ -35,7 +35,7 @@ dotenvConfig({ path: envPath }); // Explicitly set path for .env relative to app
 
 // get allowed ws:// channels from .env
 // - this is a comma separated list of channels that are allowed to connect to the websocket server
-let allowedWsChannels = process.env.ALLOWED_WS_CHANNELS || "default"; // comma separated list of channels
+let allowedWsChannels = process.env.ALLOWED_WS_CHANNELS || "default,dashboard"; // comma separated list of channels
 if (allowedWsChannels) {
   allowedWsChannels = allowedWsChannels.split(",").map((channel) => channel.trim());
 }
@@ -160,6 +160,12 @@ const dashboardApi = new DashboardApi(
 await dashboardApi.init();
 const offlineAlerts = new OfflineAlerts(dashboardApi, alertProjectIds, slackApiHookUrl);
 if (debug) dashboardApi.printConfig();
+
+// System commands module for handling incoming AppStore messages with system commands from the Dashboard
+// import SystemCommands from "./src/server/system-commands.mjs";
+// import AppStoreDistributed from "./src/app-store/app-store-distributed.mjs";
+// const sysCommandsStore = new AppStoreDistributed(`ws://127.0.0.1:${PORT}/ws`, "system_commands", "dashboard");
+// const systemCommands = new SystemCommands(sysCommandsStore);
 
 /////////////////////////////////////////////////////////
 // Init HTTP server

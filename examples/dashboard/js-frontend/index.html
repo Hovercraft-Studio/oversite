@@ -20,10 +20,10 @@
     <script type="module" src="../../../src/components/_register-components.js"></script>
   </head>
   <body>
-    <oversite-header id="dashboard_poster"></oversite-header>
+    <oversite-header id="dashboard_poster" channel="dashboard" auth="dashboard-auth-key"></oversite-header>
     <custom-app>
       <main class="container">
-        <section>
+        <article>
           <h1>Dashboard Poster Demo</h1>
           <p>Multiple pretend apps posting to the dashboard, using both available POST routes.</p>
           <div id="examples-container" class="grid">
@@ -42,14 +42,25 @@
               post-interval="5"
             ></dashboard-client-example> -->
           </div>
-        </section>
-        <section>
+        </article>
+        <article>
           <h4>Import dashboard-view web component for easy testing:</h4>
           <div id="dashboard-container">
             <!-- Check ./js/app.js for dynamic creation of dashboard view, due to configuration needs on dev vs prod -->
             <!-- <dashboard-view api-url="http://localhost:3003/api/dashboard" refresh-interval="60"></dashboard-view> -->
           </div>
-        </section>
+        </article>
+        <article>
+          <h4>Test dashboard-specific commands to send on the <code>dashboard</code> channel to the SystemCommands client/receiver:</h4>
+          <div id="commands-container">
+            <app-store-button key="kill_process" value="chrome.exe" receiver="system_commands">Kill Chrome</app-store-button>
+            <app-store-button key="kill_process" value="vlc.exe" receiver="system_commands">Kill VLC</app-store-button>
+            <app-store-button key="minimize_windows" value="teamviewer" receiver="system_commands">Minimize TeamViewer</app-store-button>
+            <app-store-button key="minimize_windows" value="teamviewer|vlc" receiver="system_commands_XXX">Minimize TeamViewer and VLC</app-store-button>
+            <!-- <app-store-button key="restart_computer" value="10">Restart Computer</app-store-button> -->
+            <app-store-button key="send_keys" value="{F11}" receiver="system_commands">Send F11 Key (Full-screen browser)</app-store-button>
+          </div>
+        </article>
         <details>
           <summary>Event Log</summary>
           <app-store-event-table max-length="10" hide-filters></app-store-event-table>

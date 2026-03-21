@@ -49,6 +49,11 @@ Planned: allow apps to post dashboard check-ins via AppStore messages (`receiver
 - Enable real-time connection/disconnection status on the dashboard
 - Require `DashboardApi` to listen on the WebSocket server for incoming check-in messages
 
+### System Commands (Remote PC Management)
+Core module complete — `SystemCommands` class with 5 built-in commands, standalone runner, custom command extensibility, and a web UI for triggering commands. Next steps: wire into `server.mjs`, add Dashboard card management buttons, connection status indicators, and process monitoring.
+
+See [active/system-commands.md](active/system-commands.md) for the full execution plan.
+
 ### Rooms
 A higher-level concept above channels:
 - Rooms are auto-created on demand with a server-known auth key

@@ -7,6 +7,7 @@ One file per feature — behavior, data shape, edge cases, and explicit out-of-s
 | AppStore + WebSockets | [app-store.md](app-store.md) | Stable |
 | Dashboard | [dashboard.md](dashboard.md) | Stable |
 | App Store Monitor | [monitor.md](monitor.md) | Stable, known memory leak |
+| System Commands | [system-commands.md](system-commands.md) | New — remote PC management |
 
 ## What a Spec Covers
 
