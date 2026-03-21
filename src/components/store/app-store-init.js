@@ -57,7 +57,7 @@ class AppStoreInit extends HTMLElement {
   initSharedState() {
     // get config from web component attributes
     let sender = this.getAttribute("sender");
-    let channel = this.getAttribute("channel");
+    let channel = this.getAttribute("channel") || this.hashParamConfig("channel", "default");
     let auth = this.getAttribute("auth");
     this.initKeys = this.getAttribute("init-keys");
 

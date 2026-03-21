@@ -14,6 +14,7 @@ class CustomApp extends HTMLElement {
   appstore_connected(value) {
     this.populateHeaderLinks();
     this.buildZoomButtons();
+    this.buildChannelSwitcher();
   }
 
   populateHeaderLinks() {
@@ -72,6 +73,36 @@ class CustomApp extends HTMLElement {
     if (key == "client_disconnected") {
       _store.set("toast", `👋 Client left: ${value}`);
     }
+  }
+
+  buildChannelSwitcher() {
+    let serverURL = _store.get("server_url");
+    let select = document.querySelector("[data-channel-select]");
+    if (!select) return;
+    let hashParams = new URLSearchParams(document.location.hash);
+    let currentChannel = hashParams.get("channel") || "default";
+
+    fetch(`${serverURL}api/state/channels`)
+      .then((res) => res.json())
+      .then((channels) => {
+        // always include current channel even if not in the API response
+        let channelIds = channels.map((c) => c.channel);
+        if (!channelIds.includes(currentChannel)) channelIds.unshift(currentChannel);
+
+        select.innerHTML = channelIds
+          .map((id) => `<option value="${id}"${id === currentChannel ? " selected" : ""}>${id}</option>`)
+          .join("");
+      })
+      .catch(() => {
+        select.innerHTML = `<option>${currentChannel}</option>`;
+      });
+
+    select.addEventListener("change", (e) => {
+      let hashParams = new URLSearchParams(document.location.hash);
+      hashParams.set("channel", e.target.value);
+      document.location.hash = hashParams.toString();
+      window.location.reload();
+    });
   }
 
   init() {
