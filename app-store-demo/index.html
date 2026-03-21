@@ -60,11 +60,15 @@
             <p>
               <label>app-store-slider</label>
               <label>audio_volume: <code><app-store-element key="audio_volume" flash-on-update></app-store-element></code></label>
-              <app-store-slider key="audio_volume" value="0" max="1"></app-store-slider>
-              MOUSE_X: <code><app-store-element key="MOUSE_X"></app-store-element></code>
-              <app-store-slider key="MOUSE_X" value="0" max="1"></app-store-slider>
-              MOUSE_Y: <code><app-store-element key="MOUSE_Y"></app-store-element></code>
-              <app-store-slider key="MOUSE_Y" value="0" max="1"></app-store-slider>
+              <app-store-slider key="audio_volume" value="0" max="1" icon-audio></app-store-slider>
+              <app-store-slider key="brightness" value="0" max="1" icon-brightness></app-store-slider>
+              <app-store-slider key="MOUSE_X" value="0" max="1" show-value></app-store-slider>
+              <app-store-slider key="MOUSE_Y" value="0" max="1" show-value></app-store-slider>
+            </p>
+            <p>
+              <label>app-store-element</label>
+              MOUSE_X: <code><app-store-element key="MOUSE_X" flash-on-update></app-store-element></code>
+              MOUSE_Y: <code><app-store-element key="MOUSE_Y" flash-on-update></app-store-element></code>
             </p>
             <p>
               <label>app-store-dropdown</label>
