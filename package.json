@@ -47,7 +47,7 @@
     "update-libs": "npx npm-check-updates -u && npm install"
   },
   "dependencies": {
-    "@vitejs/plugin-basic-ssl": "^2.1.4",
+    "@vitejs/plugin-basic-ssl": "^2.2.0",
     "concurrently": "^9.2.1",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
@@ -56,8 +56,8 @@
     "nodemon": "^3.1.14",
     "notyf": "^3.10.0",
     "screenshot-desktop": "^1.15.3",
-    "vite": "^7.3.1",
+    "vite": "^8.0.1",
     "websocket": "^1.0.35",
-    "ws": "^8.19.0"
+    "ws": "^8.20.0"
   }
 }
