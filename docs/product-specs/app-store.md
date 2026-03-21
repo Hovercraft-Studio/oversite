@@ -48,6 +48,29 @@ Every AppStore message is a JSON object. At minimum it has a `key` and `value`:
 - Keys containing `_health` — Boolean; the `app-store-health` component renders a colored status dot based on the value. The monitor highlights rows red when the value is `false` or `0`.
 - Keys containing `_heartbeat` — Sent by `app-store-heartbeat.js` on a regular interval; value is milliseconds since app start. Convention: the key should be `{sender}_heartbeat` (e.g. if sender is `tablet`, use key `tablet_heartbeat`). The monitor matches heartbeat keys to sender IDs and shows special formatting; rows turn red if a heartbeat hasn't been seen for 20 seconds.
 
+### Data Transmission Best Practices
+
+**Prefer single key/value pairs over structured objects.** Each `set()` call should send one atomic piece of state. If you need to transmit multiple values, send them as separate key/value pairs in sequence rather than bundling them into a JSON object.
+
+```js
+// ✅ Preferred: individual keys — each is independently observable by any client
+_store.set("volume", 0.8, true);
+_store.set("scene", "intro", true);
+_store.set("brightness", 100, true);
+
+// ❌ Avoid: bundling multiple values into one key
+_store.set("settings", { volume: 0.8, scene: "intro", brightness: 100 }, true);
+```
+
+Why this matters:
+- **Any connected client can listen to exactly the keys it cares about** without parsing a parent object.
+- **Any connected client has a proper representation of each key for distributed app state** without parsing a parent object.
+- **The monitor and persistent state show each key individually**, making debugging and inspection straightforward.
+- **Heartbeat and health conventions rely on individual keys** — bundling would break these patterns.
+- **Strongly-typed receivers** (Java, Arduino) handle primitive values more reliably than nested objects.
+
+If structured data is truly unavoidable (e.g. a command payload that needs multiple fields to be interpreted atomically), a JSON object value is acceptable — but this should be the exception, not the norm.
+
 ## AppStore (In-Process)
 
 `AppStore` (base class, `app-store-.mjs`) is a synchronous, in-memory key/value store with event emission. In browser contexts, it sets `window._store` on construction and dispatches a `"appstore-ready"` event so components can wait for it safely.
