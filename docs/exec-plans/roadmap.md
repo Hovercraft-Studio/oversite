@@ -31,12 +31,8 @@ Both `dashboard-api.mjs` and `persistent-state.mjs` have been migrated to `fs.pr
 
 ## Active Feature Work
 
-### Channels: Per-Channel Persistent State
-Currently all channels share one `state.json` file. Planned behavior:
-- Each channel gets its own `_tmp_data/state/state-{channel}.json`
-- `PersistentState` needs a `channelId` parameter
-- `AppStoreMonitor` needs to support channel selection (dropdown to switch channels)
-- Hydration endpoint (`/api/state/all`) needs a channel parameter
+### ~~Channels: Per-Channel Persistent State~~ ✅ Done
+Each channel now has its own `_tmp_data/state/state-{channelId}.json` file. `PersistentState` takes a `channelId` parameter. `SocketServer` manages a `channelStates` map and lazily creates stores per channel. All REST endpoints accept `?channel=` query param. `AppStoreMonitor` has a channel selector dropdown (reads/writes the `#channel=` hash param). `app-store-init` reads channel from the URL hash via `hashParamConfig` when no `channel` attribute is set.
 
 ### ~~WebSocket-Based State Hydration~~ ✅ Done
 Server sends full persisted state to each new client on connect via `SocketServer.sendStateToClient()` — one `persistent_state` message containing the full state map object, immediately after `client_connected` and `clients` broadcasts. `sendonly` clients are skipped.

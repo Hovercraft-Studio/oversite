@@ -53,23 +53,37 @@ Responsibilities:
 - Accepts WebSocket connections from clients
 - Parses querystring params (`sender`, `channel`, `sendonly`) from the connection URL
 - Routes clients to channels; creates a channel if it doesn't exist, deletes it when empty
+- Manages per-channel `PersistentState` instances (lazily created via `getOrCreateState()`)
+- Persists incoming `store: true` messages to the correct channel's state file
+- Sends per-channel persistent state to new clients on connect
 - Relays each incoming message to all other clients on the same channel (broadcast) or to a specific client (unicast via `receiver` field)
 - Broadcasts a server heartbeat every 30 seconds
 - Broadcasts `client_connected` and `client_disconnected` AppStore messages to the channel on every join/leave
-- Exposes REST endpoints for channel and client info
+- Exposes all REST endpoints for channels, clients, and persistent state
 
 ### Channels
 
-Channels allow multiple isolated AppStore namespaces to share one server. Each channel has its own set of connected clients and message stream.
+Channels allow multiple isolated AppStore namespaces to share one server. Each channel has its own set of connected clients, message stream, and persistent state file.
 
 - The default channel is `default`
 - Allowed channels are configured via `ALLOWED_WS_CHANNELS` in `.env`
 - A channel is auto-created on first connection and auto-deleted when the last client leaves
 - If a client attempts to join a channel not in the allowed list, the connection is rejected (close code 1008)
+- Each channel has its own `PersistentState` instance with a separate file on disk (`state-{channelId}.json`)
+
+#### Channel usage patterns
+
+| Channel | Purpose | Clients |
+|---|---|---|
+| `default` | Local site-specific installations | Kiosk PCs, tablets, sensors, show-control apps |
+| `dashboard` | Remote monitoring & management | Dashboard poster, SystemCommands, operational tools |
+| Custom | Public-facing or multi-app segmentation | Audience participation apps, isolated app instances |
 
 ```bash
-ALLOWED_WS_CHANNELS=default,lights,audio
+ALLOWED_WS_CHANNELS=default,dashboard,audience_app
 ```
+
+See [SECURITY.md](../SECURITY.md#channels--deployment-patterns) for hardening guidance on public-facing channels.
 
 ### Server Heartbeat
 
@@ -131,25 +145,32 @@ Clients connecting with `?sendonly=true` never receive any messages (not even th
 
 ## Persistent State (`persistent-state.mjs`)
 
-Runs alongside `SocketServer` and listens directly on the WebSocket server for any message that has `store: true`. When received:
+Pure data store — one instance per channel, managed by `SocketServer`. Each channel persists independently.
+
+`SocketServer.handleMessage()` parses incoming messages and calls `channelStore.setStateData(data)` for any message with `store: true`. This ensures state is always routed to the correct channel.
 
 1. Stores the full message object (including `sender`, `time`, etc.) in an in-memory map keyed by `key`
-2. Writes the map to `_tmp_data/state/state.json` — rate-limited to once per second
+2. Writes the map to `_tmp_data/state/state-{channelId}.json` — rate-limited to once per second
 
-On server startup, the file is loaded so state survives server restarts.
+On server startup, each channel's file is loaded so state survives server restarts.
 
-### REST Endpoints (persistent-state)
+### REST Endpoints (state)
+
+All state endpoints are registered by `SocketServer` and accept an optional `?channel=` query param (defaults to `"default"`):
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/api/state/all` | Full current state as JSON (entire message object per key) |
-| `GET` | `/api/state/get/:key` | Returns the full stored message object for one key |
-| `GET` | `/api/state/wipe/:key` | Removes a single key and saves to disk |
-| `GET` | `/api/state/wipe` | Wipes the entire state (use with caution) |
+| `GET` | `/api/state/all?channel=X` | Full current state for a channel as JSON |
+| `GET` | `/api/state/get/:key?channel=X` | Returns the full stored message object for one key |
+| `GET` | `/api/state/wipe/:key?channel=X` | Removes a single key from the channel's state |
+| `GET` | `/api/state/wipe?channel=X` | Wipes the entire channel state (use with caution) |
+| `GET` | `/api/state/channels` | Lists all active channels and their connected clients |
+| `GET` | `/api/state/clients` | Lists all connected clients across all channels |
+| `GET` | `/api/state/clients/:id` | Lists clients in a specific channel |
 
 ### State File Location
 
-`_tmp_data/state/state.json` — gitignored. On cloud platforms with ephemeral filesystems (DigitalOcean App Platform), this file does not survive redeploys.
+`_tmp_data/state/state-{channelId}.json` — one file per channel, gitignored. On cloud platforms with ephemeral filesystems (DigitalOcean App Platform), these files do not survive redeploys.
 
 ## Legacy: Bare WebSocket Relay (`ws-relay.mjs`)
 
@@ -176,7 +197,7 @@ Connect to `ws://host:3003/ws?sender=my_app&channel=default`. Send and receive J
 
 ## Known Issues & Planned Work
 
-- **Channels with per-channel persistence**: All channels share one state file. Planned: separate `state-{channel}.json` per channel, plus channel param on REST endpoints.
-- **WebSocket-based hydration**: ✅ Done. Server sends `persistent_state` message on connect; `app-store-init` listens and hydrates from it. HTTP endpoint remains as a fallback.
-- **WebSocket auth**: `auth` querystring param is parsed but not yet enforced. See [roadmap](./roadmap.md).
-- **Rooms**: A higher-level concept (auto-recycled, auth-gated namespaces) is planned on top of channels. See [roadmap](./roadmap.md).
+- ~~**Channels with per-channel persistence**~~: ✅ Done. Each channel gets its own `state-{channelId}.json` file. REST endpoints accept `?channel=` param. `app-store-init` reads channel from the URL hash via `hashParamConfig("channel", "default")`.
+- ~~**WebSocket-based hydration**~~: ✅ Done. Server sends `persistent_state` message on connect; `app-store-init` listens and hydrates from it. HTTP endpoint remains as a fallback.
+- **WebSocket auth**: `auth` querystring param is parsed but not yet enforced. See [roadmap](../exec-plans/roadmap.md).
+- **Rooms**: A higher-level concept (auto-recycled, auth-gated namespaces) is planned on top of channels. See [roadmap](../exec-plans/roadmap.md).

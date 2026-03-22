@@ -3,49 +3,15 @@ import { join } from "path";
 import { logGreen } from "./util.mjs";
 
 class PersistentState {
-  constructor(wsServer, app, baseDataPath, projectId) {
-    this.wsServer = wsServer;
-    this.app = app;
+  constructor(baseDataPath, channelId = "default") {
     this.baseDataPath = join(baseDataPath);
-    this.projectId = projectId;
+    this.channelId = channelId;
 
-    this.dataPath = join(this.baseDataPath, `${this.projectId}.json`);
+    this.dataPath = join(this.baseDataPath, `state-${this.channelId}.json`);
 
     this.lastSaveTime = Date.now();
     this.state = {};
     this.loadStateFromFile(this.dataPath);
-    this.listenToWsServer();
-    this.addRoutes();
-  }
-
-  addRoutes() {
-    // this.app.get("/", (req, res) => {
-    //   res.json({ message: "Welcome to AppStore" });
-    // });
-
-    this.app.get("/api/state/get/:key", (req, res) => {
-      const key = req.params.key;
-      if (this.getState(key)) {
-        res.json(this.getState(key));
-      } else {
-        res.json(null);
-      }
-    });
-
-    this.app.get("/api/state/all", (req, res) => {
-      res.json(this.state);
-    });
-
-    this.app.get("/api/state/wipe/:key", (req, res) => {
-      const key = req.params.key;
-      this.removeKey(key);
-      res.json(this.state);
-    });
-
-    this.app.get("/api/state/wipe", (req, res) => {
-      this.removeAllKeys();
-      res.json(this.state);
-    });
   }
 
   getAll() {
@@ -58,22 +24,6 @@ class PersistentState {
 
   setState(key, value) {
     this.state[key] = value;
-  }
-
-  listenToWsServer() {
-    // store incoming messages to state
-    this.wsServer.on("connection", (connection, request, client) => {
-      connection.on("message", (message, isBinary) => {
-        try {
-          const json = JSON.parse(message);
-          if (json.store) {
-            this.setStateData(json);
-          }
-        } catch (error) {
-          console.error("Error parsing incoming message:", error);
-        }
-      });
-    });
   }
 
   setStateData(data) {

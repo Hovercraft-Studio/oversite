@@ -40,16 +40,18 @@ Manages WebSocket connections and message relay.
 - Broadcasts `client_connected`, `client_disconnected`, and updated `clients` array on join/leave
 - Sends AppStore heartbeat `{ key: "💓", value: "💓" }` to all channels every 30s
 - Exposes: `GET /api/state/channels`, `/api/state/clients`, `/api/state/clients/:id`
+- Also registers all persistent state routes: `/api/state/all`, `/api/state/get/:key`, `/api/state/wipe`, `/api/state/wipe/:key` — all accept `?channel=` query param
 
 ### `src/server/persistent-state.mjs` — PersistentState
 
-Persists AppStore state to disk and serves it via REST.
+Persists AppStore state to disk — one file per channel.
 
-- Listens directly on the `ws` server for any message with `store: true`
+- Pure data store — no longer listens on `wsServer` directly; `SocketServer` routes messages to the correct channel's store in `handleMessage`
 - Stores the full message object (including `sender`, `time`) in memory keyed by `key`
-- Writes to `_tmp_data/state/state.json` — rate-limited to once per second
+- Each channel gets its own file: `_tmp_data/state/state-{channelId}.json`
+- Write rate-limited to once per second
 - Loads state from disk on startup (survives server restarts, not redeploys)
-- Exposes: `GET /api/state/all`, `/api/state/get/:key`, `/api/state/wipe`, `/api/state/wipe/:key`
+- `SocketServer` owns all REST endpoints (see below) — PersistentState has no routes of its own
 
 ### `src/server/dashboard-api.mjs` — DashboardApi
 
@@ -88,14 +90,18 @@ All runtime data lives under `_tmp_data/` (gitignored):
 ```
 _tmp_data/
 ├── state/
-│   └── state.json          ← AppStore persistent state
+│   ├── state-default.json       ← "default" channel state
+│   ├── state-dashboard.json     ← "dashboard" channel state
+│   └── state-{channelId}.json   ← one file per channel
 └── dashboard/
-    ├── projects.json        ← all check-in data
-    └── images/             ← saved screenshots
+    ├── projects.json             ← all check-in data
+    └── images/                  ← saved screenshots
         └── {appId}-{ts}-screenshot.png
 ```
 
 In production (`NODE_ENV=production`), paths shift to `dist/_tmp_data/` so they sit alongside the static build.
+
+**Migration from pre-channel state:** If upgrading from a version that used a single `state.json`, rename it to `state-default.json` to preserve existing data.
 
 ## Logging
 

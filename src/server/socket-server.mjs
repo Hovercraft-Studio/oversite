@@ -15,9 +15,10 @@ class SocketServer {
     this.allowedChannels = allowedChannels; // if null, default is allowed, otherwise, can be necessary to pass in a specified channel if "default" isn't in the allowed list
     this.debug = debug;
 
-    // create channels & persistent state instance
+    // create channels & per-channel persistent state stores
     this.channels = {};
-    this.persistentState = new PersistentState(wsServer, app, baseDataPath, "state");
+    this.channelStates = {}; // map of channelId -> PersistentState
+    this.getOrCreateState(this.DEFAULT_CHANNEL); // always init default channel state
 
     // Bind methods to this instance
     this.handleConnection = this.handleConnection.bind(this);
@@ -29,6 +30,15 @@ class SocketServer {
     this.addRoutes();
     this.startHeartbeat();
     if (debug) this.addDebugListeners();
+  }
+
+  // Get or lazily create a PersistentState for a channel
+  getOrCreateState(channelId) {
+    if (!this.channelStates[channelId]) {
+      this.channelStates[channelId] = new PersistentState(this.baseDataPath, channelId);
+      logGreen(`📦 Created persistent state for channel: ${channelId}`);
+    }
+    return this.channelStates[channelId];
   }
 
   addDebugListeners() {
@@ -55,6 +65,35 @@ class SocketServer {
     this.app.get("/api/state/channels", (req, res) => this.jsonChannels(req, res));
     this.app.get("/api/state/clients", (req, res) => res.json(this.jsonClients()));
     this.app.get("/api/state/clients/:id", (req, res) => this.jsonClientsInChannel(req, res));
+
+    // Per-channel state API routes — ?channel= param defaults to "default"
+    const resolveStore = (req) => {
+      const channelId = req.query.channel || this.DEFAULT_CHANNEL;
+      return this.getOrCreateState(channelId);
+    };
+
+    this.app.get("/api/state/get/:key", (req, res) => {
+      const store = resolveStore(req);
+      const val = store.getState(req.params.key);
+      res.json(val || null);
+    });
+
+    this.app.get("/api/state/all", (req, res) => {
+      const store = resolveStore(req);
+      res.json(store.state);
+    });
+
+    this.app.get("/api/state/wipe/:key", (req, res) => {
+      const store = resolveStore(req);
+      store.removeKey(req.params.key);
+      res.json(store.state);
+    });
+
+    this.app.get("/api/state/wipe", (req, res) => {
+      const store = resolveStore(req);
+      store.removeAllKeys();
+      res.json(store.state);
+    });
   }
 
   jsonChannels(req, res) {
@@ -122,14 +161,15 @@ class SocketServer {
   }
 
   sendStateToClient(connection) {
-    // send the full persisted state object to a single newly-connected client
+    // send the persisted state for this client's channel
     if (connection.sendonly) return;
-    const state = this.persistentState.getAll();
+    const store = this.getOrCreateState(connection.channelId);
+    const state = store.getAll();
     const stateMsg = this.createAppStoreObject("persistent_state", state, "object");
     if (connection.readyState === WebSocket.OPEN) {
       connection.send(stateMsg);
     }
-    if (this.debug) logGreen(`📦 [${connection.senderId}] sent persistent_state (${Object.keys(state).length} keys)`);
+    if (this.debug) logGreen(`📦 [${connection.senderId}] sent persistent_state for [${connection.channelId}] (${Object.keys(state).length} keys)`);
   }
 
   broadcastMessage(channelId, message, isBinary = false, sender = null, receiver = null, sendOnly = false) {
@@ -293,6 +333,9 @@ class SocketServer {
   handleMessage(connection, message, isBinary) {
     if (this.debug) logGreen(`[JSON IN]: ${message}`);
 
+    // get channel-specific persistent state store
+    const channelStore = this.getOrCreateState(connection.channelId);
+
     // check for 'receiver'
     let receiver = null;
     if (message.indexOf("receiver") > -1) {
@@ -305,18 +348,28 @@ class SocketServer {
       }
     }
 
-    // check for state_delete command — remove a key from persistent state and broadcast updated state
+    // check for state_delete command — remove a key from this channel's persistent state
     if (message.indexOf("state_delete") > -1) {
       try {
         let data = JSON.parse(message);
         if (data.key === "state_delete" && data.value) {
-          this.persistentState.removeKey(data.value); // the value is the key we want to delete from persistent state
-          if (this.debug) logGreen(`🗑️ [${connection.senderId}] deleted key: ${data.value}`);
+          channelStore.removeKey(data.value);
+          if (this.debug) logGreen(`🗑️ [${connection.senderId}] deleted key: ${data.value} from [${connection.channelId}]`);
           return; // don't relay the delete command itself
         }
       } catch (e) {
         logGreen("❌ Error parsing state_delete message");
       }
+    }
+
+    // persist incoming store messages to this channel's state file
+    try {
+      let data = JSON.parse(message);
+      if (data.store) {
+        channelStore.setStateData(data);
+      }
+    } catch (e) {
+      // not JSON or not a store message — that's fine, just relay
     }
 
     // check for sendonly

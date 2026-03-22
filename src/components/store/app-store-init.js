@@ -21,11 +21,11 @@ class AppStoreInit extends HTMLElement {
     this.addChildren();
   }
 
-  hashParamConfig(key, defaultVal) {
+  hashParamConfig(key, defaultVal, writeToHash = true) {
     // use value from the URL hash if it exists, otherwise use default value and write to hash for the next reload
     let hashParams = new URLSearchParams(document.location.hash);
     let val = hashParams.has(key) ? hashParams.get(key) : defaultVal;
-    if (!hashParams.has(key)) document.location.hash += `&${key}=${val}`;
+    if (!hashParams.has(key) && writeToHash) document.location.hash += `&${key}=${val}`;
     return val;
   }
 
@@ -55,9 +55,16 @@ class AppStoreInit extends HTMLElement {
   }
 
   initSharedState() {
-    // get config from web component attributes
+    // get config from web component attributes,
+    // but if there are also values in the URL hash (set by hashParamConfig),
+    // use those instead and write them to the hash for sharing
     let sender = this.getAttribute("sender");
-    let channel = this.getAttribute("channel") || this.hashParamConfig("channel", "default");
+    let senderFromHash = this.hashParamConfig("sender", null, false);
+    if (senderFromHash) sender = senderFromHash;
+    let channel = this.getAttribute("channel");
+    let channelFromHash = this.hashParamConfig("channel", null, false);
+    if (channelFromHash) channel = channelFromHash;
+
     let auth = this.getAttribute("auth");
     this.initKeys = this.getAttribute("init-keys");
 

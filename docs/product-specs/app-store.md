@@ -206,20 +206,24 @@ Place it once per page (or use `<oversite-header>` which includes it):
 
 ## AppStore REST API
 
-The server exposes REST endpoints for interacting with the persistent state store. All routes are `GET`:
+The server exposes REST endpoints for interacting with the persistent state store. All routes are `GET` and accept an optional `?channel=` query param (defaults to `"default"`):
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/api/state/all` | Returns the entire current state as JSON |
-| `GET` | `/api/state/get/:key` | Returns the full stored message object for one key |
-| `GET` | `/api/state/wipe/:key` | Removes a single key from the store |
-| `GET` | `/api/state/wipe` | Wipes the entire state (use with caution) |
+| `GET` | `/api/state/all?channel=X` | Returns the entire current state for a channel |
+| `GET` | `/api/state/get/:key?channel=X` | Returns the full stored message object for one key |
+| `GET` | `/api/state/wipe/:key?channel=X` | Removes a single key from the channel's store |
+| `GET` | `/api/state/wipe?channel=X` | Wipes the entire channel state (use with caution) |
+| `GET` | `/api/state/channels` | Lists all active channels and their connected clients |
+| `GET` | `/api/state/clients` | Lists all connected clients across all channels |
 
-These endpoints are served by `src/server/persistent-state.mjs`.
+These endpoints are registered by `SocketServer` (`src/server/socket-server.mjs`).
 
 ## Persistent State
 
-When a message has `store: true`, the server saves it to `_tmp_data/state/state.json`. This file is debounced — rapid updates only trigger one write. On startup, all clients receive the full persisted state when they connect, so they initialize to the current distributed state without any additional requests beyond what `app-store-init` already does.
+When a message has `store: true`, the server persists it to a per-channel file: `_tmp_data/state/state-{channelId}.json`. Writes are debounced — rapid updates only trigger one write per second.
+
+On connect, clients receive the persisted state for their channel via a WebSocket `persistent_state` message, so they initialize to the current distributed state without any additional requests beyond what `app-store-init` already does.
 
 **Note:** On cloud deployments (e.g., DigitalOcean App Platform), the `_tmp_data/` directory is ephemeral and is reset on each redeploy.
 

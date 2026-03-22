@@ -30,7 +30,7 @@
   },
   "scripts": {
     "vite": "vite --host --port 3002",
-    "dev": "concurrently \"npm run vite\" \"npm run server-debug\"",
+    "dev": "concurrently \"npm run vite\" \"npm run server\"",
     "dev-debug": "concurrently \"npm run vite\" \"npm run server-debug\" --debug",
     "prebuild": "npm install @rollup/rollup-linux-x64-gnu --no-save || true",
     "server": "nodemon --watch ./src/server --ext mjs node ./server.mjs --port 3003",

@@ -23,11 +23,22 @@ class CustomApp extends HTMLElement {
     let wsURL = _store.get("ws_url");
     let serverURL = _store.get("server_url");
 
-    // populate header links with server URL
-    document.querySelector("a[data-state-url]").setAttribute("href", `${serverURL}api/state/all`);
+    // read current channel from hash params (set by app-store-init hashParamConfig)
+    let hashParams = new URLSearchParams(document.location.hash);
+    let currentChannel = hashParams.get("channel") || "default";
+    let channelParam = `?channel=${currentChannel}`;
+
+    // populate header links with server URL — state endpoints include channel param
+    let stateUrlEl = document.querySelector("a[data-state-url]");
+    stateUrlEl.setAttribute("href", `${serverURL}api/state/all${channelParam}`);
+    stateUrlEl.textContent = `/state/all (${currentChannel})`;
+
     document.querySelector("a[data-clients-url]").setAttribute("href", `${serverURL}api/state/clients`);
     document.querySelector("a[data-channels-url]").setAttribute("href", `${serverURL}api/state/channels`);
-    document.querySelector("a[data-wipe-url]").setAttribute("href", `${serverURL}api/state/wipe`);
+
+    let wipeUrlEl = document.querySelector("a[data-wipe-url]");
+    wipeUrlEl.setAttribute("href", `${serverURL}api/state/wipe${channelParam}`);
+    wipeUrlEl.textContent = `/state/wipe (${currentChannel})`;
 
     // server url in header
     let headerServerUrl = document.querySelector("a[data-server-address-display]");
@@ -58,7 +69,7 @@ class CustomApp extends HTMLElement {
   }
 
   setFontSize(size) {
-    this.root.style.setProperty("--table-font-size", `${size}vw`);
+    this.root.style.setProperty("--table-font-size", `${size}rem`);
   }
 
   storeUpdated(key, value) {
@@ -76,33 +87,43 @@ class CustomApp extends HTMLElement {
   }
 
   buildChannelSwitcher() {
-    let serverURL = _store.get("server_url");
-    let select = document.querySelector("[data-channel-select]");
-    if (!select) return;
-    let hashParams = new URLSearchParams(document.location.hash);
-    let currentChannel = hashParams.get("channel") || "default";
+    this.channelSelect = document.querySelector("[data-channel-select]");
+    if (!this.channelSelect) return;
+    this.channelServerURL = _store.get("server_url");
+    this.currentChannel = new URLSearchParams(document.location.hash).get("channel") || "default";
+    this.knownChannelIds = [];
 
-    fetch(`${serverURL}api/state/channels`)
-      .then((res) => res.json())
-      .then((channels) => {
-        // always include current channel even if not in the API response
-        let channelIds = channels.map((c) => c.channel);
-        if (!channelIds.includes(currentChannel)) channelIds.unshift(currentChannel);
+    this.fetchChannels();
+    this.channelPollInterval = setInterval(() => this.fetchChannels(), 5000);
 
-        select.innerHTML = channelIds
-          .map((id) => `<option value="${id}"${id === currentChannel ? " selected" : ""}>${id}</option>`)
-          .join("");
-      })
-      .catch(() => {
-        select.innerHTML = `<option>${currentChannel}</option>`;
-      });
-
-    select.addEventListener("change", (e) => {
+    this.channelSelect.addEventListener("change", (e) => {
       let hashParams = new URLSearchParams(document.location.hash);
       hashParams.set("channel", e.target.value);
       document.location.hash = hashParams.toString();
       window.location.reload();
     });
+  }
+
+  fetchChannels() {
+    fetch(`${this.channelServerURL}api/state/channels`)
+      .then((res) => res.json())
+      .then((channels) => {
+        let channelIds = channels.map((c) => c.channel);
+        if (!channelIds.includes(this.currentChannel)) channelIds.unshift(this.currentChannel);
+
+        // only update DOM if channel list changed
+        if (JSON.stringify(channelIds) === JSON.stringify(this.knownChannelIds)) return;
+        this.knownChannelIds = channelIds;
+
+        this.channelSelect.innerHTML = channelIds
+          .map((id) => `<option value="${id}"${id === this.currentChannel ? " selected" : ""}>${id}</option>`)
+          .join("");
+      })
+      .catch(() => {
+        if (this.knownChannelIds.length === 0) {
+          this.channelSelect.innerHTML = `<option>${this.currentChannel}</option>`;
+        }
+      });
   }
 
   init() {

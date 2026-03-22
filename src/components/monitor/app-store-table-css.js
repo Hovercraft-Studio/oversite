@@ -1,7 +1,7 @@
 const css = /*css*/ `
 
 :root {
-  --table-font-size: 1.2vw;
+  --table-font-size: 0.85rem;
 }
 
 /* table row animations */
