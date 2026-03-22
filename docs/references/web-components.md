@@ -90,6 +90,29 @@ Inner text becomes the button label. Multiple buttons can share the same `key` w
 | `confirm` | Shows `window.confirm()` before sending; set to a string for a custom message |
 | `disabled` | Disables the button |
 
+#### `<buttons-for-key>` — dynamic button grid from store array
+
+Renders a grid of `<app-store-button>` elements based on a JSON array stored in the AppStore, or from a static comma-separated `values` attribute. The output key is derived from the input key by stripping `_buttons` (e.g. `scene_buttons` → `scene`).
+
+```html
+<!-- Buttons from store array (sent by another client) -->
+<buttons-for-key store-key="scene_buttons"></buttons-for-key>
+
+<!-- Buttons from static attribute -->
+<buttons-for-key store-key="scene_buttons" values="intro, main, outro"></buttons-for-key>
+
+<!-- Momentary buttons -->
+<buttons-for-key store-key="cue_buttons" momentary></buttons-for-key>
+```
+
+| Attribute | Description |
+|---|---|
+| `store-key` | AppStore key containing a JSON array of button labels (e.g. `["intro", "main", "outro"]`) |
+| `values` | Comma-separated list of button labels — used as initial buttons before any store update arrives |
+| `momentary` | If present, each button sends its value then immediately sends `0` (pulse mode) |
+
+The component hides its nearest parent `<details>` element when the button list is empty, and shows it when buttons are available.
+
 #### `<app-store-slider>` — range slider
 
 Use an external `<label>` element for labeling — no `label` attribute exists.
@@ -97,7 +120,20 @@ Use an external `<label>` element for labeling — no `label` attribute exists.
 ```html
 <label>audio_volume: <code><app-store-element key="audio_volume"></app-store-element></code></label>
 <app-store-slider key="audio_volume" value="0" max="1"></app-store-slider>
+
+<!-- With icon -->
+<app-store-slider key="audio_volume" value="0" max="1" icon-audio></app-store-slider>
+<app-store-slider key="brightness" value="100" icon-brightness></app-store-slider>
+
+<!-- With live value display -->
+<app-store-slider key="mouse_x" show-value></app-store-slider>
 ```
+
+| Attribute | Description |
+|---|---|
+| `icon-audio` | Shows an audio speaker SVG icon before the slider |
+| `icon-brightness` | Shows a brightness/sun SVG icon before the slider |
+| `show-value` | Shows the key name and its current live value before the slider |
 
 #### `<app-store-textfield>` — text input
 
@@ -174,6 +210,18 @@ The WebSocket URL is determined in this order:
 1. `ws-url` attribute (if set)
 2. `#&wsURL=` hash parameter in the page URL
 3. Auto-detected from the current page host (uses `wss://` in production, `ws://` in dev)
+
+**Hash parameter overrides:** `channel` and `sender` can also be set via the URL hash. When present, hash values take priority over HTML attributes. Parameters are auto-written to the hash on first load, making URLs shareable.
+
+| Hash Param | Overrides Attribute | Default |
+|---|---|---|
+| `wsURL` | `ws-url` | Auto-detected |
+| `channel` | `channel` | `"default"` |
+| `sender` | `sender` | Attribute value |
+
+```
+http://localhost:3002/app-store-demo/#&wsURL=ws://localhost:3003/ws&channel=dashboard&sender=cool_ui_yo
+```
 
 #### `<app-store-heartbeat>` — sends periodic uptime heartbeats
 

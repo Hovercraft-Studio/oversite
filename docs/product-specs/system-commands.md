@@ -31,14 +31,23 @@ The standalone runner also sends a heartbeat every 10 seconds so the Dashboard c
 
 ### 2. Embedded in server.mjs
 
-Pass an existing `AppStoreDistributed` instance to use within the main Oversite server:
+Enable with a CLI flag or environment variable — disabled by default:
+
+```bash
+# CLI flag
+node server.mjs --system-commands
+
+# Or .env variable
+SYSTEM_COMMANDS=true
+```
+
+When enabled, `server.mjs` dynamically imports the module and connects as an AppStore client on the `dashboard` channel:
 
 ```js
-import AppStoreDistributed from "./src/app-store/app-store-distributed.mjs";
-import SystemCommands from "./src/server/system-commands.mjs";
-
-const sysStore = new AppStoreDistributed(`ws://127.0.0.1:${PORT}/ws`, "system_commands", "dashboard");
-const systemCommands = new SystemCommands(sysStore);
+if (enableSystemCommands) {
+  const sysStore = new AppStoreDistributed(`ws://127.0.0.1:${PORT}/ws`, "system_commands", "dashboard");
+  const systemCommands = new SystemCommands(sysStore);
+}
 ```
 
 ## Commands

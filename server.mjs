@@ -26,6 +26,7 @@ const envPath = join(appRoot, ".env");
 const args = process.argv.slice(2);
 const PORT = process.env.PORT ?? getCliArg("--port", 3003); // prod uses process.env.PORT, but dev uses --port arg
 const debug = args.indexOf("--debug") != -1;
+const enableSystemCommands = args.indexOf("--system-commands") != -1 || process.env.SYSTEM_COMMANDS === "true";
 
 /////////////////////////////////////////////////////////
 // Get config from .env
@@ -96,6 +97,7 @@ console.table([
   [`debug`, `${config.debug}`],
   [`Base data path`, `${config.baseDataPath}`],
   [`ws:// channels`, `${config.allowedWsChannels}`],
+  [`System Commands`, `${enableSystemCommands}`],
   [`Dashboard data path`, `${config.dashboardDataPath}`],
   [`Dashboard API & POST route`, `${config.dashboardApiRoute}`],
   [`Dashboard POST route (alt)`, `${config.dashboardPostRouteAlt}`],
@@ -162,10 +164,13 @@ const offlineAlerts = new OfflineAlerts(dashboardApi, alertProjectIds, slackApiH
 if (debug) dashboardApi.printConfig();
 
 // System commands module for handling incoming AppStore messages with system commands from the Dashboard
-// import SystemCommands from "./src/server/system-commands.mjs";
-// import AppStoreDistributed from "./src/app-store/app-store-distributed.mjs";
-// const sysCommandsStore = new AppStoreDistributed(`ws://127.0.0.1:${PORT}/ws`, "system_commands", "dashboard");
-// const systemCommands = new SystemCommands(sysCommandsStore);
+// Enable with: --system-commands flag or SYSTEM_COMMANDS=true in .env
+if (enableSystemCommands) {
+  const { default: SystemCommands } = await import("./src/server/system-commands.mjs");
+  const { default: AppStoreDistributed } = await import("./src/app-store/app-store-distributed.mjs");
+  const sysCommandsStore = new AppStoreDistributed(`ws://127.0.0.1:${PORT}/ws`, "system_commands", "dashboard");
+  const systemCommands = new SystemCommands(sysCommandsStore);
+}
 
 /////////////////////////////////////////////////////////
 // Init HTTP server

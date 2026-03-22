@@ -91,6 +91,8 @@ For pages without `oversite-header`, use `app-store-init` directly:
 <app-store-init sender="my-app" channel="default" init-keys="*" debug></app-store-init>
 ```
 
+All `app-store-init` attributes (`sender`, `channel`, `wsURL`) can be overridden at runtime via URL hash parameters — see [Configuration via URL Hash](product-specs/app-store.md#configuration-via-url-hash).
+
 ## Shadow DOM Policy
 
 **Do not use Shadow DOM on new components.** Components write directly to `this.innerHTML` so global PicoCSS and `shared/css/styles.css` apply without workarounds.

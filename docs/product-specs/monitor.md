@@ -55,6 +55,18 @@ To monitor a remote deployment, append the `wsURL` hash parameter:
 http://localhost:3002/app-store-monitor/#&wsURL=wss://oversite.example.com
 ```
 
+### Switching Channels
+
+The monitor header includes a channel dropdown that lists all active channels from the server. Selecting a channel updates the URL hash and reloads the page. The dropdown polls `/api/state/channels` every 5 seconds and adds new channels as they appear.
+
+You can also set the channel directly via the URL hash:
+
+```
+http://localhost:3002/app-store-monitor/#&channel=dashboard
+```
+
+All hash parameters (`wsURL`, `channel`, `sender`) work in the monitor — see [Configuration via URL Hash](app-store.md#configuration-via-url-hash) for details.
+
 ## Components Used
 
 | Component | File | Role |
@@ -79,3 +91,4 @@ This is tracked as **R2** in the [roadmap](./roadmap.md). Until fixed:
 - **Watch for duplicate keys**: If a value is bouncing between two values rapidly, two clients may be fighting over the same key.
 - **Use the filter**: In large installations with many keys, filter by prefix (e.g., `lighting_`) to focus on a subsystem.
 - **Unicast debugging**: Unicast messages (`receiver` field set) are not visible to all clients, including the monitor, unless the monitor's sender ID matches the `receiver`. For debugging unicast routing, temporarily remove the `receiver` field.
+- **Adjust table font size**: The monitor tables use the `--table-font-size` CSS variable (default: `0.85rem`). The zoom in/out buttons in the header adjust this value by `0.05rem` per click.

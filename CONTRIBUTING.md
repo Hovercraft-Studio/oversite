@@ -146,11 +146,3 @@ This project uses GitHub Copilot for AI-assisted development. The workspace inst
 3. **Verify after** — after any change, test the affected page in a browser and check the console for errors. The test suite is a standing TODO item.
 4. **Update TODO.md** — mark items resolved as work is completed.
 
-### Prioritized refactoring backlog
-
-| # | Target | What |
-|---|---|---|
-| ~~R1~~ | ~~`src/server/dashboard-api.mjs`~~ | ~~Replace synchronous `fs` calls with `fs.promises`~~ ✅ Done |
-| R2 | `src/components/app-store-table.js` | Fix unbounded memory leak — audit listener/DOM cleanup |
-| R3 | `src/server/socket-server.mjs` + `persistent-state.mjs` | Introduce `ServerContext` class for shared config/state |
-| R4 | `src/app-store/app-store-.mjs` | Audit `window._store` usages |

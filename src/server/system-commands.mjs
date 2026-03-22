@@ -46,7 +46,7 @@ class SystemCommands {
       list_processes: this.listProcesses.bind(this),
     };
     this.addListeners();
-    log(`Initialized (platform: ${this.platform}, sender: ${this.senderId})`);
+    log(`System Commands Initialized (platform: ${this.platform}, sender: ${this.senderId})`);
   }
 
   // ---- AppStore listener setup ----
@@ -66,11 +66,21 @@ class SystemCommands {
 
   // AppStore named-method listener: called when a command key is updated
   // Each command key maps to this[key](value), which we route through executeCommand
-  kill_process(value) { this.handleCommand("kill_process", value); }
-  restart_computer(value) { this.handleCommand("restart_computer", value); }
-  send_keys(value) { this.handleCommand("send_keys", value); }
-  minimize_windows(value) { this.handleCommand("minimize_windows", value); }
-  list_processes(value) { this.handleCommand("list_processes", value); }
+  kill_process(value) {
+    this.handleCommand("kill_process", value);
+  }
+  restart_computer(value) {
+    this.handleCommand("restart_computer", value);
+  }
+  send_keys(value) {
+    this.handleCommand("send_keys", value);
+  }
+  minimize_windows(value) {
+    this.handleCommand("minimize_windows", value);
+  }
+  list_processes(value) {
+    this.handleCommand("list_processes", value);
+  }
 
   handleCommand(key, value) {
     const messageData = this.appStore.getData(key);
@@ -156,7 +166,10 @@ class SystemCommands {
     if (value === true || value === "true") {
       patterns = ["teamviewer"];
     } else if (typeof value === "string") {
-      patterns = value.split("|").map((p) => p.trim()).filter(Boolean);
+      patterns = value
+        .split("|")
+        .map((p) => p.trim())
+        .filter(Boolean);
     } else {
       patterns = ["teamviewer"];
     }
@@ -211,9 +224,10 @@ class SystemCommands {
         cmd = `tasklist /FO CSV /NH /FI "IMAGENAME eq ${filter}*"`;
       }
     } else {
-      cmd = filter && typeof filter === "string" && /^[\w.\-]+$/.test(filter)
-        ? `ps aux | grep -i ${filter} | grep -v grep`
-        : `ps aux --sort=-%mem | head -30`;
+      cmd =
+        filter && typeof filter === "string" && /^[\w.\-]+$/.test(filter)
+          ? `ps aux | grep -i ${filter} | grep -v grep`
+          : `ps aux --sort=-%mem | head -30`;
     }
     const { stdout } = await execAsync(cmd);
     return { message: stdout.trim() };

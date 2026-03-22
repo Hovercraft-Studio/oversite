@@ -48,6 +48,7 @@ ALLOWED_WS_CHANNELS=default       # comma-separated channel names
 AUTH_USERS=admin:password         # comma-separated user:pass pairs
 ALERT_PROJECT_IDS=project-a       # projects that trigger Slack alerts
 ALERT_SLACK_HOOK_URL=https://...  # Slack incoming webhook
+SYSTEM_COMMANDS=true              # enable SystemCommands module (also: --system-commands flag)
 ```
 
 ## Doc Map

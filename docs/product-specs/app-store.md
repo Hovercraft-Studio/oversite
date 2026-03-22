@@ -175,11 +175,27 @@ _store.addListener(myObj, 'appstore_connected');
 
 ### Configuration via URL Hash
 
-The `app-store-init` web component reads `#&wsURL=ws://...` from the page URL to configure the WebSocket connection at runtime without rebuilding.
+`app-store-init` reads configuration from the URL hash, allowing any page's connection settings to be changed at runtime without editing HTML attributes. Hash parameters are written to the URL automatically on first load (using the attribute or default value), making them easy to copy/paste and share.
+
+| Hash Parameter | Overrides Attribute | Default | Description |
+|---|---|---|---|
+| `wsURL` | `ws-url` | Auto-detected from page host | WebSocket server URL |
+| `channel` | `channel` | `"default"` | WebSocket channel to connect to |
+| `sender` | `sender` | Value from `sender` attribute | Client identity in the monitor |
+
+**Priority order**: hash parameter > HTML attribute > auto-detected default.
+
+Example — connect a demo page to a specific server, channel, and sender identity:
 
 ```
-https://my-installation.example.com/#&wsURL=ws://oversite.example.com/ws
+http://localhost:3002/app-store-demo/#&wsURL=ws://localhost:3003/ws&channel=dashboard&sender=cool_ui_yo
 ```
+
+This is especially useful for:
+- Pointing any page at a remote Oversite server
+- Switching channels without modifying HTML
+- Running multiple browser tabs with different sender identities
+- Sharing a pre-configured URL with a teammate
 
 ## SolidSocket
 

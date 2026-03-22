@@ -24,6 +24,12 @@ const socketServer  = new SocketServer(wsServer, app, config.stateDataPath, conf
 const dashboardApi  = new DashboardApi(app, express, config.dashboardDataPath, ...);
 await dashboardApi.init();
 const offlineAlerts = new OfflineAlerts(dashboardApi, alertProjectIds, slackApiHookUrl);
+
+// Optional — enable with --system-commands flag or SYSTEM_COMMANDS=true in .env
+if (enableSystemCommands) {
+  const sysStore = new AppStoreDistributed(`ws://127.0.0.1:${PORT}/ws`, "system_commands", "dashboard");
+  const systemCommands = new SystemCommands(sysStore);
+}
 ```
 
 ## Modules
@@ -72,6 +78,18 @@ Monitors dashboard data and sends Slack notifications.
 - Fires Slack webhook when a monitored project hasn't checked in for >20 minutes
 - Also fires when a project comes back online (recovery alert)
 - Configured via `ALERT_PROJECT_IDS` and `ALERT_SLACK_HOOK_URL` in `.env`
+
+### `src/server/system-commands.mjs` — SystemCommands (optional)
+
+Executes OS-level commands on the local machine, triggered by AppStore messages. Disabled by default — enable with the `--system-commands` CLI flag or `SYSTEM_COMMANDS=true` in `.env`.
+
+- Connects as an AppStore client on the `dashboard` channel via its own `AppStoreDistributed` instance
+- Listens for command keys: `kill_process`, `restart_computer`, `send_keys`, `minimize_windows`, `list_processes`
+- Responds on `{key}_response`, routed back to the requester via `receiver`
+- All inputs are sanitized with regex allow-lists
+- Custom commands can be registered at runtime via `addCommand(name, handler)`
+- Also runs standalone on any PC — see [`docs/product-specs/system-commands.md`](product-specs/system-commands.md)
+- Dynamically imported (`await import()`) — modules are not loaded unless enabled
 
 ### `src/server/auth-api.mjs` — AuthApi
 
