@@ -16,6 +16,7 @@ import "./ui/app-store-health.js";
 import "./ui/app-store-number.js";
 import "./ui/app-store-slider.js";
 import "./ui/app-store-textfield.js";
+import "./ui/app-store-if.js";
 import "./ui/buttons-for-key.js";
 import "./ui/date-year.js";
 import "./ui/modal-dialog.js";

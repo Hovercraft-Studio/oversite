@@ -99,6 +99,13 @@
               <label>buttons-for-key</label>
               <buttons-for-key key="app_state_buttons" values="attract,gameplay,game_over"></buttons-for-key>
             </p>
+            <h4>Conditional Visibility</h4>
+            <p>
+              <label>app-store-if</label>
+              <app-store-if key="app_state" value="attract"><span>Showing: app_state = <strong>attract</strong></span></app-store-if>
+              <app-store-if key="app_state" value="gameplay"><span>Showing: app_state = <strong>gameplay</strong></span></app-store-if>
+              <app-store-if key="app_state" value="game_over"><span>Showing: app_state = <strong>game_over</strong></span></app-store-if>
+            </p>
             <h4>Monitoring</h4>
             <p class="grid">
               <app-store-health key="camera_1_health" value=""></app-store-health>
