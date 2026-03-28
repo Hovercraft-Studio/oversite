@@ -106,7 +106,7 @@ On DigitalOcean, set these as environment variables in the App Platform dashboar
 External apps can install Oversite as a dependency instead of running it as a standalone server:
 
 ```bash
-npm install git@github.com:Hovercraft-Studio/oversite.git#main
+npm install oversite
 ```
 
 In your frontend JS entry point:
@@ -139,7 +139,7 @@ When Oversite becomes a public repo, revert these steps and use a normal Vite bu
 
 ## SSL / HTTPS for Local Tablets
 
-**Known open problem**: Some browsers on iOS and Android require `wss://` (WebSocket Secure) even on local network connections. Running Oversite with a self-signed certificate for local use is not yet solved in a clean way. This is tracked in the [roadmap](./roadmap.md).
+**Known open problem**: Some browsers on iOS and Android require `wss://` (WebSocket Secure) even on local network connections in order to use webcams or other hardware that requires a secure context. Running Oversite with a self-signed certificate for local use is not yet solved in a clean way. This is tracked in the [roadmap](./roadmap.md).
 
 Current workaround: Use the cloud deployment (`wss://`) and connect local devices to it over the internet rather than the LAN.
 
