@@ -110,6 +110,7 @@ class AppStoreDebug extends HTMLElement {
   }
 
   show() {
+    this.showing = true;
     this.render();
     this.style.display = "block";
   }
