@@ -162,14 +162,20 @@ class SocketServer {
 
   sendStateToClient(connection) {
     // send the persisted state for this client's channel
+    // delay to give the client time to process the open event and register listeners
     if (connection.sendonly) return;
-    const store = this.getOrCreateState(connection.channelId);
-    const state = store.getAll();
-    const stateMsg = this.createAppStoreObject("persistent_state", state, "object");
-    if (connection.readyState === WebSocket.OPEN) {
-      connection.send(stateMsg);
-    }
-    if (this.debug) logGreen(`📦 [${connection.senderId}] sent persistent_state for [${connection.channelId}] (${Object.keys(state).length} keys)`);
+    setTimeout(() => {
+      const store = this.getOrCreateState(connection.channelId);
+      const state = store.getAll();
+      const stateMsg = this.createAppStoreObject("persistent_state", state, "object");
+      if (connection.readyState === WebSocket.OPEN) {
+        connection.send(stateMsg);
+      }
+      if (this.debug)
+        logGreen(
+          `📦 [${connection.senderId}] sent persistent_state for [${connection.channelId}] (${Object.keys(state).length} keys)`,
+        );
+    }, 100);
   }
 
   broadcastMessage(channelId, message, isBinary = false, sender = null, receiver = null, sendOnly = false) {
@@ -354,7 +360,8 @@ class SocketServer {
         let data = JSON.parse(message);
         if (data.key === "state_delete" && data.value) {
           channelStore.removeKey(data.value);
-          if (this.debug) logGreen(`🗑️ [${connection.senderId}] deleted key: ${data.value} from [${connection.channelId}]`);
+          if (this.debug)
+            logGreen(`🗑️ [${connection.senderId}] deleted key: ${data.value} from [${connection.channelId}]`);
           return; // don't relay the delete command itself
         }
       } catch (e) {
