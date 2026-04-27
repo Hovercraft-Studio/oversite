@@ -41,7 +41,7 @@
               <app-store-button key="app_state" value="game_over">Game Over</app-store-button>
             </nav>
             <h4>Special Buttons</h4>
-            <nav style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <nav data-color="warm">
               <app-store-button key="btn_pulse" value="1" momentary>Momentary / Pulse</app-store-button>
               <app-store-button key="btn_toggle" value="0" toggle>Toggle</app-store-button>
               <app-store-button key="btn_confirm" value="true" confirm>Confirm</app-store-button>
@@ -49,6 +49,7 @@
               <app-store-button store-key="test_key" store-value="test_value">Alternate Attributes</app-store-button>
             </nav>
             <h4>Input Fields</h4>
+            <div data-color="cool">
             <p>
               <label>app-store-textfield</label>
               <app-store-textfield key="text_input" value="" placeholder="Enter text here"></app-store-textfield>
@@ -70,7 +71,7 @@
               MOUSE_X: <code><app-store-element key="MOUSE_X" flash-on-update></app-store-element></code>
               MOUSE_Y: <code><app-store-element key="MOUSE_Y" flash-on-update></app-store-element></code>
             </p>
-            <p>
+            <p >
               <label>app-store-dropdown</label>
               <app-store-dropdown key="dropdown_1" value="" placeholder="Select an option">
                 <option value="">Select an option</option>
@@ -86,16 +87,19 @@
               <app-store-checkbox key="checkbox_3" disabled>Checkbox 3</app-store-checkbox>
               <app-store-checkbox key="checkbox_toggle" toggle>Checkbox Toggle</app-store-checkbox>
             </p>
+            </div>
             <h4>Modal</h4>
             <modal-window-demo key="show_modal" value="true" modal-target="example_modal"></modal-window-demo>
             <h4>Small input Components</h4>
-            <p class="grid">
+            <p class="grid" data-color="warm">
               <app-store-dropdown small key="app_state" value="" placeholder="Select an app_state" options='["attract","gameplay","game_over"]'></app-store-dropdown>
               <app-store-textfield small key="text_input_small" value="" placeholder="Enter text here"></app-store-textfield>
               <app-store-button small key="app_state" value="attract">Attract</app-store-button>
             </p>
             <h4>Compound Components</h4>
             <p>
+                <pre>&lt;buttons-for-key key="app_state_buttons" values="attract,gameplay,game_over"&gt;</pre>
+              </blockquote>
               <label>buttons-for-key</label>
               <buttons-for-key key="app_state_buttons" values="attract,gameplay,game_over"></buttons-for-key>
             </p>

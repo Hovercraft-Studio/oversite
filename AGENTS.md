@@ -61,6 +61,7 @@ SYSTEM_COMMANDS=true              # enable SystemCommands module (also: --system
 | [`docs/FRONTEND.md`](docs/FRONTEND.md) | Web component architecture, AppStoreElement lifecycle |
 | [`docs/BACKEND.md`](docs/BACKEND.md) | Server modules, data model, config |
 | [`docs/PRODUCT_SENSE.md`](docs/PRODUCT_SENSE.md) | Users, value props, deployment contexts |
+| [`docs/SLA.md`](docs/SLA.md) | SLA tier framework for ongoing installation support |
 | [`docs/RELIABILITY.md`](docs/RELIABILITY.md) | Reconnect patterns, failure modes, offline handling |
 | [`docs/SECURITY.md`](docs/SECURITY.md) | Auth system, session handling, known gaps |
 
