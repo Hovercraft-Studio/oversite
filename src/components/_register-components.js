@@ -21,6 +21,7 @@ import "./ui/buttons-for-key.js";
 import "./ui/date-year.js";
 import "./ui/modal-dialog.js";
 import "./ui/notyf-listener.js";
+import "./ui/theme-toggle.js";
 
 // dashboard
 import "./dashboard/dashboard-view.js";

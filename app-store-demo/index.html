@@ -31,6 +31,7 @@
       <auth-redirect style="display: none">
         <main class="container">
           <home-button></home-button>
+          <theme-toggle></theme-toggle>
           <section>
             <h1>AppStore Demo</h1>
             <p>A nice way to communicate between apps</p>
@@ -98,10 +99,12 @@
             </p>
             <h4>Compound Components</h4>
             <p>
+              <blockquote>
+                <p>Dynamic buttons that can be preset but overridden with store values, as a comma-delimited list of values for the key:</p>
                 <pre>&lt;buttons-for-key key="app_state_buttons" values="attract,gameplay,game_over"&gt;</pre>
               </blockquote>
               <label>buttons-for-key</label>
-              <buttons-for-key key="app_state_buttons" values="attract,gameplay,game_over"></buttons-for-key>
+              <buttons-for-key key="app_state_buttons" values="attract,gameplay,game_over" data-color="earth"></buttons-for-key>
             </p>
             <h4>Conditional Visibility</h4>
             <p>

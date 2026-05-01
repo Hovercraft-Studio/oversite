@@ -52,7 +52,7 @@ const primaryRecipes = (b) => [
   ["-hover-border", `var(--pico-primary-hover-background)`, `var(--pico-primary-hover-background)`],
   ["-hover-underline", mix(b, 28, "transparent", "srgb"), mix(b, 50, "transparent", "srgb")],
   ["-focus", mix(b, 28, "transparent", "srgb"), mix(b, 32, "transparent", "srgb")],
-  ["-inverse", mix(b, 18, "black"), mix(b, 18, "black")],
+  ["-inverse", "white", "white"],
 ];
 
 const secondaryRecipes = (b) => [
@@ -98,7 +98,7 @@ const genericRecipes = (b, name) => [
   ["-hover-border", `var(--pico-${name}-hover-background)`, `var(--pico-${name}-hover-background)`],
   ["-hover-underline", mix(b, 28, "transparent", "srgb"), mix(b, 50, "transparent", "srgb")],
   ["-focus", mix(b, 28, "transparent", "srgb"), mix(b, 32, "transparent", "srgb")],
-  ["-inverse", mix(b, 18, "black"), mix(b, 18, "black")],
+  ["-inverse", "white", "white"],
 ];
 
 function buildVars(recipes, group, schemeIndex) {
