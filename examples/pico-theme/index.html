@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Pico Theme Test</title>
+    <link rel="stylesheet" href="../../shared/css/pico.css" />
+    <link rel="stylesheet" href="../../shared/css/styles.css" />
+    <style>
+      .controls-bar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--pico-background-color);
+        border-bottom: 1px solid var(--pico-border-color);
+
+        nav {
+          max-width: 840px;
+          margin: 0 auto;
+          padding: 0.75rem 2rem;
+        }
+        * {
+          margin-bottom: 0;
+        }
+        select {
+          width: auto;
+        }
+        input[type="color"] {
+          width: 3rem;
+          height: 2rem;
+          padding: 0;
+          border: 1px solid var(--pico-border-color);
+          border-radius: var(--pico-border-radius);
+          cursor: pointer;
+          appearance: none;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+          padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch,
+        input[type="color"]::-moz-color-swatch {
+          border: none;
+          border-radius: var(--pico-border-radius);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls-bar container">
+      <nav>
+        <ul>
+          <li>
+            <label>Primary <input type="color" id="primary-picker" value="#d6bb66" /></label>
+          </li>
+          <li>
+            <label>Secondary <input type="color" id="secondary-picker" value="#48299e" /></label>
+          </li>
+          <li>
+            <label>Accent <input type="color" id="accent-picker" value="#16a34a" /></label>
+          </li>
+          <li>
+            <label>Danger <input type="color" id="danger-picker" value="#dc2626" /></label>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <label
+              >Theme
+              <select id="theme-mode">
+                <option value="">Auto</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <main class="container">
+      <!-- Typography -->
+      <section>
+        <h6>Typography</h6>
+        <hgroup>
+          <h2>Heading 2</h2>
+          <p>Subtitle / hgroup second child</p>
+        </hgroup>
+        <h3>Heading 3</h3>
+        <h4>Heading 4</h4>
+        <p>
+          Paragraph with <a href="#">a primary link</a>, <strong>bold</strong>, <em>italic</em>,
+          <code>inline code</code>, <kbd>kbd</kbd>, and a <mark>highlighted mark</mark>. Select this text to see
+          <strong>text-selection-color</strong>.
+        </p>
+        <blockquote>Blockquote with a <a href="#">link inside</a> — check underline color here too.</blockquote>
+        <p>
+          <small>Small text · <a href="#">small link</a></small>
+        </p>
+      </section>
+
+      <!-- Buttons -->
+      <section>
+        <h6>Buttons — primary &amp; secondary</h6>
+        <section id="buttons">
+          <h2>Buttons</h2>
+          <p class="grid">
+            <button>Primary</button>
+            <button class="secondary">Secondary</button>
+            <button class="contrast">Contrast</button>
+          </p>
+          <p class="grid">
+            <button class="outline">Primary outline</button>
+            <button class="outline secondary">Secondary outline</button>
+            <button class="outline contrast">Contrast outline</button>
+          </p>
+          <p class="grid">
+            <button disabled class="">Primary outline</button>
+            <button disabled class="secondary">Secondary outline</button>
+            <button disabled class="contrast">Contrast outline</button>
+          </p>
+        </section>
+      </section>
+
+      <!-- Custom colors -->
+      <section>
+        <h6>Custom colors — <code>data-color</code> scoping</h6>
+        <div class="grid">
+          <article data-color="accent">
+            <header><strong>accent</strong></header>
+            <nav>
+              <button>Filled</button>
+              <button class="outline">Outline</button>
+            </nav>
+            <label>
+              Toggle
+              <input type="checkbox" role="switch" checked />
+            </label>
+            <label>
+              Range
+              <input type="range" min="0" max="100" value="60" />
+            </label>
+            <input type="text" placeholder="Focus to see ring" />
+          </article>
+          <article data-color="danger">
+            <header><strong>danger</strong></header>
+            <nav>
+              <button>Filled</button>
+              <button class="outline">Outline</button>
+            </nav>
+            <label>
+              Toggle
+              <input type="checkbox" role="switch" checked />
+            </label>
+            <label>
+              Range
+              <input type="range" min="0" max="100" value="60" />
+            </label>
+            <input type="text" placeholder="Focus to see ring" />
+          </article>
+        </div>
+      </section>
+
+      <!-- Forms — key test area for focus rings -->
+      <section>
+        <h6>Forms — tab through to test focus ring color</h6>
+        <form onsubmit="return false;">
+          <div class="grid">
+            <label>
+              Text input
+              <input type="text" placeholder="Focus me" />
+            </label>
+            <label>
+              Email input
+              <input type="email" placeholder="email@example.com" />
+            </label>
+          </div>
+          <div class="grid">
+            <label>
+              Select
+              <select>
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+              </select>
+            </label>
+            <label>
+              Textarea
+              <textarea rows="2" placeholder="Focus to see ring"></textarea>
+            </label>
+          </div>
+          <div class="grid">
+            <fieldset>
+              <legend>Checkboxes</legend>
+              <label><input type="checkbox" checked /> Checked</label>
+              <label><input type="checkbox" /> Unchecked</label>
+            </fieldset>
+            <fieldset>
+              <legend>Radio</legend>
+              <label><input type="radio" name="r" checked /> Option A</label>
+              <label><input type="radio" name="r" /> Option B</label>
+            </fieldset>
+          </div>
+          <fieldset>
+            <legend>Toggle switches</legend>
+            <label><input type="checkbox" role="switch" checked /> Switch on</label>
+            <label><input type="checkbox" role="switch" /> Switch off</label>
+          </fieldset>
+          <label>
+            Range
+            <input type="range" min="0" max="100" value="60" />
+          </label>
+          <fieldset role="group">
+            <input name="email" type="email" placeholder="Enter your email" autocomplete="email" />
+            <input type="submit" value="Subscribe" />
+          </fieldset>
+        </form>
+        <article id="article">
+          <h2>Article</h2>
+          <p>
+            Nullam dui arcu, malesuada et sodales eu, efficitur vitae dolor. Sed ultricies dolor non ante vulputate
+            hendrerit. Vivamus sit amet suscipit sapien. Nulla iaculis eros a elit pharetra egestas. Nunc placerat
+            facilisis cursus. Sed vestibulum metus eget dolor pharetra rutrum.
+          </p>
+          <footer>
+            <small>Duis nec elit placerat, suscipit nibh quis, finibus neque.</small>
+          </footer>
+        </article>
+      </section>
+
+      <!-- Links on forced backgrounds -->
+      <section>
+        <h6>Links on forced backgrounds</h6>
+        <p>
+          On the page background: <a href="#">hover this link</a> · <a href="#">another link</a> · <a href="#">third</a>
+        </p>
+        <article data-theme="dark">
+          <strong>Forced dark:</strong>
+          <a href="#">link underline</a> and <a href="#">hover-underline</a> — should be a clean tint, not muddy.
+        </article>
+        <article data-theme="light">
+          <strong>Forced light:</strong>
+          <a href="#">link underline</a> and <a href="#">hover-underline</a> — should also look clean.
+        </article>
+      </section>
+
+      <!-- Table -->
+      <section>
+        <h6>Table</h6>
+        <figure>
+          <table>
+            <thead>
+              <tr>
+                <th>Variable</th>
+                <th>Light</th>
+                <th>Dark</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>--pico-primary</td>
+                <td>seed</td>
+                <td>seed</td>
+              </tr>
+              <tr>
+                <td>--pico-primary-background</td>
+                <td>seed</td>
+                <td>seed</td>
+              </tr>
+              <tr>
+                <td>--pico-primary-inverse</td>
+                <td colspan="2">oklch auto-contrast (black or white)</td>
+              </tr>
+              <tr>
+                <td>--pico-primary-underline</td>
+                <td colspan="2">oklch(seed / 0.5)</td>
+              </tr>
+              <tr>
+                <td>--pico-primary-focus</td>
+                <td>oklch(seed / 0.28)</td>
+                <td>oklch(seed / 0.32)</td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+      </section>
+
+      <!-- Progress & misc -->
+      <section>
+        <h6>Progress &amp; misc</h6>
+        <progress value="60" max="100"></progress>
+        <progress></progress>
+        <article>
+          <header>Article header</header>
+          <p>Article body with <a href="#">a link</a> inside a card.</p>
+          <footer>Article footer</footer>
+        </article>
+      </section>
+
+      <!-- Generated CSS output -->
+      <details>
+        <summary>Generated CSS</summary>
+        <pre
+          id="css-output"
+          style="font-size: 0.65rem; white-space: pre-wrap; word-break: break-all; max-height: 400px; overflow-y: auto"
+        ></pre>
+      </details>
+    </main>
+
+    <script type="module">
+      import PicoTheme from "../../src/util/pico-theme.js";
+
+      let theme = {
+        primary: "#d6bb66",
+        secondary: "#48299e",
+        extras: { accent: "#16a34a", danger: "#dc2626" },
+      };
+
+      function applyTheme() {
+        PicoTheme.apply(theme);
+        const output = document.getElementById("css-output");
+        if (output.closest("details")?.open) {
+          output.textContent = PicoTheme.css(theme);
+        }
+      }
+
+      document.getElementById("primary-picker").addEventListener("input", (e) => {
+        theme.primary = e.target.value;
+        applyTheme();
+      });
+      document.getElementById("secondary-picker").addEventListener("input", (e) => {
+        theme.secondary = e.target.value;
+        applyTheme();
+      });
+      document.getElementById("accent-picker").addEventListener("input", (e) => {
+        theme.extras.accent = e.target.value;
+        applyTheme();
+      });
+      document.getElementById("danger-picker").addEventListener("input", (e) => {
+        theme.extras.danger = e.target.value;
+        applyTheme();
+      });
+      document.getElementById("theme-mode").addEventListener("change", (e) => {
+        if (e.target.value) {
+          document.documentElement.setAttribute("data-theme", e.target.value);
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      });
+      document.querySelector("details").addEventListener("toggle", (e) => {
+        if (e.target.open) {
+          document.getElementById("css-output").textContent = PicoTheme.css(theme);
+        }
+      });
+
+      applyTheme();
+    </script>
+  </body>
+</html>

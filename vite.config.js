@@ -26,6 +26,7 @@ export default {
         dashboard: resolve(__dirname, "dashboard/index.html"),
         dashboard_example: resolve(__dirname, "examples/dashboard/js-frontend/index.html"),
         auth_example: resolve(__dirname, "examples/auth-form/index.html"),
+        pico_theme: resolve(__dirname, "examples/pico-theme/index.html"),
         login: resolve(__dirname, "login/index.html"),
       },
     },
