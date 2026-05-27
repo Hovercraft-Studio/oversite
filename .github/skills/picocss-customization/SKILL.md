@@ -21,7 +21,7 @@ How to customize colors in a site that uses Pico CSS via CSS custom properties (
 
 ## Recommended: Seed Color + `color-mix()` Approach
 
-Instead of hardcoding every Pico color variant, define **seed colors** and derive all variants using CSS `color-mix()`. The JS theme generator (`src/util/pico-theme.js`) is the preferred method — it handles all derivation and selector duplication automatically. See the [JavaScript Theme Generator](#javascript-theme-generator-recommended-for-deployments) section below.
+Instead of hardcoding every Pico color variant, define **seed colors** and derive all variants using CSS `color-mix()`. The JS theme generator (`src/util/pico-theme.js`) is the preferred method — it handles all derivation and selector duplication automatically. See the JavaScript Theme Generator section.
 
 For reference, the underlying CSS `color-mix()` patterns are documented here in case you need pure-CSS overrides without the JS generator.
 
@@ -192,6 +192,46 @@ Each custom group gets the full set of derived variables:
 | `--pico-admin-hover-border` | Points to `-hover-background` |
 | `--pico-admin-focus` | Semi-transparent focus ring |
 | `--pico-admin-inverse` | Text color on the background |
+
+### Global Styles & Layout Customization
+
+You can pass standard layout and typography options in camelCase. These are scheme-independent, global adjustments mapped onto the `:root, :host` style block:
+
+```js
+PicoTheme.apply({
+  primary: "#d6bb66",
+  fontFamily: "system-ui, sans-serif",
+  borderRadius: "0.5rem",       // adjust global element roundness
+  spacing: "1.2rem",            // adjust margins/paddings scale
+  transition: "0.15s ease-in",  // custom responsive feels
+  borderWidth: "0.1rem",
+  outlineWidth: "0.2rem",
+  fontSizeScale: 1.1,           // adaptive font resize (keeps responsive media queries intact)
+  accentColor: "#f59e0b",       // maps onto form checkboxes, progress & range HTML inputs
+});
+```
+
+Supported CSS variables mapping:
+
+| Key | Pico CSS Variable | Example |
+|---|---|---|
+| `fontFamily` | `--pico-font-family` | `"system-ui"` |
+| `fontFamilyEmoji` | `--pico-font-family-emoji` | `...` |
+| `fontFamilySansSerif` | `--pico-font-family-sans-serif` | `...` |
+| `fontFamilyMonospace` | `--pico-font-family-monospace` | `...` |
+| `lineHeight` | `--pico-line-height` | `1.4` |
+| `fontWeight` | `--pico-font-weight` | `500` |
+| `fontSize` | `--pico-font-size` | `"105%" (locks size absolutely, clobbering responsive scaling)` |
+| `fontSizeScale` | `--font-size-scale` | `1.15 (adaptive multiplier, preserves scaling)` |
+| `borderRadius` | `--pico-border-radius` | `"0rem"`, `"0.5rem"` |
+| `borderWidth` | `--pico-border-width` | `"1px"` |
+| `outlineWidth` | `--pico-outline-width` | `"3px"` |
+| `transition` | `--pico-transition` | `"0.15s ease"` |
+| `spacing` | `--pico-spacing` | `"0.85rem"` |
+| `gridColumnGap` | `--pico-grid-column-gap` | `"1rem"` |
+| `gridRowGap` | `--pico-grid-row-gap` | `"1rem"` |
+
+*(Any option beginning with `--` is passed through directly as-is to `:root, :host` overrides).*
 
 ### Scoped Colors with `data-color`
 

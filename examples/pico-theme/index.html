@@ -49,7 +49,7 @@
   <body>
     <oversite-header id="tablet"></oversite-header>
     <div class="controls-bar container">
-      <nav>
+      <nav id="nav-row-1">
         <ul>
           <li>
             <label>Primary <input type="color" id="primary-picker" value="#d6bb66" /></label>
@@ -64,11 +64,112 @@
             <label>Danger <input type="color" id="danger-picker" value="#dc2626" /></label>
           </li>
         </ul>
+      </nav>
+      <nav
+        id="nav-row-2"
+        style="border-top: 1px dashed var(--pico-border-color); padding-top: 0.5rem; margin-top: -0.5rem"
+      >
         <ul>
           <li>
             <label
+              >Radius
+              <input
+                type="range"
+                id="radius-slider"
+                min="0"
+                max="2"
+                step="0.05"
+                value="0.25"
+                style="
+                  width: 4rem;
+                  vertical-align: middle;
+                  margin-right: 0.5rem;
+                  display: inline-block;
+                  margin-bottom: 0;
+                "
+              />
+              <span id="radius-val">0.25rem</span></label
+            >
+          </li>
+          <li>
+            <label
+              >Spacing
+              <input
+                type="range"
+                id="spacing-slider"
+                min="0.5"
+                max="2"
+                step="0.05"
+                value="1.0"
+                style="
+                  width: 4rem;
+                  vertical-align: middle;
+                  margin-right: 0.5rem;
+                  display: inline-block;
+                  margin-bottom: 0;
+                "
+              />
+              <span id="spacing-val">1rem</span></label
+            >
+          </li>
+          <li>
+            <label
+              >Outline
+              <input
+                type="range"
+                id="outline-slider"
+                min="0.05"
+                max="0.5"
+                step="0.05"
+                value="0.125"
+                style="
+                  width: 4rem;
+                  vertical-align: middle;
+                  margin-right: 0.5rem;
+                  display: inline-block;
+                  margin-bottom: 0;
+                "
+              />
+              <span id="outline-val">0.125rem</span></label
+            >
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <label
+              >Font
+              <select id="font-family-select" style="margin-bottom: 0">
+                <option value="">Default Sans</option>
+                <option value="Georgia, serif">Serif</option>
+                <option value="ui-monospace, SFMono-Regular, monospace">Monospace</option>
+              </select>
+            </label>
+          </li>
+          <li>
+            <label
+              >Size
+              <input
+                type="range"
+                id="font-size-slider"
+                min="0.7"
+                max="1.5"
+                step="0.05"
+                value="1.0"
+                style="
+                  width: 4rem;
+                  vertical-align: middle;
+                  margin-right: 0.5rem;
+                  display: inline-block;
+                  margin-bottom: 0;
+                "
+              />
+              <span id="font-size-val">1.0x</span></label
+            >
+          </li>
+          <li>
+            <label
               >Theme
-              <select id="theme-mode">
+              <select id="theme-mode" style="margin-bottom: 0">
                 <option value="">Auto</option>
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
@@ -315,6 +416,11 @@
         primary: "#d6bb66",
         secondary: "#48299e",
         extras: { accent: "#16a34a", danger: "#dc2626" },
+        borderRadius: "0.25rem",
+        spacing: "1rem",
+        outlineWidth: "0.125rem",
+        fontFamily: undefined, // Initialized as undefined so Pico's native system-ui stacks apply on load
+        fontSizeScale: undefined, // Initialized as undefined to keep Pico's adaptive responsive font sizing untouched until adjusted
       };
 
       function applyTheme() {
@@ -339,6 +445,34 @@
       });
       document.getElementById("danger-picker").addEventListener("input", (e) => {
         theme.extras.danger = e.target.value;
+        applyTheme();
+      });
+      document.getElementById("radius-slider").addEventListener("input", (e) => {
+        const val = `${e.target.value}rem`;
+        theme.borderRadius = val;
+        document.getElementById("radius-val").textContent = val;
+        applyTheme();
+      });
+      document.getElementById("spacing-slider").addEventListener("input", (e) => {
+        const val = `${e.target.value}rem`;
+        theme.spacing = val;
+        document.getElementById("spacing-val").textContent = val;
+        applyTheme();
+      });
+      document.getElementById("outline-slider").addEventListener("input", (e) => {
+        const val = `${e.target.value}rem`;
+        theme.outlineWidth = val;
+        document.getElementById("outline-val").textContent = val;
+        applyTheme();
+      });
+      document.getElementById("font-family-select").addEventListener("change", (e) => {
+        theme.fontFamily = e.target.value || undefined;
+        applyTheme();
+      });
+      document.getElementById("font-size-slider").addEventListener("input", (e) => {
+        const val = e.target.value;
+        theme.fontSizeScale = val === "1" ? undefined : val;
+        document.getElementById("font-size-val").textContent = `${val}x`;
         applyTheme();
       });
       document.getElementById("theme-mode").addEventListener("change", (e) => {
