@@ -106,6 +106,7 @@ All web components should properly clean up event listeners and DOM references i
 
 ## Dashboard Improvements
 
+- Mobile-friendly header with abbreviated stats (e.g. "1/9 offline", total projects, last-seen summary) instead of the full desktop layout
 - Resize screenshots before upload if too large (use `canvas` npm package)
 - Auth for posting check-ins (currently unprotected — any POST is accepted)
 - Per-project log history (session/user counts, health check history)

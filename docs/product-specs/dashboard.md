@@ -46,9 +46,12 @@ const poster = new DashboardPoster(
   'https://oversite.example.com/api/dashboard', // POST URL (full path to the dashboard route)
   'my-installation',                            // appId — unique string ID for this app
   'My Installation — NYC',                      // appTitle — human-readable display name
-  10 * 60 * 1000                                // interval in ms (default: 10 minutes)
+  10 * 60 * 1000,                               // interval in ms (default: 10 minutes)
+  15 * 60 * 1000,                               // screenshotInterval in ms (default: 15 min, Node only)
+  null                                          // screenIndex — which display to capture (null = default)
 );
-// Posts immediately on construction, then on the interval
+// Browser: posts immediately on construction, then on the interval
+// Node: waits for first screenshot, then posts, then continues on the interval
 ```
 
 ### Check-in Payload
