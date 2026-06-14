@@ -18,9 +18,15 @@ Use this skill as the entry point when adopting Oversite in a new or existing pr
 
 ### 1. Use Oversite as a module (recommended)
 
-- Install from repo source.
+- Install from npm first.
 - Import only the pieces you need.
 - Keep updates easy by avoiding copied source when possible.
+
+```bash
+npm install oversite
+```
+
+If you need a pre-release or unpublished change, install from GitHub source:
 
 ```bash
 npm install github:Hovercraft-Studio/oversite#main

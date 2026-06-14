@@ -14,16 +14,32 @@
  * Zero external dependencies. Works identically on macOS and Windows.
  */
 
-const fs = require("fs");
-const path = require("path");
-const crypto = require("crypto");
+let fs;
+let path;
+let crypto;
+let ROOT;
+let MANIFEST_PATH;
+let WATCH_MODE;
 
-// Always operate from the repo root (script lives at .ai/scripts/sync.js)
-const ROOT = path.resolve(__dirname, "../..");
-process.chdir(ROOT);
+/**
+ * Load Node built-ins in a way that works in both CommonJS and ESM projects.
+ * Also derives repo root from argv[1] so we don't rely on __dirname/import.meta.
+ */
+async function initRuntime() {
+  fs = await import("node:fs");
+  path = await import("node:path");
+  crypto = await import("node:crypto");
 
-const MANIFEST_PATH = path.join(__dirname, "..", ".sync-manifest.json");
-const WATCH_MODE = process.argv.includes("--watch");
+  const scriptPath = path.resolve(process.argv[1] || ".");
+  const scriptDir = path.dirname(scriptPath);
+
+  // Always operate from the repo root (script lives at .ai/scripts/sync.js)
+  ROOT = path.resolve(scriptDir, "../..");
+  process.chdir(ROOT);
+
+  MANIFEST_PATH = path.join(scriptDir, "..", ".sync-manifest.json");
+  WATCH_MODE = process.argv.includes("--watch");
+}
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -74,7 +90,7 @@ function loadManifest() {
   }
 }
 
-const manifest = loadManifest();
+let manifest = {};
 
 /**
  * Link src -> dest. Symlink where permitted; copy fallback with drift detection.
@@ -693,8 +709,16 @@ function startWatch() {
 // Main
 // ---------------------------------------------------------------------------
 
-runSync();
-
-if (WATCH_MODE) {
-  startWatch();
+async function main() {
+  await initRuntime();
+  manifest = loadManifest();
+  runSync();
+  if (WATCH_MODE) {
+    startWatch();
+  }
 }
+
+main().catch((err) => {
+  console.error("\x1b[31m✕\x1b[0m Sync failed:", err && err.stack ? err.stack : err);
+  process.exitCode = 1;
+});

@@ -1,3 +1,4 @@
+---
 name: oversite-picocss-customization
 description: Guide for customizing Pico CSS variables and color schemes in Oversite-based UIs. Use when updating theme variables or styling the web UI.
 ---
@@ -7,6 +8,18 @@ description: Guide for customizing Pico CSS variables and color schemes in Overs
 How to customize colors in a site that uses Pico CSS via CSS custom properties (variables).
 
 ## Documentation Reference
+
+For external projects, install Oversite first:
+
+```bash
+npm install oversite
+```
+
+If you need unreleased source:
+
+```bash
+npm install github:Hovercraft-Studio/oversite#main
+```
 
 - **Pico CSS Variables**: https://picocss.com/docs/css-variables
 - **Pico SASS Customization**: https://picocss.com/docs/sass
@@ -148,7 +161,7 @@ For even less code, use `src/util/pico-theme.js` — a utility that generates al
 ### Basic Usage
 
 ```js
-import PicoTheme from "./src/util/pico-theme.js";
+import PicoTheme from "oversite/src/util/pico-theme.js";
 
 // Apply with explicit hex colors (injects <style> into document.body)
 PicoTheme.apply({
@@ -274,7 +287,7 @@ PicoTheme.apply({ extras: { admin: "#e74c3c" } });
 ### Getting CSS Without Injecting
 
 ```js
-import PicoTheme from "./src/util/pico-theme.js";
+import PicoTheme from "oversite/src/util/pico-theme.js";
 
 // Returns full CSS text: theme variables + [data-color] scoping rules
 const css = PicoTheme.css({ primary: "#d6bb66", extras: { warm: "#f59e0b" } });

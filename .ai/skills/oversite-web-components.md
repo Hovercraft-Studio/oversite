@@ -1,8 +1,21 @@
+---
 name: oversite-web-components
 description: Guidance for working with Oversite web components. Use when building or styling component-based web UI features.
 ---
 
 ## Quick Rules
+
+For external projects, install Oversite as a package first:
+
+```bash
+npm install oversite
+```
+
+If you need unreleased source, use:
+
+```bash
+npm install github:Hovercraft-Studio/oversite#main
+```
 
 - **Vanilla JS only** — no TypeScript, no frameworks (React/Vue/Svelte)
 - **No Shadow DOM** unless the component already uses it
@@ -16,7 +29,7 @@ description: Guidance for working with Oversite web components. Use when buildin
 
 ### 1. Store-Connected Components (extend `AppStoreElement`)
 
-For components that read/write AppStore state. Import from `src/components/ui/app-store-element.js`.
+For components that read/write AppStore state. Import from `oversite/src/components/ui/app-store-element.js` in external projects, or from `src/components/ui/app-store-element.js` inside this repo.
 
 **Lifecycle:** `connectedCallback()` → `initComponent()` → `render()` → (store ready) → `subclassInit()` → `storeUpdated()` on changes
 

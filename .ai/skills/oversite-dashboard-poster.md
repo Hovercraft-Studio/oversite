@@ -1,3 +1,4 @@
+---
 name: oversite-dashboard-poster
 description: Guide for implementing Oversite DashboardPoster across projects to monitor app health on remote PCs. Use when adding dashboard check-ins to any new or existing project.
 ---
@@ -51,6 +52,12 @@ For **non-JS projects** (Java, TouchDesigner, Arduino, etc.), hardcode the produ
 ## Getting DashboardPoster Into Your Project
 
 ### Option A: Install Oversite as an npm module (recommended for JS projects)
+
+```bash
+npm install oversite
+```
+
+If you need unreleased changes from this repo:
 
 ```bash
 npm install github:Hovercraft-Studio/oversite#main
@@ -263,7 +270,7 @@ Content-Type: application/json
 ```bash
 mkdir my-installation && cd my-installation
 npm init -y
-npm install github:Hovercraft-Studio/oversite#main
+npm install oversite
 npm install screenshot-desktop  # only needed for Node native screenshots
 ```
 

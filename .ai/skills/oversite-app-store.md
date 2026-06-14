@@ -1,3 +1,4 @@
+---
 name: oversite-app-store
 description: Guide for using Oversite AppStore and AppStoreDistributed in any project. AppStore is a local key/value store with pub/sub. AppStoreDistributed adds WebSocket sync via the Oversite server.
 ---
@@ -12,6 +13,25 @@ Two classes, two deployment modes:
 | `AppStoreDistributed` | WebSocket (multi-client sync) | Yes |
 
 Use `AppStore` for single-page local state. Use `AppStoreDistributed` when multiple apps/machines need to share state in real time.
+
+## Install in External Projects (Recommended)
+
+```bash
+npm install oversite
+```
+
+Then import directly from the package:
+
+```js
+import AppStore from "oversite/src/app-store/app-store-.mjs";
+import AppStoreDistributed from "oversite/src/app-store/app-store-distributed.mjs";
+```
+
+If you need an unreleased change, use GitHub source instead:
+
+```bash
+npm install github:Hovercraft-Studio/oversite#main
+```
 
 ## Files to Copy
 
