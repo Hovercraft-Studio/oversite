@@ -1,6 +1,5 @@
----
-name: dashboard-poster
-description: Guide for implementing DashboardPoster across projects to monitor app health on remote PCs. Use this when adding dashboard check-ins to any new or existing project — including external projects that install oversite as an npm module or copy the source.
+name: oversite-dashboard-poster
+description: Guide for implementing Oversite DashboardPoster across projects to monitor app health on remote PCs. Use when adding dashboard check-ins to any new or existing project.
 ---
 
 # Dashboard Poster — Implementation Guide

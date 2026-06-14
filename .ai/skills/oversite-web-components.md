@@ -1,6 +1,5 @@
----
-name: web-components
-description: Guidance for working with web components in this project. Use this when building or styling component-based web UI features.
+name: oversite-web-components
+description: Guidance for working with Oversite web components. Use when building or styling component-based web UI features.
 ---
 
 ## Quick Rules

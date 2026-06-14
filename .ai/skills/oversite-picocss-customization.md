@@ -1,6 +1,5 @@
----
-name: picocss-customization
-description: Guide for customizing Pico CSS variables and color schemes. Use this when updating theme variables or styling the web UI.
+name: oversite-picocss-customization
+description: Guide for customizing Pico CSS variables and color schemes in Oversite-based UIs. Use when updating theme variables or styling the web UI.
 ---
 
 # Pico CSS Color Customization

@@ -1,6 +1,5 @@
----
-name: app-store
-description: Guide for using AppStore and AppStoreDistributed in any project. AppStore is a local key/value store with pub/sub. AppStoreDistributed adds WebSocket sync via the Oversite server. Use this when integrating either class into a new or existing project.
+name: oversite-app-store
+description: Guide for using Oversite AppStore and AppStoreDistributed in any project. AppStore is a local key/value store with pub/sub. AppStoreDistributed adds WebSocket sync via the Oversite server.
 ---
 
 ## Overview

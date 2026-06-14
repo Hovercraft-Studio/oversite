@@ -39,6 +39,12 @@ See [`docs/COMMANDS.md`](docs/COMMANDS.md) for all commands.
 - **Node 22+**, ES Modules (`.mjs` for backend, `.js` for frontend)
 - **Bounce-back pattern** — `_store.set(key, val, true)` sends to server first; local state updates only on echo
 
+## Skill Naming Convention
+
+- Project-specific reusable skills must use the `oversite-` prefix.
+- Keep skill file names and frontmatter `name` aligned, e.g. `oversite-toolkit.md` with `name: oversite-toolkit`.
+- Prefer focused skills for subsystems (`oversite-app-store`, `oversite-dashboard-poster`) and one high-level router skill (`oversite-toolkit`).
+
 ## Environment
 
 ```bash
