@@ -10,7 +10,7 @@ PC that has Node 22+, even without the full Oversite server.
 
   node index.mjs
   node index.mjs --server ws://192.168.1.10:3003/ws
-  node index.mjs --server ws://my-oversite.example.com/ws --channel dashboard --sender pc-lobby-01
+  node index.mjs --server ws://my-example.com/ws --channel dashboard --sender pc-lobby-01
 
 ## Options
 
@@ -55,17 +55,23 @@ const auth = getCliArg("--auth", null);
 // appStoreInit reads --server from CLI args (default: ws://127.0.0.1:3003/ws)
 // and hydrates persistent state before firing the callback
 
-const appStore = appStoreInit(sender, "*", () => {
-  console.log("AppStore connected and hydrated");
-  appStore.log();
+const appStore = appStoreInit(
+  sender,
+  "*",
+  () => {
+    console.log("AppStore connected and hydrated");
+    appStore.log();
 
-  // Start listening for system commands from Dashboard
-  const systemCommands = new SystemCommands(appStore, sender);
+    // Start listening for system commands from Dashboard
+    const systemCommands = new SystemCommands(appStore, sender);
 
-  // Send a heartbeat so the Dashboard knows this client is alive
-  const startTime = Date.now();
-  setInterval(() => {
-    const uptimeMs = Date.now() - startTime;
-    appStore.set(`${sender}_heartbeat`, uptimeMs, true);
-  }, 10000);
-}, channel, auth);
+    // Send a heartbeat so the Dashboard knows this client is alive
+    const startTime = Date.now();
+    setInterval(() => {
+      const uptimeMs = Date.now() - startTime;
+      appStore.set(`${sender}_heartbeat`, uptimeMs, true);
+    }, 10000);
+  },
+  channel,
+  auth,
+);

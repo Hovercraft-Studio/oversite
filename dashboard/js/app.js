@@ -11,7 +11,7 @@ class CustomApp extends HTMLElement {
   initDashboardView() {
     let apiServerURL = _store.get("server_url") + "api/dashboard";
     let serverBase = _store.get("server_url").substring(0, _store.get("server_url").length - 1); // remove trailing slash
-    this.querySelector("#dashboard-container").innerHTML = `
+    this.querySelector("#dashboard-container").innerHTML = /*html*/ `
       <dashboard-view 
         api-url="${apiServerURL}" 
         server-base="${serverBase}" 

@@ -17,7 +17,7 @@ Run on any machine that needs remote management, even without the full Oversite 
 ```bash
 node examples/system-commands/index.mjs
 node examples/system-commands/index.mjs --server ws://192.168.1.10:3003/ws
-node examples/system-commands/index.mjs --server wss://oversite.example.com/ws --channel dashboard --sender pc-lobby-01 --auth my-auth-key
+node examples/system-commands/index.mjs --server wss://example.com/ws --channel dashboard --sender pc-lobby-01 --auth my-auth-key
 ```
 
 | Option | Default | Description |

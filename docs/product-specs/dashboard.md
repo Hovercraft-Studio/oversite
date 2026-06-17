@@ -43,7 +43,7 @@ Deployed App (client)
 import DashboardPoster from 'oversite/src/dashboard/dashboard-poster.mjs';
 
 const poster = new DashboardPoster(
-  'https://oversite.example.com/api/dashboard', // POST URL (full path to the dashboard route)
+  'https://example.com/api/dashboard', // POST URL (full path to the dashboard route)
   'my-installation',                            // appId — unique string ID for this app
   'My Installation — NYC',                      // appTitle — human-readable display name
   10 * 60 * 1000,                               // interval in ms (default: 10 minutes)

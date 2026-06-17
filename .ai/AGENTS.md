@@ -39,6 +39,26 @@ See [`docs/COMMANDS.md`](docs/COMMANDS.md) for all commands.
 - **Node 22+**, ES Modules (`.mjs` for backend, `.js` for frontend)
 - **Bounce-back pattern** — `_store.set(key, val, true)` sends to server first; local state updates only on echo
 
+## Code Style
+
+- **Label inlined languages.** Whenever a multi-line string literal contains another language (HTML, CSS, GLSL, SQL, etc.), put a language comment immediately before the opening backtick so the VSCode [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html) extension syntax-highlights it. Place the comment tight against the template literal:
+
+  ```js
+  const markup = /* html */ `
+    <article class="card">${title}</article>
+  `;
+
+  const styles = /* css */ `
+    :host { display: block; }
+  `;
+
+  const shader = /* glsl */ `
+    void main() { gl_FragColor = vec4(1.0); }
+  `;
+  ```
+
+  Use the same convention for single-line inlines when it aids readability. The comment label is the language id (`html`, `css`, `glsl`, `sql`, `svg`, etc.).
+
 ## Skill Naming Convention
 
 - Project-specific reusable skills must use the `oversite-` prefix.

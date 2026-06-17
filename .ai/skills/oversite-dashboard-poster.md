@@ -34,7 +34,7 @@ Deployed App (any language/platform)
 |---|---|
 | Local dev | `http://localhost:3003/api/dashboard` |
 | Vite dev proxy | `http://localhost:3002/api/dashboard` |
-| Production | Your deployed Oversite instance, e.g. `https://oversite.example.com/api/dashboard` |
+| Production | Your deployed Oversite instance, e.g. `https://example.com/api/dashboard` |
 
 For **JavaScript projects**, use an environment variable to switch between local and production:
 
@@ -169,7 +169,7 @@ The Electron example wraps `DashboardPoster` in a web component (`<dashboard-pos
 ```
 app_id=venue-name-pc1
 app_title=Venue Name — PC 1
-api_url=https://oversite.example.com/api/dashboard
+api_url=https://example.com/api/dashboard
 post_interval=10
 webcam_interval=10
 ```
@@ -186,7 +186,7 @@ Use `DashboardCheckinPoller` — a Java class that posts check-in JSON on a time
 DashboardCheckinPoller dashboard = new DashboardCheckinPoller(
   "my-java-app",                                    // appId
   "My Java App — Venue",                            // appTitle
-  "https://oversite.example.com/api/dashboard",     // checkinURL
+  "https://example.com/api/dashboard",     // checkinURL
   600,                                              // checkinIntervalSeconds
   900,                                              // screenshotIntervalSeconds
   0.5f                                              // screenshotScale (0-1)
@@ -294,7 +294,7 @@ const poster = new DashboardPoster(
 Create `.env` (not committed):
 
 ```
-DASHBOARD_API_URL=https://oversite.example.com/api/dashboard
+DASHBOARD_API_URL=https://example.com/api/dashboard
 ```
 
 Run:
