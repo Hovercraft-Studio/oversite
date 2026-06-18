@@ -2,6 +2,8 @@
 
 **One-liner**: Venue/installation operations toolkit — distributed state (AppStore + WebSockets), app health monitoring (Dashboard), and show-control web components.
 
+**Core Philosophy**: Built for **longevity**. We prioritize simplicity and stability by using vanilla JS and Web Components to ensure the codebase remains maintainable for decades without the churn of modern JS frameworks.
+
 ## Quick Start
 
 ```bash
@@ -38,10 +40,51 @@ See [`docs/COMMANDS.md`](docs/COMMANDS.md) for all commands.
 - **No server build step** — backend files run directly with Node
 - **Node 22+**, ES Modules (`.mjs` for backend, `.js` for frontend)
 - **Bounce-back pattern** — `_store.set(key, val, true)` sends to server first; local state updates only on echo
+- **Naming Conventions**:
+  - All keys must use `snake_case`.
+  - Heartbeat keys: `{sender}_heartbeat`.
+  - Health keys: `{thing}_health`.
+
+## Code Patterns
+
+### Backend Module
+```js
+import { logGreen } from "./util.mjs"; // Use util.mjs colors, not console.log
+
+class MyModule {
+  constructor(app, config) {
+    this.app = app;
+    this.handleRequest = this.handleRequest.bind(this); // Bind all callbacks
+  }
+  addRoutes() { this.app.get("/api/my-route", this.handleRequest); }
+  handleRequest(req, res) { logGreen("hit"); res.json({ ok: true }); }
+}
+```
+
+### Web Component
+```js
+import AppStoreElement from "./app-store-element.js";
+
+class MyComponent extends AppStoreElement {
+  subclassInit() { 
+    // Wire DOM events; store is ready, this.storeKey/storeValue set 
+  }
+  setStoreValue(value) { 
+    this.render(); // or update specific child elements 
+  }
+  html() { return /*html*/ `<div>${this.storeValue || ""}</div>`; }
+  css()  { return /*css*/  `my-component { display: block; }`; }
+  static register() { customElements.define("my-component", MyComponent); }
+}
+MyComponent.register();
+export default MyComponent;
+```
+
+- **Template Literals**: Use `/*html*/`, `/*css*/`, `/*glsl*/`, etc. (See "Code Style" section).
+- **Lifecycle**: Always override `subclassInit()`, not `connectedCallback()`.
+- **DOM Access**: Use `this.el` for the element reference in light-DOM components.
 
 ## Code Style
-
-- **Label inlined languages.** Whenever a multi-line string literal contains another language (HTML, CSS, GLSL, SQL, etc.), put a language comment immediately before the opening backtick so the VSCode [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html) extension syntax-highlights it. Place the comment tight against the template literal:
 
   ```js
   const markup = /* html */ `
@@ -82,7 +125,7 @@ SYSTEM_COMMANDS=true              # enable SystemCommands module (also: --system
 | Doc | Contents |
 |---|---|
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | System diagram, data flow, module boundaries |
-| [`docs/COMMANDS.md`](docs/COMMANDS.md) | All dev/build/deploy commands |
+| [`docs/COMMANDS.md`](docs/COMMANDS.md) | All commands |
 | [`docs/DESIGN.md`](docs/DESIGN.md) | Design principles and philosophy |
 | [`docs/FRONTEND.md`](docs/FRONTEND.md) | Web component architecture, AppStoreElement lifecycle |
 | [`docs/BACKEND.md`](docs/BACKEND.md) | Server modules, data model, config |
