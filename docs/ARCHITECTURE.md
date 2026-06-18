@@ -116,7 +116,7 @@ oversite/
 ├── server.mjs                  ← entry point
 ├── vite.config.js              ← multi-entry Vite build
 ├── AGENTS.md                   ← agent map (start here)
-├── ARCHITECTURE.md             ← this file
+├── docs/ARCHITECTURE.md             ← this file
 ├── src/
 │   ├── server/                 ← backend modules
 │   ├── app-store/              ← AppStore core

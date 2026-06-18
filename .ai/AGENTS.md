@@ -81,7 +81,7 @@ SYSTEM_COMMANDS=true              # enable SystemCommands module (also: --system
 
 | Doc | Contents |
 |---|---|
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | System diagram, data flow, module boundaries |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | System diagram, data flow, module boundaries |
 | [`docs/COMMANDS.md`](docs/COMMANDS.md) | All dev/build/deploy commands |
 | [`docs/DESIGN.md`](docs/DESIGN.md) | Design principles and philosophy |
 | [`docs/FRONTEND.md`](docs/FRONTEND.md) | Web component architecture, AppStoreElement lifecycle |

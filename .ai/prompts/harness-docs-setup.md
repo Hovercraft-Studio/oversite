@@ -42,7 +42,7 @@ Each vendor's spec evolves — when adding or fixing sync behavior for a harness
 ```text
 AGENTS.md or CLAUDE.md          <-- short map only (~100 lines)
 docs/
-  ARCHITECTURE.md
+  docs/ARCHITECTURE.md
   COMMANDS.md
   DESIGN.md
   FRONTEND.md
@@ -135,7 +135,7 @@ In a sync-harness repo, this content lives in `.ai/AGENTS.md` + `.ai/_base.md` a
 1. Inventory existing docs and group by intent.
 2. Create target tree and move files with `git mv`.
 3. Rewrite root agent doc into a TOC-style map (sync-harness repos: rewrite `.ai/AGENTS.md`/`.ai/_base.md` and re-run the sync instead).
-4. Create/fill missing core docs (`docs/*.md` including `ARCHITECTURE.md`).
+4. Create/fill missing core docs (`docs/*.md` including `docs/ARCHITECTURE.md`).
 5. Normalize cross-links and relative paths.
 6. Add CI checks for structure, broken links, and stale markers.
 7. Add a recurring doc-gardening task (weekly or per release).
@@ -168,7 +168,7 @@ Goals:
 Target structure:
 - Root: `AGENTS.md`/`CLAUDE.md` (short map only)
   - Again, this content lives in `.ai/AGENTS.md` + `.ai/_base.md` in a sync-harness repo, and is composed into the root files automatically.
-- `docs/`: `ARCHITECTURE.md`, `COMMANDS.md`, `DESIGN.md`, `FRONTEND.md`, `BACKEND.md`,
+- `docs/`: `docs/ARCHITECTURE.md`, `COMMANDS.md`, `DESIGN.md`, `FRONTEND.md`, `BACKEND.md`,
   `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `RELIABILITY.md`, `SECURITY.md`
 - `docs/design-docs/`, `docs/product-specs/`, `docs/exec-plans/`, `docs/references/`
 

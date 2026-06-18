@@ -24,7 +24,7 @@ Default locations & ports are:
 
 **For developers and AI agents**: start with [`AGENTS.md`](./AGENTS.md) — the root map with links to all systems and references.
 
-**For system architecture**: see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+**For system architecture**: see [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md).
 
 **Full doc tree**: [`docs/`](./docs/README.md) — product specs, references, design decisions, exec plans.
 
