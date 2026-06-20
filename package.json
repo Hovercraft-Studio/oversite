@@ -43,6 +43,8 @@
     "ws": "node ./server/ws-relay.mjs --port 3003",
     "node-app-store-demo": "nodemon --watch ./examples/app-store/nodejs/node-app-demo --ext mjs node ./examples/app-store/nodejs/node-app-demo/index.mjs --server ws://127.0.0.1:3003/ws --port 3003",
     "node-dashboard-demo": "nodemon --watch ./examples/dashboard/js-backend --ext mjs node ./examples/dashboard/js-backend/index.mjs --server ws://127.0.0.1:3003/ws",
+    "system-commands": "node ./examples/system-commands/index.mjs --sender system_commands --channel dashboard",
+    "system-commands:dev": "nodemon --watch ./examples/system-commands --ext mjs node ./examples/system-commands/index.mjs --sender system_commands --channel dashboard",
     "launch-chrome": "node ./scripts/run-chrome.mjs --url http://localhost:3002 --location 500,100 --fullscreen true --screen-num 1",
     "update-libs": "npx npm-check-updates -u && npm install"
   },

@@ -84,7 +84,16 @@ class SystemCommands {
 
   handleCommand(key, value) {
     const messageData = this.appStore.getData(key);
+    if (!messageData) return;
+
     const requesterId = messageData?.sender || null;
+    const receiverId = messageData?.receiver || null;
+
+    // If a receiver is specified, only execute if it matches our senderId
+    if (receiverId && receiverId !== this.senderId) {
+      return;
+    }
+
     this.executeCommand(key, value, requesterId);
   }
 
@@ -234,4 +243,58 @@ class SystemCommands {
   }
 }
 
+// ---- Convenience wrapper for standalone usage ----
+// Creates an AppStoreDistributed connection, instantiates SystemCommands,
+// and starts a heartbeat — all from a single call.
+// Use this when you want to drop remote-control onto a machine that
+// doesn't otherwise have any Oversite tooling.
+//
+// If your app already has an AppStoreDistributed instance, just do:
+//   new SystemCommands(appStore, senderId)
+//
+// Usage:
+//   import { createSystemCommandsStandalone } from "oversite";
+//   await createSystemCommandsStandalone({ server: "ws://localhost:3003/ws", sender: "pc-lobby-01" });
+//
+// Returns the SystemCommands instance for further customization.
+
+async function createSystemCommandsStandalone(options = {}) {
+  const {
+    server = "ws://127.0.0.1:3003/ws",
+    channel = "dashboard",
+    sender = os.hostname(),
+    auth = null,
+    heartbeatInterval = 10000,
+    customCommands = null,
+  } = options;
+
+  const { default: AppStoreDistributed } = await import("../app-store/app-store-distributed.mjs");
+  const appStore = new AppStoreDistributed(server, sender, channel, auth);
+
+  await new Promise((resolve) => {
+    appStore.onopen = () => {
+      log(`Connected to ${server} on channel "${channel}" as "${sender}"`);
+      resolve();
+    };
+  });
+
+  const systemCommands = new SystemCommands(appStore, sender);
+
+  if (customCommands && typeof customCommands === "object") {
+    for (const [name, handler] of Object.entries(customCommands)) {
+      systemCommands.addCommand(name, handler);
+    }
+  }
+
+  // Start heartbeat
+  const startTime = Date.now();
+  setInterval(() => {
+    const uptimeMs = Date.now() - startTime;
+    appStore.set(`${sender}_heartbeat`, uptimeMs, true);
+  }, heartbeatInterval);
+
+  return systemCommands;
+}
+
+export { createSystemCommandsStandalone };
 export default SystemCommands;

@@ -44,6 +44,7 @@ See [`docs/COMMANDS.md`](docs/COMMANDS.md) for all commands.
   - All keys must use `snake_case`.
   - Heartbeat keys: `{sender}_heartbeat`.
   - Health keys: `{thing}_health`.
+- **Never commit** — the user handles all `git add` / `git commit` / `git push`. Stage files if asked, but never run commit or push commands.
 
 ## Code Patterns
 

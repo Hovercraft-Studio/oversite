@@ -91,17 +91,20 @@ This registers the listener and handler in one call. The new command is immediat
 
 Any page connected to the same channel can send commands using `<app-store-button>`:
 
+- **Broadcast**: If no `receiver` attribute is provided, the command is sent to *all* clients on the channel who have the matching command handler.
+- **Targeted**: To target a specific machine, provide the `receiver` attribute with the machine's `sender` ID.
+
 ```html
 <oversite-header id="sys_cmd_ui" channel="dashboard" auth="my-auth-key"></oversite-header>
 
 <!-- Broadcast to all SystemCommands clients on the channel -->
-<app-store-button key="kill_process" value="chrome.exe">Kill Chrome</app-store-button>
+<app-store-button key="kill_process" value="chrome.exe">Kill Chrome (All)</app-store-button>
 
-<!-- Target a specific machine -->
+<!-- Target a specific machine (must match the machine's sender ID) -->
 <app-store-button key="minimize_windows" value="teamviewer" receiver="pc-lobby-01">Minimize TV (Lobby)</app-store-button>
 ```
 
-The `receiver` attribute on `<app-store-button>` sends the message to a specific client by sender ID, so commands can target individual PCs even when multiple SystemCommands instances share the same channel.
+The `receiver` attribute on `<app-store-button>` ensures commands only execute on the intended machine, preventing multiple `SystemCommands` instances from reacting to the same message.
 
 See [`examples/dashboard/js-frontend/`](../../examples/dashboard/js-frontend/) for a working test UI.
 
