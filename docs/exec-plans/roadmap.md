@@ -9,7 +9,7 @@ For AI coding assistants: read this before starting any work to avoid duplicatin
 ### ~~R1 — Sync File I/O~~ ✅ DONE
 Both `dashboard-api.mjs` and `persistent-state.mjs` have been migrated to `fs.promises` with async/await. No sync fs calls remain.
 
-### R2 — Memory Leak in `app-store-table.js`
+### ~~R2 — Memory Leak in `app-store-table.js`~~ ✅ DONE
 **File**: `src/components/monitor/app-store-table.js`
 **Problem**: The monitor can consume multiple GB of RAM over hours/days. Likely cause: unbounded accumulation of event listeners and DOM nodes as state update events arrive.
 **Fix**: Audit listener registration and DOM node creation; ensure proper cleanup in `disconnectedCallback`; consider a fixed-size ring buffer for the event table.
@@ -154,3 +154,4 @@ No automated tests currently exist. When adding tests:
 - DigitalOcean App Platform deployment working
 - `.env` file replaces `config.json`
 - Java client: `sender` field added
+- Resolved memory leak in `app-store-table.js` (R2)

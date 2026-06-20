@@ -203,8 +203,9 @@ class AppStoreTable extends HTMLElement {
     Object.keys(data).forEach((key) => {
       let rowData = data[key];
       if (rowData.key) {
-        rowData.el = this.buildRowEl(rowData); // add html element to state data object
-        this.rows.push(rowData);
+        let row = { ...rowData }; // copy so we don't attach el to the shared stateData object
+        row.el = this.buildRowEl(row);
+        this.rows.push(row);
       }
     });
     this.sortRows();
