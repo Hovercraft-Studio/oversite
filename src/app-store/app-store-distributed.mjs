@@ -89,6 +89,14 @@ class AppStoreDistributed extends AppStore {
     return this.stateData[key];
   }
 
+  getSender(key) {
+    return this.stateData[key]?.sender ?? null;
+  }
+
+  getReceiver(key) {
+    return this.stateData[key]?.receiver ?? null;
+  }
+
   broadcastCustomJson(obj) {
     this.solidSocket.sendMessage(JSON.stringify(obj));
   }
