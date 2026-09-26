@@ -170,7 +170,7 @@ class ModalDialog extends HTMLElement {
   html() {
     let hasFooter = this.cancelValue || this.confirmValue;
     let footer = hasFooter
-      ? `
+      ? /*html*/ `
       <footer>
         ${this.cancelValue ? this.cancelButton() : ""}
         ${this.confirmValue ? this.confirmButton() : ""}

@@ -7,6 +7,7 @@ All commands run from the repo root.
 ```bash
 npm install          # install dependencies
 npm run dev          # Vite dev server (:3002) + nodemon server (:3003) concurrently
+npm run system-commands:dev  # Start the standalone System Commands runner with nodemon
 ```
 
 - Vite serves frontend assets with HMR on `http://localhost:3002`
@@ -18,6 +19,7 @@ npm run dev          # Vite dev server (:3002) + nodemon server (:3003) concurre
 ```bash
 npm run build        # Vite → dist/ (frontend only)
 npm start            # serve dist/ from Express on :3003 (production mode)
+npm run system-commands  # Start the standalone System Commands runner (production)
 ```
 
 In production, Express serves the Vite `dist/` as static files. Vite is not involved at runtime.
@@ -80,11 +82,11 @@ npm publish
 ```
 
 To publish: switch to `main`, run publish, switch back to `dev`.
-
+ 
 ## Using Oversite as a Module in Another Project
-
+ 
 ```bash
 npm update oversite   # pull latest after updates
 ```
-
+ 
 See [`docs/references/deployment.md`](references/deployment.md) for full module usage details.

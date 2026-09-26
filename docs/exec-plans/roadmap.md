@@ -9,7 +9,7 @@ For AI coding assistants: read this before starting any work to avoid duplicatin
 ### ~~R1 — Sync File I/O~~ ✅ DONE
 Both `dashboard-api.mjs` and `persistent-state.mjs` have been migrated to `fs.promises` with async/await. No sync fs calls remain.
 
-### R2 — Memory Leak in `app-store-table.js`
+### ~~R2 — Memory Leak in `app-store-table.js`~~ ✅ DONE
 **File**: `src/components/monitor/app-store-table.js`
 **Problem**: The monitor can consume multiple GB of RAM over hours/days. Likely cause: unbounded accumulation of event listeners and DOM nodes as state update events arrive.
 **Fix**: Audit listener registration and DOM node creation; ensure proper cleanup in `disconnectedCallback`; consider a fixed-size ring buffer for the event table.
@@ -46,7 +46,7 @@ Planned: allow apps to post dashboard check-ins via AppStore messages (`receiver
 - Require `DashboardApi` to listen on the WebSocket server for incoming check-in messages
 
 ### System Commands (Remote PC Management)
-Core module complete — `SystemCommands` class with 5 built-in commands, standalone runner, custom command extensibility, and a web UI for triggering commands. Next steps: wire into `server.mjs`, add Dashboard card management buttons, connection status indicators, and process monitoring.
+Core module complete — `SystemCommands` class with 5 built-in commands, standalone runner, custom command extensibility, receiver filtering (broadcast vs targeted), and a restructured test UI. Optional server-side integration via `--system-commands` flag exists for "server PC is also a target" scenarios. Next steps: npm module export, Dashboard card management buttons, connection status indicators, and process monitoring.
 
 See [active/system-commands.md](active/system-commands.md) for the full execution plan.
 
@@ -66,13 +66,10 @@ store.set("scene", "intro")
 store.on("volume", lambda v: print(v))
 ```
 
-### SSL / HTTPS for Local Tablets
-iPad and some Android browsers require `wss://` even on LAN. Options being evaluated:
-- `devcert` or `selfsigned` npm packages for local self-signed certs
-- Vite SSL plugin + proxy
-- Documented workaround: use cloud deployment and connect over internet
+### SSL / HTTPS for Local Tablets — Resolved
+iPad and some Android browsers require `wss://` even on LAN. Fixed: `app-store-init.js` now derives `ws://` vs `wss://` from the page's own `document.location.protocol`, never from a dev/prod port heuristic — previously an `https://` page on a non-`localhost` LAN origin would silently fail to connect (mixed-content, no error surfaced) because it defaulted to `ws://`. The bundler-proxy pattern (Vite `server.proxy` with `ws: true`) remains the way to get `wss://` on a LAN dev server; cloud deployments already terminate TLS in front of the app.
 
-Current state: unsolved. See SSL section in `TODO.md` for research notes.
+See "Running Behind HTTPS" in [`docs/references/deployment.md`](../references/deployment.md).
 
 ---
 
@@ -106,6 +103,7 @@ All web components should properly clean up event listeners and DOM references i
 
 ## Dashboard Improvements
 
+- Mobile-friendly header with abbreviated stats (e.g. "1/9 offline", total projects, last-seen summary) instead of the full desktop layout
 - Resize screenshots before upload if too large (use `canvas` npm package)
 - Auth for posting check-ins (currently unprotected — any POST is accepted)
 - Per-project log history (session/user counts, health check history)
@@ -153,3 +151,4 @@ No automated tests currently exist. When adding tests:
 - DigitalOcean App Platform deployment working
 - `.env` file replaces `config.json`
 - Java client: `sender` field added
+- Resolved memory leak in `app-store-table.js` (R2)

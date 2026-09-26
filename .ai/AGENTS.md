@@ -2,6 +2,8 @@
 
 **One-liner**: Venue/installation operations toolkit — distributed state (AppStore + WebSockets), app health monitoring (Dashboard), and show-control web components.
 
+**Core Philosophy**: Built for **longevity**. We prioritize simplicity and stability by using vanilla JS and Web Components to ensure the codebase remains maintainable for decades without the churn of modern JS frameworks.
+
 ## Quick Start
 
 ```bash
@@ -38,6 +40,74 @@ See [`docs/COMMANDS.md`](docs/COMMANDS.md) for all commands.
 - **No server build step** — backend files run directly with Node
 - **Node 22+**, ES Modules (`.mjs` for backend, `.js` for frontend)
 - **Bounce-back pattern** — `_store.set(key, val, true)` sends to server first; local state updates only on echo
+- **Naming Conventions**:
+  - All keys must use `snake_case`.
+  - Heartbeat keys: `{sender}_heartbeat`.
+  - Health keys: `{thing}_health`.
+- **Never commit** — the user handles all `git add` / `git commit` / `git push`. Stage files if asked, but never run commit or push commands.
+
+## Code Patterns
+
+### Backend Module
+```js
+import { logGreen } from "./util.mjs"; // Use util.mjs colors, not console.log
+
+class MyModule {
+  constructor(app, config) {
+    this.app = app;
+    this.handleRequest = this.handleRequest.bind(this); // Bind all callbacks
+  }
+  addRoutes() { this.app.get("/api/my-route", this.handleRequest); }
+  handleRequest(req, res) { logGreen("hit"); res.json({ ok: true }); }
+}
+```
+
+### Web Component
+```js
+import AppStoreElement from "./app-store-element.js";
+
+class MyComponent extends AppStoreElement {
+  subclassInit() { 
+    // Wire DOM events; store is ready, this.storeKey/storeValue set 
+  }
+  setStoreValue(value) { 
+    this.render(); // or update specific child elements 
+  }
+  html() { return /*html*/ `<div>${this.storeValue || ""}</div>`; }
+  css()  { return /*css*/  `my-component { display: block; }`; }
+  static register() { customElements.define("my-component", MyComponent); }
+}
+MyComponent.register();
+export default MyComponent;
+```
+
+- **Template Literals**: Use `/*html*/`, `/*css*/`, `/*glsl*/`, etc. (See "Code Style" section).
+- **Lifecycle**: Always override `subclassInit()`, not `connectedCallback()`.
+- **DOM Access**: Use `this.el` for the element reference in light-DOM components.
+
+## Code Style
+
+  ```js
+  const markup = /* html */ `
+    <article class="card">${title}</article>
+  `;
+
+  const styles = /* css */ `
+    :host { display: block; }
+  `;
+
+  const shader = /* glsl */ `
+    void main() { gl_FragColor = vec4(1.0); }
+  `;
+  ```
+
+  Use the same convention for single-line inlines when it aids readability. The comment label is the language id (`html`, `css`, `glsl`, `sql`, `svg`, etc.).
+
+## Skill Naming Convention
+
+- Project-specific reusable skills must use the `oversite-` prefix.
+- Keep skill file names and frontmatter `name` aligned, e.g. `oversite-toolkit.md` with `name: oversite-toolkit`.
+- Prefer focused skills for subsystems (`oversite-app-store`, `oversite-dashboard-poster`) and one high-level router skill (`oversite-toolkit`).
 
 ## Environment
 
@@ -55,12 +125,13 @@ SYSTEM_COMMANDS=true              # enable SystemCommands module (also: --system
 
 | Doc | Contents |
 |---|---|
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | System diagram, data flow, module boundaries |
-| [`docs/COMMANDS.md`](docs/COMMANDS.md) | All dev/build/deploy commands |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | System diagram, data flow, module boundaries |
+| [`docs/COMMANDS.md`](docs/COMMANDS.md) | All commands |
 | [`docs/DESIGN.md`](docs/DESIGN.md) | Design principles and philosophy |
 | [`docs/FRONTEND.md`](docs/FRONTEND.md) | Web component architecture, AppStoreElement lifecycle |
 | [`docs/BACKEND.md`](docs/BACKEND.md) | Server modules, data model, config |
 | [`docs/PRODUCT_SENSE.md`](docs/PRODUCT_SENSE.md) | Users, value props, deployment contexts |
+| [`docs/SLA.md`](docs/SLA.md) | SLA tier framework for ongoing installation support |
 | [`docs/RELIABILITY.md`](docs/RELIABILITY.md) | Reconnect patterns, failure modes, offline handling |
 | [`docs/SECURITY.md`](docs/SECURITY.md) | Auth system, session handling, known gaps |
 

@@ -38,16 +38,21 @@ class AppStoreInit extends HTMLElement {
     let isDev = wsURL ? wsURL.includes(":") : document.location.port.length > 0;
     let isProd = !isDev;
 
+    // ws protocol mirrors the page's own protocol (mixed content is blocked otherwise); a secure page defaults to a same-origin proxy path instead of the relay's own port, since nothing terminates TLS there directly (see vite.config.js's server.proxy)
+    let isSecurePage = document.location.protocol === "https:";
+    let wsScheme = isSecurePage ? "wss:" : "ws:";
+
     // get address from querystring or use default
     // and show in URL for easy sharing
-    let defaultWsURL = "ws://" + document.location.hostname + ":3003/ws";
-    if (isProd) defaultWsURL = "wss://" + document.location.hostname + "/ws"; // production server
+    let defaultWsURL = isSecurePage
+      ? `${wsScheme}//${document.location.host}/ws`
+      : `${wsScheme}//${document.location.hostname}${isDev ? ":3003" : ""}/ws`;
     this.webSocketURL = wsURL ? wsURL : this.hashParamConfig("wsURL", defaultWsURL);
 
     // transform ws:// URL into http server URL, since we have that address the store, and that's the same server!
     // we just need to check for a custom http port in the URL and otherwise use the ws:// address
     let socketToServerURL = new URL(this.webSocketURL);
-    socketToServerURL.protocol = socketToServerURL.protocol == "ws:" ? "http:" : "https:"; // SSL if production websocket server
+    socketToServerURL.protocol = socketToServerURL.protocol == "ws:" ? "http:" : "https:"; // mirror ws:// vs wss://
     socketToServerURL.search = ""; // remove querystring
     socketToServerURL.pathname = ""; // remove `/ws` path
     if (isProd) socketToServerURL.port = ""; // production server shouldn't have a port in the URL

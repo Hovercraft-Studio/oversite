@@ -43,21 +43,23 @@
     "ws": "node ./server/ws-relay.mjs --port 3003",
     "node-app-store-demo": "nodemon --watch ./examples/app-store/nodejs/node-app-demo --ext mjs node ./examples/app-store/nodejs/node-app-demo/index.mjs --server ws://127.0.0.1:3003/ws --port 3003",
     "node-dashboard-demo": "nodemon --watch ./examples/dashboard/js-backend --ext mjs node ./examples/dashboard/js-backend/index.mjs --server ws://127.0.0.1:3003/ws",
+    "system-commands": "node ./examples/system-commands/index.mjs --sender system_commands --channel dashboard",
+    "system-commands:dev": "nodemon --watch ./examples/system-commands --ext mjs node ./examples/system-commands/index.mjs --sender system_commands --channel dashboard",
     "launch-chrome": "node ./scripts/run-chrome.mjs --url http://localhost:3002 --location 500,100 --fullscreen true --screen-num 1",
     "update-libs": "npx npm-check-updates -u && npm install"
   },
   "dependencies": {
-    "@vitejs/plugin-basic-ssl": "^2.2.0",
-    "concurrently": "^9.2.1",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "concurrently": "^10.0.5",
     "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
+    "dotenv": "^18.0.4",
     "express": "^5.2.1",
     "http-proxy": "^1.18.1",
     "nodemon": "^3.1.14",
     "notyf": "^3.10.0",
-    "screenshot-desktop": "^1.15.3",
-    "vite": "^8.0.1",
+    "screenshot-desktop": "^1.15.6",
+    "vite": "^8.3.1",
     "websocket": "^1.0.35",
-    "ws": "^8.20.0"
+    "ws": "^8.21.3"
   }
 }

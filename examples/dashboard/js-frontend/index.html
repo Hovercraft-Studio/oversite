@@ -52,13 +52,21 @@
         </article>
         <article>
           <h4>Test dashboard-specific commands to send on the <code>dashboard</code> channel to the SystemCommands client/receiver:</h4>
-          <div id="commands-container">
-            <app-store-button key="kill_process" value="chrome.exe" receiver="system_commands">Kill Chrome</app-store-button>
-            <app-store-button key="kill_process" value="vlc.exe" receiver="system_commands">Kill VLC</app-store-button>
-            <app-store-button key="minimize_windows" value="teamviewer" receiver="system_commands">Minimize TeamViewer</app-store-button>
-            <app-store-button key="minimize_windows" value="teamviewer|vlc" receiver="system_commands_XXX">Minimize TeamViewer and VLC</app-store-button>
-            <!-- <app-store-button key="restart_computer" value="10">Restart Computer</app-store-button> -->
-            <app-store-button key="send_keys" value="{F11}" receiver="system_commands">Send F11 Key (Full-screen browser)</app-store-button>
+          <div id="commands-container" class="grid">
+            <div class="card">
+              <h5>Broadcast (All clients)</h5>
+              <app-store-button key="kill_process" value="chrome.exe">Kill Chrome (All)</app-store-button>
+              <app-store-button key="kill_process" value="vlc.exe">Kill VLC</app-store-button>
+              <app-store-button key="send_keys" value="{F11}">Send F11 (All)</app-store-button>
+            </div>
+            <div class="card">
+              <h5>Targeted (system_commands sender)</h5>
+              <p><small>Targets sender ID: <code class="code">system_commands</code></small></p>
+              <app-store-button key="kill_process" value="chrome.exe" receiver="system_commands">Kill Chrome</app-store-button>
+              <app-store-button key="minimize_windows" value="teamviewer" receiver="system_commands">Minimize TV</app-store-button>
+              <app-store-button key="minimize_windows" value="teamviewer|vlc" receiver="system_commands">Minimize TV & VLC</app-store-button>
+              <app-store-button key="restart_computer" value="30" receiver="system_commands">Restart Lobby (30s)</app-store-button>
+            </div>
           </div>
         </article>
         <details>

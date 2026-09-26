@@ -2,7 +2,7 @@
 
 The backend is a single Node.js process (`server.mjs`) that composes four independent modules. No microservices, no build step — files run directly with Node.
 
-See [`ARCHITECTURE.md`](../ARCHITECTURE.md) for the system diagram and end-to-end flows.
+See [`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the system diagram and end-to-end flows.
 
 ## Entry Point: `server.mjs`
 

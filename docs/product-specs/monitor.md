@@ -52,7 +52,7 @@ The monitor requires the **full Oversite server** (`server.mjs`) — it does not
 To monitor a remote deployment, append the `wsURL` hash parameter:
 
 ```
-http://localhost:3002/app-store-monitor/#&wsURL=wss://oversite.example.com
+http://localhost:3002/app-store-monitor/#&wsURL=wss://example.com
 ```
 
 ### Switching Channels

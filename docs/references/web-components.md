@@ -209,7 +209,7 @@ Uses Shadow DOM. Connects to the WebSocket server, hydrates state from the serve
 The WebSocket URL is determined in this order:
 1. `ws-url` attribute (if set)
 2. `#&wsURL=` hash parameter in the page URL
-3. Auto-detected from the current page host (uses `wss://` in production, `ws://` in dev)
+3. Auto-detected from the current page host — `wss://`/`ws://` mirrors the page's own protocol (never a dev/prod guess); a secure (`https://`) page defaults to the same-origin `/ws` path (expects a proxy — see [`docs/references/deployment.md`](./deployment.md) "Running Behind HTTPS"), an insecure page defaults to the relay's own port directly
 
 **Hash parameter overrides:** `channel` and `sender` can also be set via the URL hash. When present, hash values take priority over HTML attributes. Parameters are auto-written to the hash on first load, making URLs shareable.
 

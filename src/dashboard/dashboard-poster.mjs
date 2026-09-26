@@ -1,18 +1,26 @@
 class DashboardPoster {
-  constructor(dashboardURL, appId, appTitle, interval = 10 * 60 * 1000) {
-    // Default interval is 10 minutes
+  constructor(
+    dashboardURL,
+    appId,
+    appTitle,
+    interval = 10 * 60 * 1000,
+    screenshotInterval = 15 * 60 * 1000,
+    screenIndex = null,
+  ) {
     this.dashboardURL = dashboardURL;
     this.appId = appId;
     this.appTitle = appTitle;
     this.interval = interval;
+    this.screenshotInterval = screenshotInterval;
+    this.screenIndex = screenIndex;
     this.startTime = Date.now();
     this.postCount = 0;
     this.customProps = {};
     this.isBrowser = typeof window !== "undefined";
     if (this.isBrowser) this.checkFPS();
-    if (!this.isBrowser) this.prepBackend();
+    if (!this.isBrowser) this.prepBackend(); // takes first screenshot, then posts
     this.restartPostInterval();
-    this.postJson(); // check in on init
+    if (this.isBrowser) this.postJson(); // browser checks in immediately; Node waits for screenshot
     console.log("DashboardPoster initialized with URL:", this.dashboardURL);
   }
 
@@ -100,8 +108,6 @@ class DashboardPoster {
     if (this.imageScreenshotFile) {
       // if a screenshot has been taken, send it!
       checkinData.imageScreenshot = this.imageScreenshotFile;
-      this.imageScreenshotFile = null; // reset the image after posting
-      // this.deleteScreenshot(); // delete the screenshot after posting
     }
 
     // post checkin data
@@ -124,6 +130,10 @@ class DashboardPoster {
       })
       .catch((error) => {
         console.warn("Checkin failed:", JSON.stringify(error));
+      })
+      .finally(() => {
+        // Clear screenshot after post attempt so we don't send the same one twice
+        if (checkinData.imageScreenshot) this.imageScreenshotFile = null;
       });
     this.postCount++;
   }
@@ -153,8 +163,8 @@ class DashboardPoster {
   /////////////////////////////////////
 
   async prepBackend() {
-    // import node modules
     // this doesn't exactly work on Mac! https://github.com/bencevans/screenshot-desktop/issues/156
+    // import node modules
     this.fs = await import("fs");
     this.path = await import("path");
     this.os = await import("os");
@@ -165,10 +175,14 @@ class DashboardPoster {
     // });
 
     await this.buildTempDir();
+    await this.takeScreenshotAsync(); // first screenshot before first post
+    console.log(
+      `First screenshot ready: ${this.imageScreenshotFile ? this.imageScreenshotFile.length + " bytes base64" : "NONE"}`,
+    );
+    this.postJson(); // first check-in with screenshot ready
     setInterval(() => {
       this.takeScreenshot();
-    }, 15 * 60 * 1000); // take a screenshot every 15 minutes
-    this.takeScreenshot();
+    }, this.screenshotInterval);
   }
 
   async buildTempDir() {
@@ -184,17 +198,36 @@ class DashboardPoster {
     }
   }
 
+  // Fire-and-forget version for interval use
   takeScreenshot() {
-    this.screenshot({ format: "png", filename: this.screenshotFilePath })
-      .then((img) => {
-        this.fs.readFile(this.screenshotFilePath, (err, data) => {
-          this.imageScreenshotFile = Buffer.from(data).toString("base64");
-          // console.log("this.imageScreenshotFile", this.imageScreenshotFile.substring(0, 20));
-        });
-      })
-      .catch((err) => {
-        console.error("Failed to save screenshot", err);
-      });
+    this.takeScreenshotAsync().catch((err) => {
+      console.error("Screenshot failed:", err);
+    });
+  }
+
+  // Awaitable version — resolves once imageScreenshotFile is set
+  async takeScreenshotAsync() {
+    const getScreenId = async () => {
+      if (this.screenIndex != null) {
+        const displays = await this.screenshot.listDisplays();
+        console.log("Available displays:", JSON.stringify(displays));
+        const idx = Math.min(this.screenIndex, displays.length - 1);
+        console.log(`Using screen index ${this.screenIndex} → display id: ${displays[idx].id}`);
+        return displays[idx].id;
+      }
+      return null;
+    };
+
+    try {
+      const screenId = await getScreenId();
+      const opts = { format: "png", filename: this.screenshotFilePath };
+      if (screenId != null) opts.screen = screenId;
+      await this.screenshot(opts);
+      const data = await this.fs.promises.readFile(this.screenshotFilePath);
+      this.imageScreenshotFile = Buffer.from(data).toString("base64");
+    } catch (err) {
+      console.error("Failed to take screenshot:", err);
+    }
   }
 
   deleteScreenshot() {

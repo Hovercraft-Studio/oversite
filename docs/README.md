@@ -6,11 +6,13 @@ Full documentation tree for Oversite. Start from [`AGENTS.md`](../AGENTS.md) at 
 
 | Doc | Contents |
 |---|---|
+| [`DIAGRAMS.md`](DIAGRAMS.md) | System architecture diagrams (LAN, multi-machine) |
 | [`COMMANDS.md`](COMMANDS.md) | All dev/build/deploy commands |
 | [`DESIGN.md`](DESIGN.md) | Design principles and philosophy |
 | [`FRONTEND.md`](FRONTEND.md) | Web component architecture, AppStoreElement lifecycle |
 | [`BACKEND.md`](BACKEND.md) | Server modules, data model, config |
 | [`PRODUCT_SENSE.md`](PRODUCT_SENSE.md) | Users, value props, deployment contexts |
+| [`SLA.md`](SLA.md) | SLA tier framework for ongoing installation support |
 | [`RELIABILITY.md`](RELIABILITY.md) | Reconnect patterns, failure modes |
 | [`SECURITY.md`](SECURITY.md) | Auth system, known gaps |
 

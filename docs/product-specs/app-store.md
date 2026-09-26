@@ -152,7 +152,9 @@ This ensures all clients stay in sync with the server's view, even if the WebSoc
 ### Additional Methods
 
 ```js
-store.getData('scene');       // returns the full last message object for a key, including sender
+store.getData('scene');       // returns the full last message object for a key, including sender, receiver, and other metadata
+store.getSender('scene');     // returns the sender ID from the last message for a key, or null
+store.getReceiver('scene');   // returns the receiver ID from the last message for a key, or null
 store.broadcastCustomJson({}); // send arbitrary JSON that's not AppStore-formatted
 store.isConnected();          // boolean: is the WebSocket currently open?
 ```

@@ -18,20 +18,26 @@ Remote PC management via AppStore messages. Spec: [`docs/product-specs/system-co
 - [x] **Spec doc** — `docs/product-specs/system-commands.md`
 - [x] **Best practices doc** — data transmission section in `docs/product-specs/app-store.md`
 
+## Completed (Additional)
+
+- [x] **Receiver filtering** — `handleCommand()` checks `receiver` field against `senderId`; commands only execute when targeted (or broadcast with no receiver)
+- [x] **Test UI restructured** — dashboard test UI now demonstrates broadcast vs targeted commands in separate cards
+- [x] **server.mjs integration (optional)** — `--system-commands` flag / `SYSTEM_COMMANDS=true` env var starts an embedded SystemCommands client on the server's own machine. This is for the "server PC is also a target" scenario; the primary pattern is standalone client apps.
+
 ## Next Up
 
-### N1 — Wire into server.mjs
+### N1 — npm module integration
 
-Add SystemCommands as an embedded module in `server.mjs`, similar to how `DashboardApi` and `PersistentState` are wired. Needs its own `AppStoreDistributed` instance on the `dashboard` channel.
+Make it trivial to drop SystemCommands into any project via the `oversite` npm module. The `createSystemCommandsStandalone()` convenience function bundles WebSocket connection + command handlers + heartbeat for bare-machine deployments. For apps that already have an AppStoreDistributed instance, `new SystemCommands(appStore, senderId)` is the direct path.
 
-**Files**: `server.mjs`
+**Files**: `src/server/system-commands.mjs`, `examples/oversite-module/backend/system-commands-standalone.mjs`
 
 ### N2 — Dashboard card management buttons
 
 When a SystemCommands client is connected (detected via heartbeat), show management buttons (kill process, restart, send keys) on the Dashboard card for that PC.
 
 **Files**: `src/components/dashboard/dashboard-view.js`, possibly new sub-component
-**Depends on**: N1 or standalone heartbeat detection
+**Depends on**: Heartbeat detection (no server-side dependency)
 
 ### N3 — Connection status indicator
 

@@ -24,7 +24,7 @@ Default locations & ports are:
 
 **For developers and AI agents**: start with [`AGENTS.md`](./AGENTS.md) — the root map with links to all systems and references.
 
-**For system architecture**: see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+**For system architecture**: see [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md).
 
 **Full doc tree**: [`docs/`](./docs/README.md) — product specs, references, design decisions, exec plans.
 
@@ -251,7 +251,7 @@ ALERT_PROJECT_IDS=example-project,another-project
 Create a new frontend project:
 
 - `npm create vite@latest`
-- `npm install git@github.com:Hovercraft-Studio/oversite.git#main`
+- `npm install oversite`
 - `npm run dev`
 
 In your Javascript, make sure to import the `oversite` components and any css/js that you want to use:
@@ -278,13 +278,7 @@ And at least add the <app-store-init> component for easy connection
 ></app-store-init>
 ```
 
-Deployment (current) process (and issues):
-
-- `oversite` is a private repo, and this blows up on Vercel during its `npm install` step.
-- This also means that the build step can't work, because it can't get the private repo's code.
-- So for now, we have to run `npm build` when we're ready to push to production, commit the `/dist` folder, and deploy that to Vercel. This also meant commenting out `dist` from `.gitignore`.
-- On the Vercel config, we replace the build command with `npm run skip-build`, since we can't build it there.
-- When `oversite` is made public, we can revert all of this to a normal Vite deployment
+`oversite` is published on npm, so a consumer project deploys normally on Vercel (or anywhere else) — a plain `npm install` and Vite build, no workaround needed.
 
 To pull the latest from `oversite` if it's already installed and has been updated:
 
@@ -311,6 +305,10 @@ npm update ws @latest # Update ws to latest version if it was in the list
 
 npx npm-check-updates -u # Update package.json with latest versions
 npm install # Install the latest versions
+
+# or
+
+npm run update-libs
 ```
 
 Publish package (when public):

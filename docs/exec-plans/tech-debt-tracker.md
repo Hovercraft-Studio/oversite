@@ -10,6 +10,7 @@ Active debt items with impact, priority, and target area. Cross-reference with [
 | R4 | `src/app-store/app-store-.mjs` | `window._store` global — fragile, hard to test, blocks module isolation | Low — works fine in browser context | Low |
 | R5 | `src/components/dashboard/dashboard-view.js` | ~640 lines, handles too much — candidate for decomposition | Low — functional but hard to modify | Low |
 | R6 | All web components | `disconnectedCallback` doesn't fully clean up listeners/DOM in all components | Medium — contributes to memory issues in long-running pages | Medium |
+| R7 | `examples/app-store/arduino-esp32/*` (pattern also applies to real deployments) | ESP32/hardware clients only send state reactively (on physical change) — nothing announces current state on WS connect/reconnect | Medium — device state and www UI can silently diverge after any device reboot, since in-code defaults reset but the UI's persisted state doesn't | Medium |
 
 ## Detail
 
@@ -49,3 +50,11 @@ Active debt items with impact, priority, and target area. Cross-reference with [
 **Symptom**: Several components subscribe to store events in `connectedCallback` but `disconnectedCallback` may not remove all listeners, particularly for components that wire up DOM events dynamically in `subclassInit()`.
 
 **Fix approach**: Audit each component in `src/components/`. Ensure `disconnectedCallback` calls `_store.removeListener(this)` and removes any DOM event listeners added in `subclassInit()`.
+
+### R7 — Hardware Clients Don't Announce State on Connect
+
+**Symptom**: ESP32 (and similar hardware) clients only send a key/value message when a tracked value actually changes (e.g. a physical button press). On boot or WS reconnect, only a `client_connected` timestamp / heartbeat goes out — the device's actual current state is never announced. Since in-code state (e.g. an `active` flag) resets to its default on every reboot, but the server/www UI's persisted state does not, a reboot can leave the UI showing stale state indefinitely, until the next physical interaction happens to change it.
+
+**Fix applied in examples**: Added a `broadcastState()` call in the `WStype_CONNECTED` handler in both `examples/app-store/arduino-esp32/simple-sensor-demo/simple-sensor-demo.ino` and `.../accelerometer-demo/accelerometer-demo.ino`, sending every tracked default/current value on (re)connect.
+
+**Remaining work**: Audit real project deployments built from these examples (or similar hardware clients) and apply the same "broadcast full state on connect" pattern where it's missing — this is a general pattern for any hardware/device client, not just these two example sketches.
