@@ -66,13 +66,10 @@ store.set("scene", "intro")
 store.on("volume", lambda v: print(v))
 ```
 
-### SSL / HTTPS for Local Tablets
-iPad and some Android browsers require `wss://` even on LAN. Options being evaluated:
-- `devcert` or `selfsigned` npm packages for local self-signed certs
-- Vite SSL plugin + proxy
-- Documented workaround: use cloud deployment and connect over internet
+### SSL / HTTPS for Local Tablets — Resolved
+iPad and some Android browsers require `wss://` even on LAN. Fixed: `app-store-init.js` now derives `ws://` vs `wss://` from the page's own `document.location.protocol`, never from a dev/prod port heuristic — previously an `https://` page on a non-`localhost` LAN origin would silently fail to connect (mixed-content, no error surfaced) because it defaulted to `ws://`. The bundler-proxy pattern (Vite `server.proxy` with `ws: true`) remains the way to get `wss://` on a LAN dev server; cloud deployments already terminate TLS in front of the app.
 
-Current state: unsolved. See SSL section in `TODO.md` for research notes.
+See "Running Behind HTTPS" in [`docs/references/deployment.md`](../references/deployment.md).
 
 ---
 

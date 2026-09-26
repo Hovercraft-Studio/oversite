@@ -45,7 +45,7 @@ Distributed key/value state and pub/sub messaging. Clients share state across ma
 
 Health monitoring for deployed apps. Apps POST periodic check-ins; operators view status in the web UI.
 
-- **Transport**: HTTP POST to `/api/dashboard` (JSON body with `appId` required)
+- **Transport**: HTTP POST to `/api/dashboard` (JSON body with `appId` required) **OR** WebSocket messages on the `dashboard` channel.
 - **Storage**: `_tmp_data/dashboard/projects.json` + image files in `_tmp_data/dashboard/images/`
 - **History**: 100 check-ins per project; oldest pruned automatically
 - **Alerts**: `OfflineAlerts` polls every 60s, fires Slack webhook at 20-min offline threshold
