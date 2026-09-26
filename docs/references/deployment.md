@@ -137,11 +137,30 @@ Since Oversite is a private GitHub repo, Vercel cannot run `npm install` during 
 
 When Oversite becomes a public repo, revert these steps and use a normal Vite build.
 
-## SSL / HTTPS for Local Tablets
+## Running Behind HTTPS
 
-**Known open problem**: Some browsers on iOS and Android require `wss://` (WebSocket Secure) even on local network connections in order to use webcams or other hardware that requires a secure context. Running Oversite with a self-signed certificate for local use is not yet solved in a clean way. This is tracked in the [roadmap](./roadmap.md).
+Some browsers (notably iOS Safari) require a secure context — `https://` for the page and `wss://` for its WebSocket — before allowing `getUserMedia` (webcam) or other hardware access, even on a local network. `app-store-init.js` always mirrors the page's own protocol (`document.location.protocol`): on an `https://` page it defaults to `wss://` on the page's **own origin** (`document.location.host`, whatever port that is) rather than the relay's port directly — hitting the relay's port directly would still be mixed content, since nothing terminates TLS there.
 
-Current workaround: Use the cloud deployment (`wss://`) and connect local devices to it over the internet rather than the LAN.
+That means something has to proxy `/ws` (and any REST calls under `/api`) from the page's own origin through to the plain `ws://`/`http://` relay. Oversite's own `vite.config.js` already does this for local dev, since its Vite dev server always runs over HTTPS (`@vitejs/plugin-basic-ssl`):
+
+```js
+// vite.config.js
+server: {
+  https: true,
+  proxy: {
+    "/ws": { target: "ws://localhost:3003", ws: true },
+    "/api": "http://localhost:3003",
+  },
+}
+```
+
+The browser only ever opens one same-origin `wss://.../ws` connection to Vite's own port; Vite forwards the insecure hop to the relay server-side, where mixed-content rules don't apply. A consumer project fronted by its own reverse proxy instead of Vite would proxy the same two paths there.
+
+This requires no changes to Oversite's relay itself. Cloud deployments (DigitalOcean App Platform, Vercel) already terminate TLS in front of the app on one origin, so the same same-origin default just works there without any proxy config.
+
+### Verifying It Works
+
+`<app-store-webcam>` (see [`docs/references/web-components.md`](./web-components.md)) is a concrete end-to-end test: it's on the `app-store-demo` page (`key="webcam_photo"`), and `getUserMedia` succeeding from a phone/tablet on the LAN — not just `localhost` — confirms the secure-context websocket is actually connected, not just that the default URL scheme looks right.
 
 ## Monitoring a Deployment
 
