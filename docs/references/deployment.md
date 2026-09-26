@@ -127,15 +127,7 @@ See `examples/oversite-module/` for a complete example:
 - `examples/oversite-module/backend/` — Node.js backend using `DashboardPoster`
 - `examples/oversite-module/frontend/` — Vite frontend importing Oversite components
 
-### Private Repo + Vercel Limitation
-
-Since Oversite is a private GitHub repo, Vercel cannot run `npm install` during its build step (no SSH key access). Current workaround:
-
-1. Run `npm run build` locally
-2. Commit the `/dist` folder (remove `dist` from `.gitignore`)
-3. Replace the Vercel build command with `npm run skip-build`
-
-When Oversite becomes a public repo, revert these steps and use a normal Vite build.
+Oversite is published on npm, so a consumer project deploys normally on Vercel (or anywhere else) — a plain `npm install` and Vite build, no workaround needed.
 
 ## Running Behind HTTPS
 
